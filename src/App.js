@@ -144,8 +144,8 @@ function Home() {
     console.log(places);
 
     const directionsService = new google.maps.DirectionsService();
-    const directionsRenderer = new google.maps.DirectionsRenderer({suppressPolylines: true});
-    directionsRenderer.setMap(map);
+    // const directionsRenderer = new google.maps.DirectionsRenderer({suppressPolylines: true});
+    // directionsRenderer.setMap(map);
     var waypts = places.map(place => {
       return {
         location: place.formatted_address,
@@ -165,10 +165,12 @@ function Home() {
         travelMode: google.maps.TravelMode.DRIVING,
       })
       .then((response) => {
-        directionsRenderer.setDirections(response);
+        // directionsRenderer.setDirections(response);
         return response;
       })
       .catch((e) => window.alert("Directions request failed due to " + e));
+
+    console.log(direction);
 
     var legs = direction.routes[0].legs;
     var points = getPoints(direction, places);
@@ -176,6 +178,17 @@ function Home() {
     console.log(points);
     var plan = await getPlan(points, legs);
     console.log(plan);
+    for(var i = 0; i < plan.length; i++){
+      new google.maps.Marker({
+        position: {
+          lat: plan[i].geometry.location.lat(),
+          lng: plan[i].geometry.location.lng(),
+        },
+        label: String(i),
+        map: map,
+      });
+    }
+    map.setCenter({lat: plan[0].geometry.location.lat(), lng: plan[0].geometry.location.lng()});
   });
   return(
     <>
@@ -188,8 +201,18 @@ function Home() {
 const getPoints = (direction, places) => {
   var waypts = places.slice(0, 5);
   var points = direction.routes[0].waypoint_order.map(i => waypts[i]);
-  var origin = {name: direction.request.origin.query};
-  var destination = {name: direction.request.destination.query};
+  var origin = {
+    name: direction.request.origin.query,
+    geometry: {
+      location: direction.routes[0].legs[0].start_location,
+    }
+  };
+  var destination = {
+    name: direction.request.destination.query,
+    geometry: {
+      location: direction.routes[0].legs.slice(-1)[0].end_location,
+    }
+  };
   points.unshift(origin);
   points.push(destination);
   return points;
@@ -242,8 +265,6 @@ const getPlan = async (points, legs) => {
       sum += stayingTime + l[i].duration.value;
     }
   }
-  console.log(p);
-  console.log(l);
   return plan;
 }
 
@@ -265,11 +286,9 @@ const findPlace = async (query, location) => {
 }
 
 const drivingDirection = async (origin, destination) => {
-  console.log(origin);
-  console.log(destination);
   const directionsService = new google.maps.DirectionsService();
-  const directionsRenderer = new google.maps.DirectionsRenderer({suppressPolylines: true});
-  directionsRenderer.setMap(map);
+  // const directionsRenderer = new google.maps.DirectionsRenderer({suppressPolylines: true});
+  // directionsRenderer.setMap(map);
   var direction = await directionsService
     .route({
       origin: origin,
@@ -277,30 +296,11 @@ const drivingDirection = async (origin, destination) => {
       travelMode: google.maps.TravelMode.DRIVING,
     })
     .then((response) => {
-      directionsRenderer.setDirections(response);
+      // directionsRenderer.setDirections(response);
       return response;
     })
     .catch((e) => console.log("Directions request failed due to " + e));
   return direction
-}
-
-const insertMeal = async (plan, lunchIndex, dinnerIndex) => {
-  var service = new google.maps.places.PlacesService(map);
-  var request = {
-    query: '昼食',
-    fields: ['name', 'geometry'],
-    locationBias: {lat: plan[lunchIndex].geometry.location.lat(), lng: plan[lunchIndex].geometry.location.lng()},
-  };
-  var lunch = await new Promise(resolve => {
-    service.findPlaceFromQuery(request, function(results, status) {
-      if (status === google.maps.places.PlacesServiceStatus.OK) {
-        resolve(results);
-      }
-    });
-  });
-  console.log(lunch)
-  plan.splice(lunchIndex+1, 0, lunch[0]);
-  return plan;
 }
 
 
