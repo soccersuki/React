@@ -13,7 +13,8 @@ import {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: '80vw',
+    width: '100%',
+    maxWidth: '500px',
   },
 }));
 
@@ -31,7 +32,7 @@ export default function ConditionPage(props) {
     <>
       <ButtonAppBar />
       <HeroImg region={region} />
-      <Box display='flex' justifyContent="center">
+      <Box display='flex' justifyContent="center" mx={5}>
         <Box className={classes.root}>
           <SwitchListSecondary onSubmit={handleSubmit} />
         </Box>

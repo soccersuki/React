@@ -19,7 +19,6 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
   },
   form: {
-    width: '50vw',
   }
 }));
 

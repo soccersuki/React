@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, createContext } from 'react'
 import {
   BrowserRouter as Router,
   Switch,
@@ -26,11 +26,12 @@ import {
 
 import HomePage from './HomePage';
 import ConditionPage from './ConditionPage';
-import PlanPage from './PlanPage';
+import PlanPages from './PlanPages';
 import EditPage from './EditPage';
 import AddPage from './AddPage';
 
 export default function App() {
+
   return(
     <Router>
       <Switch>
@@ -38,7 +39,7 @@ export default function App() {
           <ConditionPage />
         </Route>
         <Route path="/plan">
-          <PlanPage />
+          <PlanPages />
         </Route>
         <Route path="/">
           <HomePage />
@@ -46,81 +47,6 @@ export default function App() {
       </Switch>
     </Router>
   )
-}
-
-const Prefectures = () => {
-  var prefectures = ['大阪', '東京', '北海道', '福岡'];
-  const handleChange = (e) => {
-    console.log(e.target.value);
-  }
-  return(
-    <Box my={10} mx={5}>
-      <h2>都道府県から選ぶ</h2>
-      <Select onChange={handleChange}>
-        {prefectures.map(prefecture => <MenuItem value={prefecture}>{prefecture}</MenuItem>)}
-      </Select>
-    </Box>
-  )
-}
-
-const Form = (props) =>{
-  const [region, setRegion] = useState('大阪');
-  const [origin, setOrigin] = useState('大阪駅');
-  const [destination, setDestination] = useState('萱嶋駅');
-  const history = useHistory();
-  const handleChangeOrigin = (e) => {
-    setOrigin(e.target.value);
-  }
-  const handleChangeDestination = (e) => {
-    setDestination(e.target.value);
-  }
-  const handleChangeRegion = (e) => {
-    setRegion(e.target.value);
-  }
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    history.push(props.path, {region: region, origin: origin, destination: destination});
-  }
-
-  return(
-    <form onSubmit={handleSubmit}>
-      <div>
-        Region: <input type='text' onChange={handleChangeRegion} value={region}/>
-      </div>
-      <div>
-        Origin: <input type='text' onChange={handleChangeOrigin} value={origin}/>
-      </div>
-      <div>
-        Destination: <input type='text' onChange={handleChangeDestination} value={destination}/>
-      </div>
-      <input type='submit' />
-    </form>
-  )
-}
-
-const Legs = (props) => {
-  if(props.plan == null || props.legs == null) return(null);
-  var {plan, legs} = props;
-  var l = [];
-  for(var i = 0; i < plan.length; i++){
-    var cmp = (<li>
-                 <p>{plan[i].arrivalTime.text}, {plan[i].name}</p>
-                 <p>stay time: {plan[i].stayTime / 60}min</p>
-                 {i < legs.length ? <p>transit: {legs[i].duration.value / 60}min</p> : null}
-              </li>);
-    l.push(cmp)
-  }
-  return(
-    <>
-      <ul>{l}</ul>
-    </>
-  )
-}
-
-const API_KEY = "AIzaSyCkNip5D4glIDSddF__OlVzY1ovG5yVf7g";
-const initialConfig = {
-  zoom: 12,
-  center: { lat: 35.6432027, lng: 139.6729435 }
 }
 // var google, map;
 //

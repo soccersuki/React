@@ -13,15 +13,16 @@ import TitlebarImageList from './TitlebarImageList';
 import{
   makePlan,
   PlanContext,
-} from './PlanPage';
+} from './PlanPages';
 
 import {
   Button,
+  Box,
 } from '@material-ui/core'
 
 export default function EditPage(props){
   const history = useHistory();
-  const {spots, plan, legs, region, setPlan, setSpots, setLegs} = useContext(PlanContext);
+  const {google, plan, region, setPlan} = useContext(PlanContext);
   const handleClick = () => {
     history.push('/plan/add');
   }
@@ -29,11 +30,12 @@ export default function EditPage(props){
     history.push('/plan');
   }
   const handleSubmit = async () => {
-    const {google} = props;
-    const [spots2, plan2, legs2] = await makePlan(google, region, '大阪駅', '萱嶋駅', spots);
-    setPlan(plan2)
-    setSpots(spots2)
-    setLegs(legs2);
+    // const [spots2, plan2, legs2] = await makePlan(google, '大阪', '大阪駅', '萱嶋駅', plan.spots);
+    const p = null
+    setPlan(p);
+    // setPlan(plan2)
+    // setSpots(spots2)
+    // setLegs(legs2);
     history.push('/plan');
   }
   useEffect(() => {
@@ -41,9 +43,11 @@ export default function EditPage(props){
   }, [])
   return(
     <>
-      <TitlebarImageList onClick={handleClick} spots={props.spots}/>
-      <SwitchListSecondary onSubmit={handleSubmit}/>
-      <Button type="submit" variant="contained" onClick={handleClickReturn}>辞める</Button>
+      <Box mx={5}>
+        <TitlebarImageList onClick={handleClick} spots={props.spots}/>
+        <SwitchListSecondary onSubmit={handleSubmit}/>
+        <Button type="submit" variant="contained" onClick={handleClickReturn}>辞める</Button>
+      </Box>
     </>
   )
 }

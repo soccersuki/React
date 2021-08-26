@@ -6,7 +6,6 @@ import ButtonAppBar from './ButtonAppBar';
 import Hero from './Hero';
 import TextForm from './TextForm';
 import PopularRegions from './PopularRegions';
-import Prefectures from './Prefectures'
 
 import {
   Box,
@@ -23,11 +22,14 @@ export default function HomePage(){
     <>
       <ButtonAppBar />
       <Hero />
-      <Box mx={5} my={5}>
-        <TextForm onSubmit={handleSubmit} initialValue={'大阪'} label={'Region'}/>
+      <Box mx={5}>
+        <Box my={5}>
+          <TextForm onSubmit={handleSubmit} initialValue={'大阪'} label={'Region'}/>
+        </Box>
+        <Box my={5}>
+          <PopularRegions onClick={handleSubmit}/>
+        </Box>
       </Box>
-
-      <PopularRegions onClick={handleSubmit}/>
     </>
   )
 }

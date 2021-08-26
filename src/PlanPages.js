@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, createContext } from 'react'
+import { useState, useRef, useEffect, useContext, createContext } from 'react'
 
 import {
   Switch,
@@ -22,103 +22,120 @@ import {
 
 export const PlanContext = createContext();
 
-export default function PlanPage(props){
-  const [plan, setPlan] = useState(null);
-  const [spots, setSpots] = useState(null);
-  const [legs, setLegs] = useState(null);
-  const [region, setRegion] = useState(null);
-  const history = useHistory();
-  const location = useLocation();
-  const mapContainerRef = useRef(null);
+export default function PlanPages(props){
+  // const location = useLocation();
+  // const mapContainerRef = useRef(null);
   const [google, setGoogle] = useState(null);
   const [map, setMap] = useState(null);
+  const [plan, setPlan] = useState(null);
+  // const [spots, setSpots] = useState(null);
+  // const [legs, setLegs] = useState(null);
+  const [region, setRegion] = useState(null);
   const value = {
-    plan,
-    setPlan,
-    spots,
-    setSpots,
-    legs,
-    setLegs,
-    region,
-    setRegion,
-  }
-  useEffect(async () => {
-    console.log('plan');
-    const API_KEY = "AIzaSyCkNip5D4glIDSddF__OlVzY1ovG5yVf7g";
-    const initialConfig = {
-      zoom: 12,
-      center: { lat: 35.6432027, lng: 139.6729435 }
-    }
-    const loader = new Loader({
-      apiKey: API_KEY,
-      version: "weekly",
-      libraries: ["places"],
-    });
-    const google = await loader.load().then((google) => {
-      return google;
-    })
-    setGoogle(google);
-
-    const map = new google.maps.Map(mapContainerRef.current, initialConfig);
-    setMap(map);
-
-    var regionName = '大阪', originName = '大阪駅', destinationName = '萱嶋駅';
-
-    var region = await findPlace(google, map, regionName);
-    setRegion(region);
-
-    var places = await findPlaces(google, map, '観光', region[0].geometry.location);
-
-    const [points, plan, legs] = await makePlan(google, region, '大阪駅', '萱嶋駅', places.slice(0, 5));
-    setPlan(plan);
-    setLegs(legs);
-    setSpots(points);
-    for(var i = 0; i < plan.length; i++){
-      new google.maps.Marker({
-        position: {
-          lat: plan[i].geometry.location.lat(),
-          lng: plan[i].geometry.location.lng(),
-        },
-        label: String(i),
-        map: map,
-      });
-    }
-    map.setCenter({lat: plan[0].geometry.location.lat(), lng: plan[0].geometry.location.lng()});
-    console.log(region);
-    console.log(places);
-    // console.log(direction);
-    console.log(plan);
-    console.log(legs);
-    console.log(points);
-  }, []);
-
-  const handleClick = () => {
-    history.push('/plan/edit');
+    google, setGoogle,
+    map, setMap,
+    plan, setPlan,
+    region, setRegion,
   }
 
   return(
     <PlanContext.Provider value={value}>
       <ButtonAppBar />
-      <Map mapContainerRef={mapContainerRef}/>
+      <Map google={google}/>
       <Switch>
         <Route path='/plan/edit'>
-          <EditPage plan={plan} spots={spots} region={region} google={google} setPlan={setPlan} setSpots={setSpots} setLegs={setLegs}/>
+          <EditPage />
         </Route>
         <Route path='/plan/add'>
-          <AddPage google={google} map={map} plan={plan} spots={spots}/>
+          <AddPage />
         </Route>
         <Route path='/plan'>
-          <CustomizedTimeline plan={plan} legs={legs} spots={spots}/>
-          <Box display='flex' justifyContent='center'>
-            <Button type="submit" variant="contained" onClick={handleClick}>EDIT</Button>
-          </Box>
+          <PlanPage />
         </Route>
       </Switch>
     </PlanContext.Provider>
   )
 }
 
-export async function makePlan(google, region, originName, destinationName, spots){
+function PlanPage(){
+  const history = useHistory();
+  const handleClick = () => {
+    history.push('/plan/edit');
+  }
+  var plan = usePlan();
+  return(
+    <>
+      <CustomizedTimeline plan={plan}/>
+      <Box display='flex' justifyContent='center' my={5}>
+        <Button type="submit" variant="contained" onClick={handleClick}>EDIT</Button>
+      </Box>
+    </>
+  )
+}
+
+const useGoogle = () => {
+  // const [google, setGoogle] = useState(null);
+  const {setGoogle} = useContext(PlanContext);
+  useEffect(() => {
+    const API_KEY = "AIzaSyCkNip5D4glIDSddF__OlVzY1ovG5yVf7g";
+    const loader = new Loader({
+      apiKey: API_KEY,
+      version: "weekly",
+      libraries: ["places"],
+    });
+    loader.load().then((google) => {
+      setGoogle(google);
+    })
+  })
+}
+
+const usePlan = (props) => {
+  useGoogle();
+  const {google, map, plan, setPlan, region, setRegion} = useContext(PlanContext);
+
+  useEffect(async () => {
+    console.log('usePlan')
+    if(google == null || map == null) return;
+
+    var regionName = '大阪', originName = '大阪駅', destinationName = '萱嶋駅';
+    if(region == null){
+      var region = await findPlace(google, map, regionName);
+      setRegion(region);
+    }
+
+    if(plan.spots == null){
+      var spots = await findPlaces(google, map, '観光', region[0].geometry.location);
+
+    }
+
+    const p = await makePlan(google, region, '大阪駅', '萱嶋駅');
+
+    setPlan(p);
+
+    
+    for(var i = 0; i < plan.plan.length; i++){
+      new google.maps.Marker({
+        position: {
+          lat: plan.plan[i].geometry.location.lat(),
+          lng: plan.plan[i].geometry.location.lng(),
+        },
+        label: String(i),
+        map: map,
+      });
+    }
+    map.setCenter({lat: plan.plan[0].geometry.location.lat(), lng: plan.plan[0].geometry.location.lng()});
+    console.log(region);
+    console.log(places);
+    // console.log(direction);
+    console.log(plan);
+    console.log(legs);
+    console.log(points);
+  }, [google, map])
+  return plan;
+}
+
+export async function makePlan(google, originName, destinationName, plan){
+  const {spots, region} = plan;
   var waypts = spots.map(spot => {
     return {
       location: spot.formatted_address,
@@ -135,7 +152,7 @@ export async function makePlan(google, region, originName, destinationName, spot
   var plan = getPlan(points, legs, direction);
   // [plan, legs] = await insertLunch(google, map, plan, legs);
   console.log('makePlan');
-  return [points, plan, legs];
+  return {spots: points, plan, legs};
 }
 
 const getPoints = (direction, places) => {
@@ -315,35 +332,6 @@ function getTimeStr(sum){
 //   )
 // }
 //
-// const useGoogle = () => {
-//   const [google, setGoogle] = useState(null);
-//   useEffect(() => {
-//     const API_KEY = "AIzaSyCkNip5D4glIDSddF__OlVzY1ovG5yVf7g";
-//     const loader = new Loader({
-//       apiKey: API_KEY,
-//       version: "weekly",
-//       libraries: ["places"],
-//     });
-//     loader.load().then((google) => {
-//       setGoogle(google);
-//     })
-//   })
-//   return google;
-// }
-//
-// const useMap = (google, mapContainerRef) => {
-//   const [map, setMap] = useState(null);
-//   useEffect(() => {
-//     if(google == null || mapContainerRef == null) return;
-//     const initialConfig = {
-//       zoom: 12,
-//       center: { lat: 35.6432027, lng: 139.6729435 }
-//     }
-//     const map = new google.maps.Map(mapContainerRef.current, initialConfig);
-//     setMap(map);
-//   }, [google, mapContainerRef]);
-//   return map;
-// }
 //
 // const useFindPlace = (google, map, query, location) => {
 //   const [place, setPlace] = useState(null);

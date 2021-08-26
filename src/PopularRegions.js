@@ -29,9 +29,9 @@ export default function PopularRegions(props){
   }
 
   return(
-    <Box my={5} mx={5}>
+    <>
       <Typography variant='subtitle1'><Box color="gray">人気のエリア</Box></Typography>
       <SingleLineImageList itemData={itemData} onClick={handleClick}/>
-    </Box>
+    </>
   )
 }

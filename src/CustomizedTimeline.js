@@ -33,7 +33,9 @@ const useStyles = makeStyles((theme) => ({
 export default function CustomizedTimeline(props) {
   const classes = useStyles();
   var {plan, legs} = props;
-  if(plan == null || legs == null) return(null);
+  console.log(plan)
+  if(plan == null) return(null);
+  plan = plan.plan;
   var timelineitems = []
   for(var i = 0; i < plan.length; i++){
     var item = (
