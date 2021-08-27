@@ -1,6 +1,7 @@
 import {
   useEffect,
   useContext,
+  useState,
 } from 'react';
 import {
   useHistory,
@@ -22,20 +23,22 @@ import {
 
 export default function EditPage(props){
   const history = useHistory();
-  const {google, plan, region, setPlan} = useContext(PlanContext);
-  const handleClick = () => {
+  const {plan, setPlan} = useContext(PlanContext);
+  const handleClickAdd = () => {
     history.push('/plan/add');
   }
+  const handleClickCancel = (i) => {
+    plan.newSpots.splice(i, 1);
+    setPlan({...plan});
+    console.log(i);
+    console.log(plan);
+  }
   const handleClickReturn = () => {
+    plan.newSpots = plan.spots;
+    setPlan(plan);
     history.push('/plan');
   }
-  const handleSubmit = async () => {
-    // const [spots2, plan2, legs2] = await makePlan(google, '大阪', '大阪駅', '萱嶋駅', plan.spots);
-    const p = null
-    setPlan(p);
-    // setPlan(plan2)
-    // setSpots(spots2)
-    // setLegs(legs2);
+  const handleSubmit = () => {
     history.push('/plan');
   }
   useEffect(() => {
@@ -44,7 +47,7 @@ export default function EditPage(props){
   return(
     <>
       <Box mx={5}>
-        <TitlebarImageList onClick={handleClick} spots={props.spots}/>
+        <TitlebarImageList onClickAdd={handleClickAdd} onClickCancel={handleClickCancel} spots={plan.newSpots}/>
         <SwitchListSecondary onSubmit={handleSubmit}/>
         <Button type="submit" variant="contained" onClick={handleClickReturn}>辞める</Button>
       </Box>

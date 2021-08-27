@@ -7,6 +7,7 @@ import{
 import{
   useEffect,
   useState,
+  useContext,
 } from 'react';
 import {
   TextField,
@@ -14,14 +15,23 @@ import {
   Button,
 } from '@material-ui/core';
 
+import {
+  PlanContext
+} from './PlanPages'
+
+import {
+  findPlace,
+} from './funcs';
+
 export default function AddPage(props){
   const [query, setQeury] = useState('');
   const [place, setPlace] = useState(null);
   const history = useHistory();
-  const {spots} = props;
+  const {google, map, plan, setPlan} = useContext(PlanContext);
   const handleClick = () => {
     console.log(place);
-    spots.push(place[0]);
+    plan.newSpots.push(place[0]);
+    setPlan({...plan});
     history.push('/plan/edit');
   }
   const handleChange = (e) => {
@@ -29,7 +39,6 @@ export default function AddPage(props){
   }
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const {google, map} = props;
     var place = await findPlace(google, map, query);
     new google.maps.Marker({
       position: {
@@ -59,23 +68,4 @@ export default function AddPage(props){
       </Box>
     </>
   )
-}
-
-const findPlace = async (google, map, query, location) => {
-  var service = new google.maps.places.PlacesService(map);
-  var request = {
-    query: query,
-    fields: ['name', 'geometry', 'formatted_address', 'photos'],
-  };
-  if(location != null){
-    request.locationBias = {lat: location.lat(), lng: location.lng()};
-  }
-  var place = await new Promise(resolve => {
-    service.findPlaceFromQuery(request, function(results, status) {
-      if (status === google.maps.places.PlacesServiceStatus.OK) {
-        resolve(results);
-      }
-    });
-  });
-  return place;
 }

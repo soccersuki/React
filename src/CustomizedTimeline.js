@@ -32,59 +32,60 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CustomizedTimeline(props) {
   const classes = useStyles();
-  var {plan, legs} = props;
-  console.log(plan)
+  var {plan} = props;
   if(plan == null) return(null);
-  plan = plan.plan;
+  const {itinerary, legs} = plan;
   var timelineitems = []
-  for(var i = 0; i < plan.length; i++){
-    var item = (
+  for(var i = 0; i < itinerary.length; i++){
+    var spot = (
       <TimelineItem>
         <TimelineOppositeContent style={{ flex: 0.1 }}>
           <Typography variant="body2" color="textSecondary">
-            {plan[i].arrivalTime.text}
+            {itinerary[i].arrivalTime.text}
           </Typography>
         </TimelineOppositeContent>
         <TimelineSeparator>
           <TimelineDot>
-            <Avatar alt="Remy Sharp" src={plan[i].photos == null ? null: plan[i].photos[0].getUrl()} />
+            <Avatar alt="Remy Sharp" src={itinerary[i].photos == null ? null: itinerary[i].photos[0].getUrl()} />
           </TimelineDot>
           <TimelineConnector />
         </TimelineSeparator>
         <TimelineContent>
           <Paper elevation={3} className={classes.paper}>
             <Typography variant="h6" component="h1">
-              {plan[i].name}
+              {itinerary[i].name}
             </Typography>
-            <Typography>stay time: {plan[i].stayTime}</Typography>
+            <Typography>stay time: {itinerary[i].stayTime}</Typography>
           </Paper>
         </TimelineContent>
       </TimelineItem>
     )
     timelineitems.push(item);
-    var item2 = (
-      <TimelineItem>
-        <TimelineOppositeContent style={{ flex: 0.1 }}>
-          <Typography variant="body2" color="textSecondary">
-            {plan[i].arrivalTime.text}
-          </Typography>
-        </TimelineOppositeContent>
-        <TimelineSeparator>
-          <TimelineDot>
-            <Avatar>
-              <TrainIcon />
-            </Avatar>
-          </TimelineDot>
-          <TimelineConnector />
-        </TimelineSeparator>
-        <TimelineContent>
-          <Box display="flex" alignItems='center' height='100%'>
-            17min by transit
-          </Box>
-        </TimelineContent>
-      </TimelineItem>
-    )
-    timelineitems.push(item2);
+    if(i < itinerary.length - 1){
+      var leg = (
+        <TimelineItem>
+          <TimelineOppositeContent style={{ flex: 0.1 }}>
+            <Typography variant="body2" color="textSecondary">
+              {itinerary[i].arrivalTime.text}
+            </Typography>
+          </TimelineOppositeContent>
+          <TimelineSeparator>
+            <TimelineDot>
+              <Avatar>
+                <TrainIcon />
+              </Avatar>
+            </TimelineDot>
+            <TimelineConnector />
+          </TimelineSeparator>
+          <TimelineContent>
+            <Box display="flex" alignItems='center' height='100%'>
+              17min by transit
+            </Box>
+          </TimelineContent>
+        </TimelineItem>
+      )
+      timelineitems.push(leg);
+    }
   }
   return(
     <Timeline>

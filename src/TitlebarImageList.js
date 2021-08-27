@@ -6,13 +6,19 @@ import ImageListItemBar from '@material-ui/core/ImageListItemBar';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';
+import CancelIcon from '@material-ui/icons/Cancel';
 // import itemData from './itemData';
 import imgOsaka from './img_osaka.jpg';
 import AddIcon from '@material-ui/icons/Add';
 import {
   Box,
 } from '@material-ui/core';
-
+import {
+  useContext,
+} from 'react';
+import {
+  PlanContext
+} from './PlanPages';
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -51,25 +57,16 @@ const useStyles = makeStyles((theme) => ({
  */
 export default function TitlebarImageList(props) {
   const classes = useStyles();
-  var itemData = [];
-  for(var i = 0; i < 5; i++){
-    var item = {
-      img: imgOsaka,
-      title: 'Osaka',
-      author: 'author',
-    }
-    itemData.push(item);
-  }
-  const {spots} = props;
-  if(spots == null) return(null);
+  const newSpots = props.spots;
+  if(newSpots == null) return(null);
 
   return (
     <div className={classes.root}>
       <ImageList rowHeight={180} className={classes.imageList}>
         <ImageListItem key="Subheader" cols={2} style={{ height: 'auto' }}>
-          <ListSubheader component="div">December</ListSubheader>
+          <ListSubheader component="div">Spots</ListSubheader>
         </ImageListItem>
-        {spots.map((item) => (
+        {newSpots.map((item, i) => (
           <ImageListItem key={item.photos == null ? null: item.photos[0].getUrl()}>
             <img src={item.photos == null ? null: item.photos[0].getUrl()} alt={item.name} />
             <ImageListItemBar
@@ -81,11 +78,18 @@ export default function TitlebarImageList(props) {
                 </IconButton>
               }
             />
+            <ImageListItemBar
+              position='top'
+              actionPosition='right'
+              actionIcon={
+                <IconButton onClick={() => props.onClickCancel(i)}><CancelIcon /></IconButton>
+              }>
+            </ImageListItemBar>
           </ImageListItem>
         ))}
         <ImageListItem>
           <Box display='flex' justifyContent='center' alignItems="center" height='100%'>
-          <IconButton onClick={props.onClick}>
+          <IconButton onClick={props.onClickAdd}>
             <AddIcon fontSize='large' className={classes.addIcon}/>
           </IconButton>
           </Box>
