@@ -34,12 +34,10 @@ export default function EditPage(props){
     console.log(plan);
   }
   const handleClickReturn = () => {
-    plan.newSpots = plan.spots;
-    setPlan(plan);
-    history.push('/plan');
+    history.push('/plan', {status: 'cancel'});
   }
-  const handleSubmit = () => {
-    history.push('/plan');
+  const handleSubmit = (condition) => {
+    history.push('/plan', {...condition, status: 'new'});
   }
   useEffect(() => {
     console.log('edit');

@@ -60,10 +60,12 @@ export default function PlanPages(props){
 
 function PlanPage(){
   const history = useHistory();
+  const location = useLocation();
+  const condition = location.state;
   const handleClick = () => {
     history.push('/plan/edit');
   }
-  var plan = usePlan();
+  var plan = usePlan(condition);
   return(
     <>
       <CustomizedTimeline plan={plan}/>
@@ -76,8 +78,9 @@ function PlanPage(){
 
 const useGoogle = () => {
   // const [google, setGoogle] = useState(null);
-  const {setGoogle} = useContext(PlanContext);
+  const {google, setGoogle} = useContext(PlanContext);
   useEffect(() => {
+    if(google != null) return;
     const API_KEY = "AIzaSyCkNip5D4glIDSddF__OlVzY1ovG5yVf7g";
     const loader = new Loader({
       apiKey: API_KEY,
@@ -90,30 +93,35 @@ const useGoogle = () => {
   })
 }
 
-const usePlan = (props) => {
+const usePlan = (condition) => {
   useGoogle();
   const {google, map, plan, setPlan} = useContext(PlanContext);
 
   useEffect(async () => {
-    console.log('usePlan')
     if(google == null || map == null) return;
 
-    var regionName = '大阪', originName = '大阪駅', destinationName = '萱嶋駅';
+    // var regionName = '大阪', originName = '大阪駅', destinationName = '萱嶋駅';
+    const {regionName, originName, destinationName, meal, status} = condition;
     var region, spots;
-    if(plan == null){
+    if(status == 'first'){
       region = await findPlace(google, map, regionName);
       spots = await findPlaces(google, map, '観光', region[0].geometry.location);
       spots = spots.slice(0, 5);
     }
-    else{
+    else if(status == 'new'){
       region = plan.region;
       spots = plan.newSpots;
     }
+    else if(status == 'cancel'){
+      plan.newSpots = [...plan.spots];
+      setPlan({...plan});
+      return plan;
+    }
 
-    const newPlan = await makePlan(google, originName, destinationName, region, spots);
+    const newPlan = await makePlan(google, map, originName, destinationName, region, spots);
     newPlan.newSpots = [...newPlan.spots];
 
-    showMarker(google, map, newPlan)
+    showMarker(google, map, newPlan.itinerary)
     setPlan(newPlan);
 
     console.log(region);

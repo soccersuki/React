@@ -14,8 +14,8 @@ import {
 
 export default function HomePage(){
   const history = useHistory();
-  const handleSubmit = (region) => {
-    history.push('/condition', {region: region});
+  const handleSubmit = (regionName) => {
+    history.push('/condition', {regionName});
   }
 
   return(
@@ -24,7 +24,7 @@ export default function HomePage(){
       <Hero />
       <Box mx={5}>
         <Box my={5}>
-          <TextForm onSubmit={handleSubmit} initialValue={'大阪'} label={'Region'}/>
+          <TextForm onSubmit={handleSubmit} initialValue={'大阪'} label={'Region'} fullWidth={true}/>
         </Box>
         <Box my={5}>
           <PopularRegions onClick={handleSubmit}/>

@@ -22,19 +22,19 @@ export default function ConditionPage(props) {
   const classes = useStyles();
   const history = useHistory();
   const location = useLocation();
-  const region = location.state.region;
+  const regionName = location.state.regionName;
 
   const handleSubmit = (condition) => {
-    history.push('/plan', {region, ...condition});
+    history.push('/plan', {...condition, status: 'first'});
   }
 
   return(
     <>
       <ButtonAppBar />
-      <HeroImg region={region} />
+      <HeroImg regionName={regionName} />
       <Box display='flex' justifyContent="center" mx={5}>
         <Box className={classes.root}>
-          <SwitchListSecondary onSubmit={handleSubmit} />
+          <SwitchListSecondary onSubmit={handleSubmit} regionName={regionName}/>
         </Box>
       </Box>
 

@@ -55,18 +55,18 @@ export default function CustomizedTimeline(props) {
             <Typography variant="h6" component="h1">
               {itinerary[i].name}
             </Typography>
-            <Typography>stay time: {itinerary[i].stayTime}</Typography>
+            <Typography>stay time: {itinerary[i].stayTime.text}</Typography>
           </Paper>
         </TimelineContent>
       </TimelineItem>
     )
-    timelineitems.push(item);
-    if(i < itinerary.length - 1){
+    timelineitems.push(spot);
+    if(i < legs.length){
       var leg = (
         <TimelineItem>
           <TimelineOppositeContent style={{ flex: 0.1 }}>
             <Typography variant="body2" color="textSecondary">
-              {itinerary[i].arrivalTime.text}
+              {itinerary[i].departureTime.text}
             </Typography>
           </TimelineOppositeContent>
           <TimelineSeparator>
@@ -79,7 +79,7 @@ export default function CustomizedTimeline(props) {
           </TimelineSeparator>
           <TimelineContent>
             <Box display="flex" alignItems='center' height='100%'>
-              17min by transit
+              {legs[i].duration.newText} by transit
             </Box>
           </TimelineContent>
         </TimelineItem>

@@ -15,7 +15,7 @@ export default function TextForm(props){
   }
   return(
     <form onSubmit={handleSubmit}>
-      <TextField required fullWidth id="standard-basic" label={props.label} variant="filled" onChange={handleChange} value={text}/>
+      <TextField required fullWidth={props.fullWidth} id="standard-basic" label={props.label} variant="filled" onChange={handleChange} value={text}/>
     </form>
   )
 }
