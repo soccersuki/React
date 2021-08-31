@@ -24,16 +24,21 @@ import {
 export default function EditPage(props){
   const history = useHistory();
   const location = useLocation();
-  const {plan, setPlan} = useContext(AppContext);
-  const condition = location.state.condition;
+  const {plan, setPlan, markers, setMarkers} = useContext(AppContext);
+  const condition = location.state;
+  console.log(condition)
   const handleClickAdd = () => {
-    history.push('/plan/add');
+    history.push('/plan/add', condition);
   }
   const handleClickCancel = (i) => {
     plan.newSpots.splice(i, 1);
+    markers.spotMarkers[i].setMap(null);
+    markers.spotMarkers.splice(i, 1);
+    setMarkers({...markers});
     setPlan({...plan});
     console.log(i);
     console.log(plan);
+    console.log(markers)
   }
   const handleClickReturn = () => {
     history.push('/plan', {status: 'cancel'});
@@ -46,7 +51,7 @@ export default function EditPage(props){
   }, [])
   return(
     <>
-      <Box mx={5}>
+      <Box>
         <TitlebarImageList onClickAdd={handleClickAdd} onClickCancel={handleClickCancel} spots={plan.newSpots}/>
         <SwitchListSecondary onSubmit={handleSubmit} condition={condition}/>
         <Button type="submit" variant="contained" onClick={handleClickReturn}>辞める</Button>

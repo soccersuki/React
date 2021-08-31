@@ -18,8 +18,8 @@ import {
 export default function HomePage(){
   const history = useHistory();
   useGoogle();
-  const handleSubmit = (regionName) => {
-    history.push('/condition', {regionName});
+  const handleSubmit = (region) => {
+    history.push('/condition', region);
   }
 
 

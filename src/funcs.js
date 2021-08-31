@@ -7,7 +7,7 @@ import { Loader } from "@googlemaps/js-api-loader"
 import { AppContext } from './App';
 
 export const usePlan = (condition) => {
-  const {google, map, plan, setPlan} = useContext(AppContext);
+  const {google, map, plan, setPlan, setMarkers} = useContext(AppContext);
 
   useEffect(async () => {
     if(google == null || map == null) return;
@@ -32,9 +32,11 @@ export const usePlan = (condition) => {
 
     const newPlan = await makePlan(google, map, originName, destinationName, region, spots);
     newPlan.newSpots = [...newPlan.spots];
+    setPlan({...newPlan});
 
-    showMarker(google, map, newPlan.itinerary)
-    setPlan(newPlan);
+    const markers = showMarker(google, map, newPlan.itinerary)
+
+    setMarkers({...markers});
 
     console.log(region);
     console.log(spots);
@@ -59,9 +61,11 @@ export const usePlace = (query, location) => {
     else{
       request.locationBias = {lat: location.lat(), lng: location.lng()};
     }
+    console.log(request)
     service.findPlaceFromQuery(request, function(results, status) {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
         setPlace(results);
+        console.log(results);
       }
     });
   }, [google, map])
@@ -128,24 +132,57 @@ export const useMap = (mapContainerRef) => {
 
 const label = 'abcdefghijklmnopqrstuvwxyz';
 export function showMarker(google, map, itinerary){
-  for(var i = 0; i < itinerary.length; i++){
+  const originOption = {
+    position: {
+      lat: itinerary[0].geometry.location.lat(),
+      lng: itinerary[0].geometry.location.lng(),
+    },
+    map: map,
+    icon: {
+      url: "http://maps.google.com/mapfiles/ms/icons/flag.png",
+    },
+  }
+  const originMarker = new google.maps.Marker(originOption);
+  originMarker.setMap(map)
+  const destinationOption = {
+    position: {
+      lat: itinerary.slice(-1)[0].geometry.location.lat(),
+      lng: itinerary.slice(-1)[0].geometry.location.lng(),
+    },
+    map: map,
+    icon: {
+      url: "http://maps.google.com/mapfiles/ms/icons/flag.png",
+    },
+  }
+  const destinationMarker = new google.maps.Marker(destinationOption);
+  destinationMarker.setMap(map);
+  const spotMarkers = [];
+  const infoWindow = new google.maps.InfoWindow();
+  for(var i = 1; i < itinerary.length-1; i++){
     const option = {
       position: {
         lat: itinerary[i].geometry.location.lat(),
         lng: itinerary[i].geometry.location.lng(),
       },
       map: map,
+      label: {
+        text: label[(i-1) % label.length],
+        color: 'white',
+      },
+      title: itinerary[i].name,
+      optimized: false,
     }
-    if(i == 0 || i == itinerary.length-1) option.icon = {
-      url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
-    }
-    else option.label = {
-      text: label[i-1],
-      color: 'white',
-    }
-    new google.maps.Marker(option);
+    const marker = new google.maps.Marker(option);
+    marker.addListener("click", () => {
+      infoWindow.close();
+      infoWindow.setContent(marker.getTitle());
+      infoWindow.open(marker.getMap(), marker);
+    });
+    marker.setMap(map)
+    spotMarkers.push(marker);
   }
   map.setCenter({lat: itinerary[0].geometry.location.lat(), lng: itinerary[0].geometry.location.lng()});
+  return {originMarker, destinationMarker, spotMarkers};
 }
 
 export async function makePlan(google, map, originName, destinationName, region, spots){
@@ -164,7 +201,7 @@ export async function makePlan(google, map, originName, destinationName, region,
   var newSpots = updateSpots(direction, spots);
   var itinerary = getItinerary(newSpots, legs, direction);
   // [plan, legs] = await insertLunch(google, map, plan, legs);
-  await insertLunch(google, map, itinerary, legs, spots);
+  await insertLunch(google, map, itinerary, legs, newSpots);
   console.log('makePlan');
   return {spots: newSpots, itinerary, legs};
 }

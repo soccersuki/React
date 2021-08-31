@@ -3,6 +3,7 @@ import Map from './Map';
 import MediaCard from './MediaCard';
 import{
   useHistory,
+  useLocation,
 } from 'react-router-dom';
 import{
   useEffect,
@@ -24,15 +25,20 @@ import {
 } from './funcs';
 
 export default function AddPage(props){
+  const location = useLocation();
   const [query, setQeury] = useState('');
   const [place, setPlace] = useState(null);
+  const [marker, setMarker] = useState(null);
   const history = useHistory();
-  const {google, map, plan, setPlan} = useContext(AppContext);
+  const {google, map, plan, setPlan, markers, setMarkers} = useContext(AppContext);
   const handleClick = () => {
     console.log(place);
     plan.newSpots.push(place[0]);
     setPlan({...plan});
-    history.push('/plan/edit');
+    markers.spotMarkers.push(marker);
+    setMarkers({...markers});
+    console.log(markers)
+    history.push('/plan/edit', location.state);
   }
   const handleChange = (e) => {
     setQeury(e.target.value);
@@ -40,7 +46,7 @@ export default function AddPage(props){
   const handleSubmit = async (e) => {
     e.preventDefault();
     var place = await findPlace(google, map, query);
-    new google.maps.Marker({
+    const marker = new google.maps.Marker({
       position: {
         lat: place[0].geometry.location.lat(),
         lng: place[0].geometry.location.lng(),
@@ -48,6 +54,8 @@ export default function AddPage(props){
       label: '!',
       map: map,
     });
+    marker.setMap(map);
+    setMarker(marker);
     setPlace(place);
   }
   const handleClickReturn = () => {

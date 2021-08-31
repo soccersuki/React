@@ -11,7 +11,7 @@ import Switch from '@material-ui/core/Switch';
 import WifiIcon from '@material-ui/icons/Wifi';
 import BluetoothIcon from '@material-ui/icons/Bluetooth';
 import FastfoodIcon from '@material-ui/icons/Fastfood';
-import { TextField, Button, Box, Checkbox } from '@material-ui/core';
+import { TextField, Button, Box, Checkbox, Collapse } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,18 +24,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SwitchListSecondary(props) {
   const classes = useStyles();
-  const [checked, setChecked] = React.useState(['wifi']);
-  const {initialRegionName, initialOriginName} = props.condition;
-  const [regionName, setRegionName] = useState(null);
-  const [originName, setOriginName] = useState(null);
-  const [destinationName, setDestinationName] = useState(null);
-
-  useEffect(() => {
-    if(initialRegionName == null || initialOriginName == null) return;
-    setRegionName(initialRegionName);
-    setOriginName(initialOriginName);
-    setDestinationName(initialOriginName);
-  }, [initialRegionName, initialOriginName])
+  const [checked, setChecked] = React.useState(['wifi', 'checkBox']);
+  const [regionName, setRegionName] = useState(props.condition.regionName);
+  const [originName, setOriginName] = useState(props.condition.originName);
+  const [destinationName, setDestinationName] = useState(props.condition.originName);
 
   const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);
@@ -62,10 +54,14 @@ export default function SwitchListSecondary(props) {
   }
   const handleSubmit = (e) => {
     e.preventDefault();
-    var meal;
-    if(checked.indexOf('meal') != -1) meal = true;
-    else meal = false;
-    const condition = {regionName, originName, destinationName, meal};
+    if(checked.indexOf('checkBox') != -1) setDestinationName(originName);
+    var meal = checked.indexOf('meal');
+    const condition = {
+      regionName,
+      originName,
+      destinationName,
+      meal,
+    };
     props.onSubmit(condition);
   }
 
@@ -86,16 +82,13 @@ export default function SwitchListSecondary(props) {
             onChange={handleToggle('checkBox')}
             inputProps={{ 'aria-label': 'primary checkbox' }}
           />
-          <ListItemText primary={'出発地点と到着地点が異なる'} />
+          <ListItemText primary={'出発地点と到着地点が同じ'} />
         </ListItem>
-        {checked.indexOf('checkBox') !== -1 ?
+        <Collapse in={checked.indexOf('checkBox') == -1}>
           <ListItem>
             <ListItemText primary="到着"/>
-            <TextField variant="filled" onChange={handleChangeDestinationName} value={destinationName}/>
-          </ListItem>
-          : null
-        }
-
+            <TextField variant="filled" onChange={handleChangeDestinationName} value={destinationName}/></ListItem>
+          </Collapse>
         <ListItem>
           <ListItemIcon>
             <WifiIcon />

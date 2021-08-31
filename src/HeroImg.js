@@ -1,4 +1,3 @@
-import imgOsaka from './img_osaka.jpg';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
@@ -10,9 +9,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function HeroImg(props){
   const classes = useStyles();
-  // var item = props.img;
 
   return(
-    <img className={classes.root} src={imgOsaka} alt={'alt'} />
+    <img className={classes.root} src={props.img} alt={'alt'} />
   )
 }

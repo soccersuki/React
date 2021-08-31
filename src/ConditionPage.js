@@ -9,17 +9,15 @@ import SwitchListSecondary from './SwitchListSecondary';
 import {
   Box,
 } from '@material-ui/core';
-import Map from './Map'
-import { usePlace, useNearbySearch } from './funcs';
+import { prefectures } from './prefectures';
 
 export default function ConditionPage(props) {
   const history = useHistory();
   const location = useLocation();
-  const regionName = location.state.regionName;
-  const region = usePlace(regionName);
-  const origin = usePlace(regionName + ' 交通機関', region == null ? null : region[0].geometry.location)
-  const originName = origin == null ? null: origin[0].name;
-  const condition = {initialRegionName: regionName, initialOriginName: originName};
+  const regionName = location.state.name;
+  const originName = location.state.originName;
+  const img = location.state.img
+  const condition = {regionName, originName};
 
   const handleSubmit = (condition) => {
     history.push('/plan', {...condition, status: 'first'});
@@ -28,7 +26,7 @@ export default function ConditionPage(props) {
   return(
     <>
       <ButtonAppBar />
-      <Map />
+      <HeroImg img={img}/>
       <Box display='flex' justifyContent="center">
         <Box width={'100%'} maxWidth={500}>
           <SwitchListSecondary onSubmit={handleSubmit} condition={condition}/>

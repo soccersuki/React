@@ -22,7 +22,6 @@ import {
   Box,
   Avatar,
 } from '@material-ui/core'
-import imgOsaka from './img_osaka.jpg';
 
 const useStyles = makeStyles((theme) => ({
   paper: {

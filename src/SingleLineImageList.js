@@ -57,9 +57,9 @@ export default function SingleLineImageList(props) {
       <ImageList className={classes.imageList} cols={2.5} rowHeight={120}>
         {itemData.map((item, id) => (
           <ImageListItem key={item.img} onClick={(e) => props.onClick(e, id)}>
-            <img src={item.img} alt={item.title} />
+            <img src={item.img} alt={item.name} />
             <ImageListItemBar
-              title={item.title}
+              title={item.name}
               classes={{
                 root: classes.titleBar,
                 title: classes.title,

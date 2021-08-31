@@ -8,7 +8,6 @@ import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';
 import CancelIcon from '@material-ui/icons/Cancel';
 // import itemData from './itemData';
-import imgOsaka from './img_osaka.jpg';
 import AddIcon from '@material-ui/icons/Add';
 import {
   Box,
