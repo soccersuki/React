@@ -15,9 +15,9 @@ import {
   Button,
 } from '@material-ui/core';
 
-import {
-  PlanContext
-} from './PlanPages'
+import{
+  AppContext,
+} from './App';
 
 import {
   findPlace,
@@ -27,7 +27,7 @@ export default function AddPage(props){
   const [query, setQeury] = useState('');
   const [place, setPlace] = useState(null);
   const history = useHistory();
-  const {google, map, plan, setPlan} = useContext(PlanContext);
+  const {google, map, plan, setPlan} = useContext(AppContext);
   const handleClick = () => {
     console.log(place);
     plan.newSpots.push(place[0]);

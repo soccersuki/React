@@ -11,25 +11,33 @@ import {
   Box,
 } from '@material-ui/core';
 
+import {
+  useGoogle
+} from './funcs';
 
 export default function HomePage(){
   const history = useHistory();
+  useGoogle();
   const handleSubmit = (regionName) => {
     history.push('/condition', {regionName});
   }
+
 
   return(
     <>
       <ButtonAppBar />
       <Hero />
-      <Box mx={5}>
-        <Box my={5}>
-          <TextForm onSubmit={handleSubmit} initialValue={'大阪'} label={'Region'} fullWidth={true}/>
-        </Box>
-        <Box my={5}>
-          <PopularRegions onClick={handleSubmit}/>
+      <Box mx={5} display='flex' justifyContent='center'>
+        <Box width={'100%'}maxWidth={500}>
+          <Box my={5}>
+            <TextForm onSubmit={handleSubmit} initialValue={'大阪'} label={'Region'} fullWidth={true}/>
+          </Box>
+          <Box my={5}>
+            <PopularRegions onClick={handleSubmit}/>
+          </Box>
         </Box>
       </Box>
+
     </>
   )
 }

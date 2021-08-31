@@ -14,6 +14,9 @@ import RepeatIcon from '@material-ui/icons/Repeat';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import TrainIcon from '@material-ui/icons/Train';
+import {
+  Badge
+} from '@material-ui/core'
 
 import {
   Box,
@@ -29,6 +32,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.secondary.main,
   },
 }));
+const label = 'abcdefghijklmnopqrstuvwxyz';
+
 
 export default function CustomizedTimeline(props) {
   const classes = useStyles();
@@ -39,16 +44,21 @@ export default function CustomizedTimeline(props) {
   for(var i = 0; i < itinerary.length; i++){
     var spot = (
       <TimelineItem>
-        <TimelineOppositeContent style={{ flex: 0.1 }}>
+        <TimelineOppositeContent style={{ flex: 0.3 }}>
           <Typography variant="body2" color="textSecondary">
             {itinerary[i].arrivalTime.text}
           </Typography>
         </TimelineOppositeContent>
-        <TimelineSeparator>
-          <TimelineDot>
-            <Avatar alt="Remy Sharp" src={itinerary[i].photos == null ? null: itinerary[i].photos[0].getUrl()} />
-          </TimelineDot>
+        <TimelineSeparator style={{ flexGrow: 0.5 }}>
+          <Box display='flex' justifyContent='center'>
+          <Box mx={1} my={1}>
+          <Badge anchorOrigin={{ vertical: 'bottom', horizontal: 'right',}} badgeContent={ (i == 0 || i == itinerary.length-1) ? null: label[i-1] } color="secondary">
+          <Avatar alt="Remy Sharp" src={itinerary[i].photos == null ? null: itinerary[i].photos[0].getUrl()} />
+          </Badge>
+          </Box>
+          </Box>
           <TimelineConnector />
+
         </TimelineSeparator>
         <TimelineContent>
           <Paper elevation={3} className={classes.paper}>
@@ -64,17 +74,18 @@ export default function CustomizedTimeline(props) {
     if(i < legs.length){
       var leg = (
         <TimelineItem>
-          <TimelineOppositeContent style={{ flex: 0.1 }}>
+          <TimelineOppositeContent style={{ flexGrow: 0.3 }}>
             <Typography variant="body2" color="textSecondary">
               {itinerary[i].departureTime.text}
             </Typography>
           </TimelineOppositeContent>
-          <TimelineSeparator>
-            <TimelineDot>
-              <Avatar>
-                <TrainIcon />
-              </Avatar>
-            </TimelineDot>
+          <TimelineSeparator style={{ flexGrow: 0.5 }}>
+            <TimelineConnector />
+            <Box display='flex' justifyContent='center'>
+            <Box mx={1} my={1}>
+            <TrainIcon />
+            </Box>
+            </Box>
             <TimelineConnector />
           </TimelineSeparator>
           <TimelineContent>

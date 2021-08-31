@@ -5,6 +5,7 @@ import {
 } from 'react';
 import {
   useHistory,
+  useLocation,
 } from 'react-router-dom';
 
 import ButtonAppBar from './ButtonAppBar';
@@ -12,9 +13,8 @@ import Map from './Map';
 import SwitchListSecondary from './SwitchListSecondary';
 import TitlebarImageList from './TitlebarImageList';
 import{
-  makePlan,
-  PlanContext,
-} from './PlanPages';
+  AppContext,
+} from './App';
 
 import {
   Button,
@@ -23,7 +23,9 @@ import {
 
 export default function EditPage(props){
   const history = useHistory();
-  const {plan, setPlan} = useContext(PlanContext);
+  const location = useLocation();
+  const {plan, setPlan} = useContext(AppContext);
+  const condition = location.state.condition;
   const handleClickAdd = () => {
     history.push('/plan/add');
   }
@@ -46,7 +48,7 @@ export default function EditPage(props){
     <>
       <Box mx={5}>
         <TitlebarImageList onClickAdd={handleClickAdd} onClickCancel={handleClickCancel} spots={plan.newSpots}/>
-        <SwitchListSecondary onSubmit={handleSubmit}/>
+        <SwitchListSecondary onSubmit={handleSubmit} condition={condition}/>
         <Button type="submit" variant="contained" onClick={handleClickReturn}>辞める</Button>
       </Box>
     </>

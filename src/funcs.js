@@ -1,13 +1,149 @@
+import {
+  useState,
+  useEffect,
+  useContext
+} from 'react';
+import { Loader } from "@googlemaps/js-api-loader"
+import { AppContext } from './App';
+
+export const usePlan = (condition) => {
+  const {google, map, plan, setPlan} = useContext(AppContext);
+
+  useEffect(async () => {
+    if(google == null || map == null) return;
+
+    // var regionName = '大阪', originName = '大阪駅', destinationName = '萱嶋駅';
+    const {regionName, originName, destinationName, meal, status} = condition;
+    var region, spots;
+    if(status == 'first'){
+      region = await findPlace(google, map, regionName);
+      spots = await findPlaces(google, map, regionName + '観光');
+      spots = spots.slice(0, 5);
+    }
+    else if(status == 'new'){
+      region = plan.region;
+      spots = plan.newSpots;
+    }
+    else if(status == 'cancel'){
+      plan.newSpots = [...plan.spots];
+      setPlan({...plan});
+      return plan;
+    }
+
+    const newPlan = await makePlan(google, map, originName, destinationName, region, spots);
+    newPlan.newSpots = [...newPlan.spots];
+
+    showMarker(google, map, newPlan.itinerary)
+    setPlan(newPlan);
+
+    console.log(region);
+    console.log(spots);
+    console.log(newPlan);
+  }, [google, map])
+  return plan;
+}
+
+export const usePlace = (query, location) => {
+  const [place, setPlace] = useState(null);
+  const {google, map} = useContext(AppContext);
+  useEffect(() => {
+    if(google == null || map == null) return;
+    var service = new google.maps.places.PlacesService(map);
+    var request = {
+      query: query,
+      fields: ['name', 'geometry', 'formatted_address', 'photos'],
+    };
+    if(location == null){
+      request.locationBias = {north: 45.29328154474485, east: 153.2360484603554, south: 26.151593390188783, west: 126.5636657976794};
+    }
+    else{
+      request.locationBias = {lat: location.lat(), lng: location.lng()};
+    }
+    service.findPlaceFromQuery(request, function(results, status) {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        setPlace(results);
+      }
+    });
+  }, [google, map])
+  return place;
+}
+
+export const useNearbySearch = (region, type, keyword) => {
+  const [places, setPlaces] = useState(null);
+  const {google, map} = useContext(AppContext);
+
+  useEffect(() => {
+    if(google == null || map == null || region == null) return;
+    var service = new google.maps.places.PlacesService(map);
+    var request = {
+      // location: new google.maps.LatLng(region[0].geometry.location.lat(), region[0].geometry.location.lng()),
+      // radius: '50000',
+      // type,
+      query: keyword,
+    }
+    console.log(region[0].geometry.location.lat(), region[0].geometry.location.lng())
+    service.textSearch(request, (results, status) => {
+      if (status == google.maps.places.PlacesServiceStatus.OK) {
+        setPlaces(results);
+
+      }
+    })
+  }, [google, map, region]);
+  return places;
+}
+
+export const useGoogle = () => {
+  // const [google, setGoogle] = useState(null);
+  const {google, setGoogle} = useContext(AppContext);
+  console.log(google);
+  useEffect(() => {
+    // if(google != null) return;
+    const API_KEY = "AIzaSyCkNip5D4glIDSddF__OlVzY1ovG5yVf7g";
+    const loader = new Loader({
+      apiKey: API_KEY,
+      version: "weekly",
+      libraries: ["places"],
+    });
+    loader.load().then((google) => {
+      setGoogle(google);
+    })
+  }, [])
+  // return google;
+}
+export const useMap = (mapContainerRef) => {
+  // const [map, setMap] = useState(null);
+  const {google, setMap} = useContext(AppContext);
+  useEffect(() => {
+    console.log('useMap')
+    if(google == null || mapContainerRef == null) return;
+    const initialConfig = {
+      zoom: 12,
+      center: { lat: 35.6432027, lng: 139.6729435 }
+    }
+    const map = new google.maps.Map(mapContainerRef.current, initialConfig);
+    setMap(map);
+  }, [google, mapContainerRef]);
+  // return map;
+}
+
+const label = 'abcdefghijklmnopqrstuvwxyz';
 export function showMarker(google, map, itinerary){
   for(var i = 0; i < itinerary.length; i++){
-    new google.maps.Marker({
+    const option = {
       position: {
         lat: itinerary[i].geometry.location.lat(),
         lng: itinerary[i].geometry.location.lng(),
       },
-      label: String(i),
       map: map,
-    });
+    }
+    if(i == 0 || i == itinerary.length-1) option.icon = {
+      url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
+    }
+    else option.label = {
+      text: label[i-1],
+      color: 'white',
+    }
+    new google.maps.Marker(option);
   }
   map.setCenter({lat: itinerary[0].geometry.location.lat(), lng: itinerary[0].geometry.location.lng()});
 }
@@ -28,7 +164,7 @@ export async function makePlan(google, map, originName, destinationName, region,
   var newSpots = updateSpots(direction, spots);
   var itinerary = getItinerary(newSpots, legs, direction);
   // [plan, legs] = await insertLunch(google, map, plan, legs);
-  await insertLunch(google, map, itinerary, legs);
+  await insertLunch(google, map, itinerary, legs, spots);
   console.log('makePlan');
   return {spots: newSpots, itinerary, legs};
 }
@@ -88,7 +224,7 @@ const getItinerary = (spots, legs, direction) => {
   return itinerary;
 }
 
-const insertLunch = async (google, map, itinerary, legs) => {
+const insertLunch = async (google, map, itinerary, legs, spots) => {
   for(var i = 0; i < itinerary.length - 1; i++){
     if(itinerary[i].departureTime.value >= 12 * 3600){
       var [lunch] = await findPlace(google, map, '昼食', itinerary[i].geometry.location);
@@ -117,13 +253,14 @@ const insertLunch = async (google, map, itinerary, legs) => {
       }
       time += backLeg.duration.value;
       for(var j = i + 1; j < itinerary.length; j++){
-        itinerary[j].arrivalTime.value += duration;
+        itinerary[j].arrivalTime.value += duration - legs[i].duration.value;
         itinerary[j].arrivalTime.text = getTimeStr(itinerary[j].arrivalTime.value)
-        itinerary[j].departureTime.value += duration;
+        itinerary[j].departureTime.value += duration - legs[i].duration.value;
         itinerary[j].departureTime.text = getTimeStr(itinerary[j].departureTime.value);
       }
-      itinerary.splice(i, 0, lunch);
+      itinerary.splice(i+1, 0, lunch);
       legs.splice(i, 1, goLeg, backLeg);
+      spots.splice(i+1, 0, lunch);
       break;
     }
   }
@@ -135,7 +272,10 @@ export const findPlace = async (google, map, query, location) => {
     query: query,
     fields: ['name', 'geometry', 'formatted_address', 'photos'],
   };
-  if(location != null){
+  if(location == null){
+    request.locationBias = {north: 45.29328154474485, east: 153.2360484603554, south: 26.151593390188783, west: 126.5636657976794};
+  }
+  else{
     request.locationBias = {lat: location.lat(), lng: location.lng()};
   }
   var place = await new Promise(resolve => {
@@ -151,9 +291,14 @@ export const findPlace = async (google, map, query, location) => {
 export const findPlaces = async (google, map, query, location) => {
   var service = new google.maps.places.PlacesService(map);
   var request = {
-    location: new google.maps.LatLng(location.lat(), location.lng()),
-    radius: '5000',
     query,
+  }
+  if(location == null){
+    request.bounds = {north: 45.29328154474485, east: 153.2360484603554, south: 26.151593390188783, west: 126.5636657976794};
+  }
+  else{
+    request.location = {lat: location.lat(), lng: location.lng()};
+    request.radius = '5000';
   }
   var places = await new Promise(resolve => {
     service.textSearch(request, (results, status) => {
