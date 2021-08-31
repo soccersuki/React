@@ -1,4 +1,5 @@
 import { makeStyles } from '@material-ui/core/styles';
+import imgTravel from './images/img_travel.jpg'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -11,6 +12,6 @@ export default function HeroImg(props){
   const classes = useStyles();
 
   return(
-    <img className={classes.root} src={props.img} alt={'alt'} />
+    <img className={classes.root} src={props.img == null ? imgTravel: props.img} />
   )
 }

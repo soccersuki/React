@@ -37,11 +37,13 @@ export default function App() {
   const [map, setMap] = useState(null);
   const [plan, setPlan] = useState(null);
   const [markers, setMarkers] = useState(null);
+  const [condition, setCondition] = useState(null);
   const value = {
     google, setGoogle,
     map, setMap,
     plan, setPlan,
     markers, setMarkers,
+    condition, setCondition,
   }
   return(
     <AppContext.Provider value={value}>

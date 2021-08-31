@@ -1,3 +1,5 @@
+import {useContext} from 'react';
+
 import {
   useHistory,
   useLocation,
@@ -9,18 +11,21 @@ import SwitchListSecondary from './SwitchListSecondary';
 import {
   Box,
 } from '@material-ui/core';
-import { prefectures } from './prefectures';
+
+import { AppContext } from './App';
 
 export default function ConditionPage(props) {
   const history = useHistory();
   const location = useLocation();
+  const {setCondition} = useContext(AppContext);
   const regionName = location.state.name;
   const originName = location.state.originName;
   const img = location.state.img
   const condition = {regionName, originName};
 
   const handleSubmit = (condition) => {
-    history.push('/plan', {...condition, status: 'first'});
+    setCondition({...condition});
+    history.push('/plan', {status: 'first'});
   }
 
   return(

@@ -14,10 +14,12 @@ export const usePlan = (condition) => {
 
     // var regionName = '大阪', originName = '大阪駅', destinationName = '萱嶋駅';
     const {regionName, originName, destinationName, meal, status} = condition;
-    var region, spots;
+    var region, spots, origin;
     if(status == 'first'){
       region = await findPlace(google, map, regionName);
-      spots = await findPlaces(google, map, regionName + '観光');
+      origin = await findPlace(google, map, originName);
+      console.log(origin);
+      spots = await findPlaces(google, map, regionName + '観光', origin[0].geometry.location);
       spots = spots.slice(0, 5);
     }
     else if(status == 'new'){
@@ -81,7 +83,7 @@ export const useNearbySearch = (region, type, keyword) => {
     var service = new google.maps.places.PlacesService(map);
     var request = {
       // location: new google.maps.LatLng(region[0].geometry.location.lat(), region[0].geometry.location.lng()),
-      // radius: '50000',
+      // radius: 50000,
       // type,
       query: keyword,
     }
@@ -335,7 +337,7 @@ export const findPlaces = async (google, map, query, location) => {
   }
   else{
     request.location = {lat: location.lat(), lng: location.lng()};
-    request.radius = '5000';
+    request.radius = 50000;
   }
   var places = await new Promise(resolve => {
     service.textSearch(request, (results, status) => {

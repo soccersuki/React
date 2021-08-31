@@ -24,7 +24,7 @@ import {
 export default function EditPage(props){
   const history = useHistory();
   const location = useLocation();
-  const {plan, setPlan, markers, setMarkers} = useContext(AppContext);
+  const {plan, setPlan, markers, setMarkers, condition, setCondition} = useContext(AppContext);
   const condition = location.state;
   console.log(condition)
   const handleClickAdd = () => {

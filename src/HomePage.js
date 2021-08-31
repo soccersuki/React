@@ -15,13 +15,19 @@ import {
   useGoogle
 } from './funcs';
 
+
 export default function HomePage(){
   const history = useHistory();
   useGoogle();
-  const handleSubmit = (region) => {
+  const handleSubmit = (regionName) => {
+    const region = {
+      name: regionName,
+    }
     history.push('/condition', region);
   }
-
+  const handleClick = (region) => {
+    history.push('/condition', region);
+  }
 
   return(
     <>
@@ -33,7 +39,7 @@ export default function HomePage(){
             <TextForm onSubmit={handleSubmit} initialValue={'大阪'} label={'Region'} fullWidth={true}/>
           </Box>
           <Box my={5}>
-            <PopularRegions onClick={handleSubmit}/>
+            <PopularRegions onClick={handleClick}/>
           </Box>
         </Box>
       </Box>
