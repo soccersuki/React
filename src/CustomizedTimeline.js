@@ -14,6 +14,7 @@ import RepeatIcon from '@material-ui/icons/Repeat';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import TrainIcon from '@material-ui/icons/Train';
+import Rating from '@material-ui/lab/Rating';
 import {
   Badge
 } from '@material-ui/core'
@@ -64,7 +65,16 @@ export default function CustomizedTimeline(props) {
             <Typography variant="h6" component="h1">
               {itinerary[i].name}
             </Typography>
-            <Typography>stay time: {itinerary[i].stayTime.text}</Typography>
+            {i != 0 && i != itinerary.length-1 ?(
+              <Box>{itinerary[i].rating}
+              <Rating name="read-only" value={4.5} precision={0.5}readOnly />
+              ({itinerary[i].user_ratings_total})
+              </Box>
+            ):
+              null
+            }
+
+            <Typography>滞在時間: {itinerary[i].stayTime.text}</Typography>
           </Paper>
         </TimelineContent>
       </TimelineItem>

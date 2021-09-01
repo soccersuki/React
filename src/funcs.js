@@ -6,43 +6,53 @@ import {
 import { Loader } from "@googlemaps/js-api-loader"
 import { AppContext } from './App';
 
-export const usePlan = (condition) => {
-  const {google, map, plan, setPlan, setMarkers} = useContext(AppContext);
+export const usePlan = (setLoading) => {
+  const {google, map, plan, setPlan, markers, setMarkers, condition} = useContext(AppContext);
 
   useEffect(async () => {
     if(google == null || map == null) return;
+    setLoading(true);
 
     // var regionName = '大阪', originName = '大阪駅', destinationName = '萱嶋駅';
     const {regionName, originName, destinationName, meal, status} = condition;
-    var region, spots, origin;
+    if(status == 'cancel'){
+      plan.newSpots = [...plan.spots];
+      setPlan({...plan});
+      var id = plan.spots.length;
+      for(var i = id; i < markers.spotMarkers.length; i++){
+        markers.spotMarkers[i].setMap(null);
+      }
+      markers.spotMarkers.splice(i);
+      return plan;
+    }
+    var region = await findPlace(google, map, regionName);
+    var origin = await findPlace(google, map, originName);
+    var spots;
     if(status == 'first'){
-      region = await findPlace(google, map, regionName);
-      origin = await findPlace(google, map, originName);
-      console.log(origin);
       spots = await findPlaces(google, map, regionName + '観光', origin[0].geometry.location);
       spots = spots.slice(0, 5);
     }
     else if(status == 'new'){
-      region = plan.region;
+      markers.originMarker.setMap(null);
+      markers.destinationMarker.setMap(null);
+      markers.spotMarkers.map(marker => {marker.setMap(null)});
       spots = plan.newSpots;
-    }
-    else if(status == 'cancel'){
-      plan.newSpots = [...plan.spots];
-      setPlan({...plan});
-      return plan;
     }
 
     const newPlan = await makePlan(google, map, originName, destinationName, region, spots);
+    if(meal) await insertLunch(google, map, newPlan);
     newPlan.newSpots = [...newPlan.spots];
     setPlan({...newPlan});
 
-    const markers = showMarker(google, map, newPlan.itinerary)
 
-    setMarkers({...markers});
 
-    console.log(region);
-    console.log(spots);
+    var newMarkers = showMarker(google, map, newPlan.itinerary)
+    setMarkers({...newMarkers});
+
+    // console.log(region);
+    // console.log(spots);
     console.log(newPlan);
+    setLoading(false);
   }, [google, map])
   return plan;
 }
@@ -132,8 +142,8 @@ export const useMap = (mapContainerRef) => {
   // return map;
 }
 
-const label = 'abcdefghijklmnopqrstuvwxyz';
 export function showMarker(google, map, itinerary){
+  const label = 'abcdefghijklmnopqrstuvwxyz';
   const originOption = {
     position: {
       lat: itinerary[0].geometry.location.lat(),
@@ -202,9 +212,6 @@ export async function makePlan(google, map, originName, destinationName, region,
   })
   var newSpots = updateSpots(direction, spots);
   var itinerary = getItinerary(newSpots, legs, direction);
-  // [plan, legs] = await insertLunch(google, map, plan, legs);
-  await insertLunch(google, map, itinerary, legs, newSpots);
-  console.log('makePlan');
   return {spots: newSpots, itinerary, legs};
 }
 
@@ -263,7 +270,8 @@ const getItinerary = (spots, legs, direction) => {
   return itinerary;
 }
 
-const insertLunch = async (google, map, itinerary, legs, spots) => {
+const insertLunch = async (google, map, plan) => {
+  const {itinerary, legs, spots} = plan;
   for(var i = 0; i < itinerary.length - 1; i++){
     if(itinerary[i].departureTime.value >= 12 * 3600){
       var [lunch] = await findPlace(google, map, '昼食', itinerary[i].geometry.location);

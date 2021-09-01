@@ -24,8 +24,8 @@ export default function ConditionPage(props) {
   const condition = {regionName, originName};
 
   const handleSubmit = (condition) => {
-    setCondition({...condition});
-    history.push('/plan', {status: 'first'});
+    setCondition({...condition, status: 'first'});
+    history.push('/plan');
   }
 
   return(

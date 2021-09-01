@@ -59,7 +59,7 @@ export default function AddPage(props){
     setPlace(place);
   }
   const handleClickReturn = () => {
-    history.push('/plan/edit', location.state);
+    history.push('/plan/edit');
   }
   return(
     <>

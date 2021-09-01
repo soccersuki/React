@@ -25,8 +25,6 @@ export default function EditPage(props){
   const history = useHistory();
   const location = useLocation();
   const {plan, setPlan, markers, setMarkers, condition, setCondition} = useContext(AppContext);
-  const condition = location.state;
-  console.log(condition)
   const handleClickAdd = () => {
     history.push('/plan/add', condition);
   }
@@ -36,19 +34,15 @@ export default function EditPage(props){
     markers.spotMarkers.splice(i, 1);
     setMarkers({...markers});
     setPlan({...plan});
-    console.log(i);
-    console.log(plan);
-    console.log(markers)
   }
   const handleClickReturn = () => {
-    history.push('/plan', {status: 'cancel'});
+    setCondition({...condition, status: 'cancel'});
+    history.push('/plan');
   }
   const handleSubmit = (condition) => {
-    history.push('/plan', {...condition, status: 'new'});
+    setCondition({...condition, status: 'new'});
+    history.push('/plan');
   }
-  useEffect(() => {
-    console.log('edit');
-  }, [])
   return(
     <>
       <Box>

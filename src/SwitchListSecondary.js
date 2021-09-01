@@ -36,7 +36,7 @@ export default function SwitchListSecondary(props) {
   }
   const handleSubmit = (e) => {
     e.preventDefault();
-    var meal = checked.indexOf('meal');
+    var meal = checked.indexOf('meal') != -1;
     const condition = {
       regionName,
       originName,
