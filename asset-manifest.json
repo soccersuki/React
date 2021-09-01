@@ -1,25 +1,26 @@
 {
   "files": {
     "main.css": "/React/static/css/main.ab36007e.chunk.css",
-    "main.js": "/React/static/js/main.74bfefea.chunk.js",
-    "main.js.map": "/React/static/js/main.74bfefea.chunk.js.map",
-    "runtime-main.js": "/React/static/js/runtime-main.9cda4581.js",
-    "runtime-main.js.map": "/React/static/js/runtime-main.9cda4581.js.map",
-    "static/js/2.a7da8c57.chunk.js": "/React/static/js/2.a7da8c57.chunk.js",
-    "static/js/2.a7da8c57.chunk.js.map": "/React/static/js/2.a7da8c57.chunk.js.map",
-    "static/js/3.3c69a316.chunk.js": "/React/static/js/3.3c69a316.chunk.js",
-    "static/js/3.3c69a316.chunk.js.map": "/React/static/js/3.3c69a316.chunk.js.map",
+    "main.js": "/React/static/js/main.3260b2e2.chunk.js",
+    "main.js.map": "/React/static/js/main.3260b2e2.chunk.js.map",
+    "runtime-main.js": "/React/static/js/runtime-main.b81ce4d0.js",
+    "runtime-main.js.map": "/React/static/js/runtime-main.b81ce4d0.js.map",
+    "static/js/2.76b0bae8.chunk.js": "/React/static/js/2.76b0bae8.chunk.js",
+    "static/js/2.76b0bae8.chunk.js.map": "/React/static/js/2.76b0bae8.chunk.js.map",
+    "static/js/3.8a83c3d2.chunk.js": "/React/static/js/3.8a83c3d2.chunk.js",
+    "static/js/3.8a83c3d2.chunk.js.map": "/React/static/js/3.8a83c3d2.chunk.js.map",
     "index.html": "/React/index.html",
     "static/css/main.ab36007e.chunk.css.map": "/React/static/css/main.ab36007e.chunk.css.map",
-    "static/js/2.a7da8c57.chunk.js.LICENSE.txt": "/React/static/js/2.a7da8c57.chunk.js.LICENSE.txt",
+    "static/js/2.76b0bae8.chunk.js.LICENSE.txt": "/React/static/js/2.76b0bae8.chunk.js.LICENSE.txt",
     "static/media/img_hokkaido.bd87e191.jpg": "/React/static/media/img_hokkaido.bd87e191.jpg",
     "static/media/img_osaka.c9ba6993.jpg": "/React/static/media/img_osaka.c9ba6993.jpg",
-    "static/media/img_tokyo.ebbf7b3f.jpg": "/React/static/media/img_tokyo.ebbf7b3f.jpg"
+    "static/media/img_tokyo.ebbf7b3f.jpg": "/React/static/media/img_tokyo.ebbf7b3f.jpg",
+    "static/media/img_travel.b5321376.jpg": "/React/static/media/img_travel.b5321376.jpg"
   },
   "entrypoints": [
-    "static/js/runtime-main.9cda4581.js",
-    "static/js/2.a7da8c57.chunk.js",
+    "static/js/runtime-main.b81ce4d0.js",
+    "static/js/2.76b0bae8.chunk.js",
     "static/css/main.ab36007e.chunk.css",
-    "static/js/main.74bfefea.chunk.js"
+    "static/js/main.3260b2e2.chunk.js"
   ]
 }
