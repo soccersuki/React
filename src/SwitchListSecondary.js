@@ -7,6 +7,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import Switch from '@material-ui/core/Switch';
 import FastfoodIcon from '@material-ui/icons/Fastfood';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
+import HouseIcon from '@material-ui/icons/House';
 import { TextField, Button, Box, Checkbox, Collapse } from '@material-ui/core';
 
 export default function SwitchListSecondary(props) {
@@ -51,10 +53,16 @@ export default function SwitchListSecondary(props) {
     <form onSubmit={handleSubmit}>
       <List subheader={<ListSubheader>Settings</ListSubheader>}>
         <ListItem>
+          <ListItemIcon>
+            <LocationOnIcon />
+          </ListItemIcon>
           <ListItemText primary="エリア"/>
           <TextField required variant="filled" onChange={handleChangeRegionName} value={regionName}/>
         </ListItem>
         <ListItem>
+          <ListItemIcon>
+            <HouseIcon />
+          </ListItemIcon>
           <ListItemText primary="出発"/>
           <TextField required variant="filled" onChange={handleChangeOriginName} value={originName}/>
         </ListItem>
@@ -68,6 +76,9 @@ export default function SwitchListSecondary(props) {
         </ListItem>
         <Collapse in={checked.indexOf('checkBox') == -1}>
           <ListItem>
+            <ListItemIcon>
+              <HouseIcon />
+            </ListItemIcon>
             <ListItemText primary="到着"/>
             <TextField variant="filled" onChange={handleChangeDestinationName} value={destinationName}/>
           </ListItem>
