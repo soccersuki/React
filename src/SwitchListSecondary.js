@@ -9,9 +9,23 @@ import Switch from '@material-ui/core/Switch';
 import FastfoodIcon from '@material-ui/icons/Fastfood';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import HouseIcon from '@material-ui/icons/House';
-import { TextField, Button, Box, Checkbox, Collapse } from '@material-ui/core';
+import { TextField, Button, Box, Checkbox, Collapse, Fab } from '@material-ui/core';
+import NavigationIcon from '@material-ui/icons/Navigation';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+  },
+  fab: {
+    position: 'fixed',
+    bottom: theme.spacing(2),
+  },
+}));
+
 
 export default function SwitchListSecondary(props) {
+  const classes = useStyles();
   const [checked, setChecked] = useState(['checkBox']);
   const [regionName, setRegionName] = useState(props.condition.regionName);
   const [originName, setOriginName] = useState(props.condition.originName);
@@ -98,9 +112,16 @@ export default function SwitchListSecondary(props) {
           </ListItemSecondaryAction>
         </ListItem>
       </List>
+      <Box className={classes.fab} width='100%'>
       <Box display='flex' justifyContent='center'>
-        <Button type="submit" variant="contained">PLAN!</Button>
+      <Fab color='primary'variant="extended" type='submit'>
+      <NavigationIcon />
+        Navigate
+      </Fab>
       </Box>
+
+      </Box>
+
     </form>
   );
 }

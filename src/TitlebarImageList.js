@@ -64,7 +64,7 @@ export default function TitlebarImageList(props) {
         </ImageListItem>
         {newSpots.map((item, i) => (
           <ImageListItem key={item.photos == null ? null: item.photos[0].getUrl()}>
-            <img src={item.photos == null ? null: item.photos[0].getUrl()} alt={item.name} />
+            <img src={item.photos == null ? null: item.photos[0].getUrl()} alt={item.name}/>
             <ImageListItemBar
               title={item.name}
               subtitle={<span>by: {item.name}</span>}
@@ -79,7 +79,8 @@ export default function TitlebarImageList(props) {
               actionPosition='right'
               actionIcon={
                 <IconButton onClick={() => props.onClickCancel(i)}><CancelIcon /></IconButton>
-              }>
+              }
+              style={{background: 'rgba(0, 0, 0, 0)'}}>
             </ImageListItemBar>
           </ImageListItem>
         ))}

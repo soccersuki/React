@@ -19,7 +19,11 @@ import{
 import {
   Button,
   Box,
+  Divider,
+  Fab
 } from '@material-ui/core'
+import NavigationIcon from '@material-ui/icons/Navigation';
+
 
 export default function EditPage(props){
   const history = useHistory();
@@ -46,9 +50,18 @@ export default function EditPage(props){
   return(
     <>
       <Box>
+
+
+        <Box my={5} mx={1}>
         <TitlebarImageList onClickAdd={handleClickAdd} onClickCancel={handleClickCancel} spots={plan.newSpots}/>
+        </Box>
+        <Divider variant='middle'/>
+        <Box my={5} mx={1}>
         <SwitchListSecondary onSubmit={handleSubmit} condition={condition}/>
-        <Button type="submit" variant="contained" onClick={handleClickReturn}>辞める</Button>
+
+        </Box>
+
+        <Divider variant='middle'/>
       </Box>
     </>
   )
