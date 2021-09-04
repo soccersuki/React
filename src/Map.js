@@ -5,7 +5,7 @@ import {useMap} from './funcs';
 import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: '30vh',
+    height: '70vh',
   },
 }));
 
@@ -14,7 +14,7 @@ export default function Map(props){
   useMap(mapContainerRef)
   return(
     <>
-      <div ref={mapContainerRef} style={{height: "30vh"}}>I can use the DOM with react ref</div>
+      <div ref={mapContainerRef} style={{height: "70vh"}}>I can use the DOM with react ref</div>
     </>
   )
 }

@@ -28,7 +28,6 @@ export default function ButtonAppBar() {
   const location = useLocation();
   const history = useHistory();
   const {condition, setCondition} = useContext(AppContext)
-  console.log(location);
 
   const handleClick = () => {
     if(location.pathname == '/plan/edit'){

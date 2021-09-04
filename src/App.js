@@ -1,34 +1,9 @@
-import { useState, useRef, useEffect, createContext } from 'react'
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  useHistory,
-  useLocation,
-} from "react-router-dom";
-
-import { Loader } from "@googlemaps/js-api-loader"
-
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import {
-  Container,
-  TextField,
-  Button,
-  Select,
-  MenuItem,
-  Box,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Typography,
-} from '@material-ui/core';
-
+import { useState, createContext } from 'react'
+import { BrowserRouter as Router, Switch, Route, } from "react-router-dom";
 import HomePage from './HomePage';
 import ConditionPage from './ConditionPage';
 import PlanPage from './PlanPage';
-import EditPage from './EditPage';
-import AddPage from './AddPage';
+import ButtonAppBar from './ButtonAppBar';
 
 export const AppContext = createContext();
 
@@ -48,6 +23,7 @@ export default function App() {
   return(
     <AppContext.Provider value={value}>
       <Router>
+        <ButtonAppBar />
         <Switch>
           <Route path="/condition">
             <ConditionPage />

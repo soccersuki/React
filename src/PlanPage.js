@@ -1,27 +1,18 @@
-import {
-  Switch,
-  Route,
-  useHistory,
-  useLocation,
-} from "react-router-dom";
-
+import { Switch, Route, } from "react-router-dom";
 import Map from './Map';
 import EditPage from './EditPage';
-import ButtonAppBar from './ButtonAppBar';
-import CustomizedTimeline from './CustomizedTimeline'
 import AddPage from './AddPage';
 import ItineraryPage from './ItineraryPage';
-
-import {
-  Button,
-  Box,
-} from '@material-ui/core'
+import { Box, Zoom, } from '@material-ui/core'
 
 export default function PlanPage(props){
   return(
     <>
-      <ButtonAppBar />
-      <Map/>
+      <Zoom in={true} mountOnEnter >
+        <Box>
+          <Map/>
+        </Box>
+      </Zoom>
       <Switch>
         <Route path='/plan/edit'>
           <EditPage />

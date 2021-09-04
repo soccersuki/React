@@ -1,32 +1,13 @@
-import ButtonAppBar from './ButtonAppBar';
-import Map from './Map';
 import MediaCard from './MediaCard';
-import{
-  useHistory,
-  useLocation,
-} from 'react-router-dom';
-import{
-  useEffect,
-  useState,
-  useContext,
-} from 'react';
-import {
-  TextField,
-  Box,
-  Button,
-} from '@material-ui/core';
-
-import{
-  AppContext,
-} from './App';
-
-import {
-  findPlace,
-} from './funcs';
+import{ useHistory, } from 'react-router-dom';
+import{ useState, useContext, } from 'react';
+import { TextField, Box, Button, Divider, ListSubheader, Zoom, } from '@material-ui/core';
+import{ AppContext, } from './App';
+import { findPlace, } from './funcs';
+import TextForm from './TextForm'
 
 export default function AddPage(props){
-  const location = useLocation();
-  const [query, setQeury] = useState('');
+  const [checked, setChecked] = useState(false);
   const [place, setPlace] = useState(null);
   const [marker, setMarker] = useState(null);
   const history = useHistory();
@@ -38,14 +19,11 @@ export default function AddPage(props){
     markers.spotMarkers.push(marker);
     setMarkers({...markers});
     console.log(markers)
-    history.push('/plan/edit', location.state);
+    history.push('/plan/edit');
   }
-  const handleChange = (e) => {
-    setQeury(e.target.value);
-  }
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    var place = await findPlace(google, map, query);
+  const handleSubmit = async (text) => {
+    setChecked(false);
+    var place = await findPlace(google, map, text);
     const marker = new google.maps.Marker({
       position: {
         lat: place[0].geometry.location.lat(),
@@ -57,22 +35,30 @@ export default function AddPage(props){
     marker.setMap(map);
     setMarker(marker);
     setPlace(place);
-  }
-  const handleClickReturn = () => {
-    history.push('/plan/edit');
+    setChecked(true);
   }
   return(
     <>
       <Box mx={5} my={5}>
-        <form onSubmit={handleSubmit}>
-          <TextField fullWidth variant='filled' onChange={handleChange}/>
-        </form>
+        <TextForm fullWidth={true} onSubmit={handleSubmit}/>
         <Box my={5}>
-          <MediaCard place={place} onClick={handleClick}/>
+          <Zoom in={checked}>
+            <Box>
+              <MediaCard place={place} />
+            </Box>
+          </Zoom>
         </Box>
-        <Box display='flex' justifyContent='center' my={5}>
-          <Button type="submit" variant="contained" onClick={handleClickReturn}>戻る</Button>
-        </Box>
+        <Divider variant='middle'/>
+        <ListSubheader>人気のスポット</ListSubheader>
+        {[0, 1, 2].map((i) => {
+          return(
+            <Zoom in={checked} style={{ transitionDelay: checked ? `${500 * i}ms` : '0ms' }}>
+              <Box>
+                <MediaCard place={place} />
+              </Box>
+            </Zoom>
+          )
+        })}
       </Box>
     </>
   )

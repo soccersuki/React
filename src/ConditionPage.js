@@ -1,17 +1,8 @@
 import {useContext} from 'react';
-
-import {
-  useHistory,
-  useLocation,
-} from "react-router-dom";
-
-import ButtonAppBar from './ButtonAppBar';
+import { useHistory, useLocation, } from "react-router-dom";
 import HeroImg from './HeroImg';
 import SwitchListSecondary from './SwitchListSecondary';
-import {
-  Box,
-} from '@material-ui/core';
-
+import { Box, Zoom, } from '@material-ui/core';
 import { AppContext } from './App';
 
 export default function ConditionPage(props) {
@@ -30,8 +21,11 @@ export default function ConditionPage(props) {
 
   return(
     <>
-      <ButtonAppBar />
-      <HeroImg img={img}/>
+      <Zoom in={true} mountOnEnter>
+        <Box>
+          <HeroImg img={img}/>
+        </Box>
+      </Zoom>
       <Box display='flex' justifyContent="center">
         <Box width={'100%'} maxWidth={500}>
           <SwitchListSecondary onSubmit={handleSubmit} condition={condition}/>

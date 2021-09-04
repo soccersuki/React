@@ -6,12 +6,11 @@ import {
 import { Loader } from "@googlemaps/js-api-loader"
 import { AppContext } from './App';
 
-export const usePlan = (setLoading) => {
+export const usePlan = () => {
   const {google, map, plan, setPlan, markers, setMarkers, condition} = useContext(AppContext);
 
   useEffect(async () => {
     if(google == null || map == null) return;
-    setLoading(true);
 
     // var regionName = '大阪', originName = '大阪駅', destinationName = '萱嶋駅';
     const {regionName, originName, destinationName, meal, status} = condition;
@@ -52,7 +51,6 @@ export const usePlan = (setLoading) => {
     // console.log(region);
     // console.log(spots);
     console.log(newPlan);
-    setLoading(false);
   }, [google, map])
   return plan;
 }

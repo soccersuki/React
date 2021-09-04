@@ -1,33 +1,15 @@
-import {
-  useEffect,
-  useContext,
-  useState,
-} from 'react';
-import {
-  useHistory,
-  useLocation,
-} from 'react-router-dom';
+import { useContext, useState, } from 'react';
+import { useHistory, } from 'react-router-dom';
 
-import ButtonAppBar from './ButtonAppBar';
-import Map from './Map';
 import SwitchListSecondary from './SwitchListSecondary';
 import TitlebarImageList from './TitlebarImageList';
-import{
-  AppContext,
-} from './App';
-
-import {
-  Button,
-  Box,
-  Divider,
-  Fab
-} from '@material-ui/core'
+import{ AppContext, } from './App';
+import { Button, Box, Divider, Fab, } from '@material-ui/core'
 import NavigationIcon from '@material-ui/icons/Navigation';
 
 
 export default function EditPage(props){
   const history = useHistory();
-  const location = useLocation();
   const {plan, setPlan, markers, setMarkers, condition, setCondition} = useContext(AppContext);
   const handleClickAdd = () => {
     history.push('/plan/add', condition);
@@ -50,17 +32,13 @@ export default function EditPage(props){
   return(
     <>
       <Box>
-
-
         <Box my={5} mx={1}>
-        <TitlebarImageList onClickAdd={handleClickAdd} onClickCancel={handleClickCancel} spots={plan.newSpots}/>
+          <TitlebarImageList onClickAdd={handleClickAdd} onClickCancel={handleClickCancel} spots={plan.newSpots}/>
         </Box>
         <Divider variant='middle'/>
         <Box my={5} mx={1}>
-        <SwitchListSecondary onSubmit={handleSubmit} condition={condition}/>
-
+          <SwitchListSecondary onSubmit={handleSubmit} condition={condition}/>
         </Box>
-
         <Divider variant='middle'/>
       </Box>
     </>

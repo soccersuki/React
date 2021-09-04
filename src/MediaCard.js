@@ -20,7 +20,6 @@ export default function MediaCard(props) {
   const classes = useStyles();
   const {place} = props;
   if(place == null) return(null);
-  console.log(place);
 
   return (
     <Card className={classes.root}>
