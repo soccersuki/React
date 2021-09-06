@@ -181,6 +181,7 @@ export function showMarker(google, map, itinerary){
       },
       title: itinerary[i].name,
       optimized: false,
+      animation: google.maps.Animation.DROP,
     }
     const marker = new google.maps.Marker(option);
     marker.addListener("click", () => {

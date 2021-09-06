@@ -4,15 +4,13 @@ import EditPage from './EditPage';
 import AddPage from './AddPage';
 import ItineraryPage from './ItineraryPage';
 import { Box, Zoom, } from '@material-ui/core'
+import SimpleTabs from './SimpleTabs'
 
 export default function PlanPage(props){
   return(
     <>
-      <Zoom in={true} mountOnEnter >
-        <Box>
-          <Map/>
-        </Box>
-      </Zoom>
+      <Map/>
+      <SimpleTabs />
       <Switch>
         <Route path='/plan/edit'>
           <EditPage />

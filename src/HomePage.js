@@ -30,8 +30,18 @@ export default function HomePage(){
           <Box my={5}>
             <PopularRegions onClick={handleClick}/>
           </Box>
+          <Box my={5}>
+            <PopularRegions onClick={handleClick}/>
+          </Box>
+          <Box my={5}>
+            <PopularRegions onClick={handleClick}/>
+          </Box>
+          <Box my={5}>
+            <PopularRegions onClick={handleClick}/>
+          </Box>
         </Box>
       </Box>
+
     </>
   )
 }

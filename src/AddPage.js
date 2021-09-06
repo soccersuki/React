@@ -44,16 +44,16 @@ export default function AddPage(props){
         <Box my={5}>
           <Zoom in={checked}>
             <Box>
-              <MediaCard place={place} />
+              <MediaCard place={place} onClick={handleClick}/>
             </Box>
           </Zoom>
         </Box>
         <Divider variant='middle'/>
         <ListSubheader>人気のスポット</ListSubheader>
-        {[0, 1, 2].map((i) => {
+        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => {
           return(
             <Zoom in={checked} style={{ transitionDelay: checked ? `${500 * i}ms` : '0ms' }}>
-              <Box>
+              <Box my={5}>
                 <MediaCard place={place} />
               </Box>
             </Zoom>

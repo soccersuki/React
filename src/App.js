@@ -4,10 +4,22 @@ import HomePage from './HomePage';
 import ConditionPage from './ConditionPage';
 import PlanPage from './PlanPage';
 import ButtonAppBar from './ButtonAppBar';
+import BottomNavigation from './BottomNavigation';
+import { makeStyles, } from '@material-ui/core/styles';
 
 export const AppContext = createContext();
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+  },
+  bottomNavigation: {
+    position: 'fixed',
+    bottom: theme.spacing(2),
+  },
+}));
+
 export default function App() {
+  const classes = useStyles();
   const [google, setGoogle] = useState(null);
   const [map, setMap] = useState(null);
   const [plan, setPlan] = useState(null);
@@ -35,7 +47,9 @@ export default function App() {
             <HomePage />
           </Route>
         </Switch>
+        <BottomNavigation/>
       </Router>
+
     </AppContext.Provider>
   )
 }
