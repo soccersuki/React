@@ -7,6 +7,8 @@ import ButtonAppBar from './ButtonAppBar';
 import BottomNavigation from './BottomNavigation';
 import { makeStyles, } from '@material-ui/core/styles';
 
+import { Box, } from '@material-ui/core'
+
 export const AppContext = createContext();
 
 const useStyles = makeStyles((theme) => ({
@@ -36,17 +38,19 @@ export default function App() {
     <AppContext.Provider value={value}>
       <Router>
         <ButtonAppBar />
-        <Switch>
-          <Route path="/condition">
-            <ConditionPage />
-          </Route>
-          <Route path="/plan">
-            <PlanPage />
-          </Route>
-          <Route path="/">
-            <HomePage />
-          </Route>
-        </Switch>
+        <Box mb={10}>
+          <Switch>
+            <Route path="/condition">
+              <ConditionPage />
+            </Route>
+            <Route path="/plan">
+              <PlanPage />
+            </Route>
+            <Route path="/">
+              <HomePage />
+            </Route>
+          </Switch>
+        </Box>
         <BottomNavigation/>
       </Router>
 

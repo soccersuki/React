@@ -11,17 +11,6 @@ export default function PlanPage(props){
     <>
       <Map/>
       <SimpleTabs />
-      <Switch>
-        <Route path='/plan/edit'>
-          <EditPage />
-        </Route>
-        <Route path='/plan/add'>
-          <AddPage />
-        </Route>
-        <Route path='/plan'>
-          <ItineraryPage />
-        </Route>
-      </Switch>
     </>
   )
 }

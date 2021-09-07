@@ -25,19 +25,11 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box p={3}>
+        <Box>
           <Typography>{children}</Typography>
         </Box>
       )}
-      {value == 0 && (
-        <ItineraryPage />
-      )}
-      {value == 1 && (
-        <EditPage />
-      )}
-      {value == 2 && (
-        <AddPage />
-      )}
+
     </div>
   );
 }
@@ -70,38 +62,25 @@ export default function SimpleTabs() {
   const handleChange = (event, newValue) => {
     console.log(newValue)
     setValue(newValue);
-    // if(newValue == 0){
-    //   history.push('/plan');
-    // }
-    // else if(newValue == 1){
-    //   history.push('/plan/edit');
-    // }
-    // else{
-    //   history.push('/plan/add');
-    // }
   };
-  const handleClick = () => {
-    setValue(1);
-  }
 
   return (
     <div className={classes.root}>
-      <button onClick={handleClick}>button</button>
       <AppBar position="static">
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example" variant="fullWidth">
-          <Tab label="Item One" {...a11yProps(0)} />
-          <Tab label="Item Two" {...a11yProps(1)} />
-          <Tab label="Item Three" {...a11yProps(2)} />
+          <Tab label="PLAN" {...a11yProps(0)} />
+          <Tab label="EDIT" {...a11yProps(1)} />
+          <Tab label="ADD" {...a11yProps(2)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        Item One
+        <ItineraryPage />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Item Two
+        <EditPage />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Item Three
+        <AddPage />
       </TabPanel>
     </div>
   );
