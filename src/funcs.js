@@ -12,48 +12,44 @@ export const usePlan = () => {
   useEffect(async () => {
     if(google == null || map == null) return;
 
-    // var regionName = '大阪', originName = '大阪駅', destinationName = '萱嶋駅';
-    const {regionName, originName, destinationName, meal, status} = condition;
-    if(status == 'cancel'){
-      plan.newSpots = [...plan.spots];
-      setPlan({...plan});
-      var id = plan.spots.length;
-      for(var i = id; i < markers.spotMarkers.length; i++){
-        markers.spotMarkers[i].setMap(null);
-      }
-      markers.spotMarkers.splice(i);
-      return plan;
-    }
-    var region = await findPlace(google, map, regionName);
-    var origin = await findPlace(google, map, originName);
-    var spots;
-    if(status == 'first'){
-      spots = await findPlaces(google, map, regionName + '観光', origin[0].geometry.location);
-      spots = spots.slice(0, 5);
-    }
-    else if(status == 'new'){
+    if(markers != null){
       markers.originMarker.setMap(null);
       markers.destinationMarker.setMap(null);
       markers.spotMarkers.map(marker => {marker.setMap(null)});
-      spots = plan.newSpots;
     }
 
-    const newPlan = await makePlan(google, map, originName, destinationName, region, spots);
+    // var regionName = '大阪', originName = '大阪駅', destinationName = '萱嶋駅';
+    const {regionName, originName, destinationName, meal, status} = condition;
+    var spots;
+    if(plan == null){
+      spots = await findSpots(google, map, regionName, originName)
+    }
+    else{
+      spots = plan.newSpots;
+      setPlan(null);
+    }
+
+    const newPlan = await makePlan(google, map, originName, destinationName, spots);
     if(meal) await insertLunch(google, map, newPlan);
     newPlan.newSpots = [...newPlan.spots];
     setPlan({...newPlan});
 
-
-
     var newMarkers = showMarker(google, map, newPlan.itinerary)
     setMarkers({...newMarkers});
 
-    // console.log(region);
-    // console.log(spots);
     console.log(newPlan);
-  }, [google, map])
+  }, [google, map, condition])
   return plan;
 }
+
+const findSpots = async (google, map, regionName, originName) => {
+  var region = await findPlace(google, map, regionName);
+  var origin = await findPlace(google, map, originName);
+  var spots = await findPlaces(google, map, regionName + '観光', origin[0].geometry.location);
+  spots = spots.slice(0, 5);
+  return spots;
+}
+
 
 export const usePlace = (query, location) => {
   const [place, setPlace] = useState(null);
@@ -82,30 +78,6 @@ export const usePlace = (query, location) => {
   return place;
 }
 
-export const useNearbySearch = (region, type, keyword) => {
-  const [places, setPlaces] = useState(null);
-  const {google, map} = useContext(AppContext);
-
-  useEffect(() => {
-    if(google == null || map == null || region == null) return;
-    var service = new google.maps.places.PlacesService(map);
-    var request = {
-      // location: new google.maps.LatLng(region[0].geometry.location.lat(), region[0].geometry.location.lng()),
-      // radius: 50000,
-      // type,
-      query: keyword,
-    }
-    console.log(region[0].geometry.location.lat(), region[0].geometry.location.lng())
-    service.textSearch(request, (results, status) => {
-      if (status == google.maps.places.PlacesServiceStatus.OK) {
-        setPlaces(results);
-
-      }
-    })
-  }, [google, map, region]);
-  return places;
-}
-
 export const useGoogle = () => {
   // const [google, setGoogle] = useState(null);
   const {google, setGoogle} = useContext(AppContext);
@@ -131,7 +103,7 @@ export const useMap = (mapContainerRef) => {
     console.log('useMap')
     if(google == null || mapContainerRef == null) return;
     const initialConfig = {
-      zoom: 12,
+      zoom: 15,
       center: { lat: 35.6432027, lng: 139.6729435 }
     }
     const map = new google.maps.Map(mapContainerRef.current, initialConfig);
@@ -196,7 +168,7 @@ export function showMarker(google, map, itinerary){
   return {originMarker, destinationMarker, spotMarkers};
 }
 
-export async function makePlan(google, map, originName, destinationName, region, spots){
+export async function makePlan(google, map, originName, destinationName, spots){
   var waypts = spots.map(spot => {
     return {
       location: spot.formatted_address,

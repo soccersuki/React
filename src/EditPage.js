@@ -7,27 +7,23 @@ import{ AppContext, } from './App';
 import { Button, Box, Divider, Fab, } from '@material-ui/core'
 import NavigationIcon from '@material-ui/icons/Navigation';
 
-
 export default function EditPage(props){
+  const {setValue} = props;
   const history = useHistory();
   const {plan, setPlan, markers, setMarkers, condition, setCondition} = useContext(AppContext);
   const handleClickAdd = () => {
-    history.push('/plan/add', condition);
+    setValue(2);
   }
   const handleClickCancel = (i) => {
     plan.newSpots.splice(i, 1);
+    setPlan({...plan});
     markers.spotMarkers[i].setMap(null);
     markers.spotMarkers.splice(i, 1);
-    setMarkers({...markers});
-    setPlan({...plan});
-  }
-  const handleClickReturn = () => {
-    setCondition({...condition, status: 'cancel'});
-    history.push('/plan');
+    setMarkers({...markers});    
   }
   const handleSubmit = (condition) => {
     setCondition({...condition, status: 'new'});
-    history.push('/plan');
+    setValue(0);
   }
   return(
     <>

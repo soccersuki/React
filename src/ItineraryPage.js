@@ -7,27 +7,16 @@ import CustomizedTimeline from './CustomizedTimeline';
 import { usePlan, showMarker, } from './funcs';
 import { AppContext } from './App';
 
-const useStyles = makeStyles((theme) => ({
-  fab: {
-    position: 'fixed',
-    bottom: theme.spacing(2),
-    right: theme.spacing(2),
-  },
-}));
-
 export default function ItineraryPage(){
-  const classes = useStyles();
+  // const classes = useStyles();
   const history = useHistory();
-  const handleClick = () => {
-    history.push('/plan/edit');
+  const {plan, map} = useContext(AppContext);
+  const handleClick = (spot) => {
+    map.setCenter({lat: spot.geometry.location.lat(), lng: spot.geometry.location.lng()})
   }
-  const plan = usePlan();
   return(
     <Box>
-      <CustomizedTimeline plan={plan}/>
-      <Fab color="secondary" aria-label="edit" onClick={handleClick} className={classes.fab}>
-        <EditIcon />
-      </Fab>
+      <CustomizedTimeline onClick={handleClick}/>
     </Box>
   )
 }

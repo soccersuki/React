@@ -112,7 +112,7 @@ export default function SwitchListSecondary(props) {
           </ListItemSecondaryAction>
         </ListItem>
       </List>
-      <Box className={classes.fab} width='100%'>
+      <Box  width='100%'>
       <Box display='flex' justifyContent='center'>
       <Fab color='primary'variant="extended" type='submit'>
       <NavigationIcon />

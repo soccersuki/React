@@ -6,7 +6,10 @@ import ItineraryPage from './ItineraryPage';
 import { Box, Zoom, } from '@material-ui/core'
 import SimpleTabs from './SimpleTabs'
 
+import { usePlan } from './funcs';
+
 export default function PlanPage(props){
+  usePlan();
   return(
     <>
       <Map/>

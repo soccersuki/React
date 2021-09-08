@@ -13,13 +13,10 @@ export default function AddPage(props){
   const history = useHistory();
   const {google, map, plan, setPlan, markers, setMarkers} = useContext(AppContext);
   const handleClick = () => {
-    console.log(place);
     plan.newSpots.push(place[0]);
     setPlan({...plan});
     markers.spotMarkers.push(marker);
     setMarkers({...markers});
-    console.log(markers)
-    history.push('/plan/edit');
   }
   const handleSubmit = async (text) => {
     setChecked(false);
