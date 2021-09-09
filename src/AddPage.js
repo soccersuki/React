@@ -3,7 +3,7 @@ import{ useHistory, } from 'react-router-dom';
 import{ useState, useContext, } from 'react';
 import { TextField, Box, Button, Divider, ListSubheader, Zoom, } from '@material-ui/core';
 import{ AppContext, } from './App';
-import { findPlace, } from './funcs';
+import { findPlace, addMarker, } from './funcs';
 import TextForm from './TextForm'
 
 export default function AddPage(props){
@@ -19,15 +19,7 @@ export default function AddPage(props){
   }
   const handleSubmit = async (text) => {
     var place = await findPlace(google, map, text);
-    const marker = new google.maps.Marker({
-      position: {
-        lat: place[0].geometry.location.lat(),
-        lng: place[0].geometry.location.lng(),
-      },
-      label: '!',
-      map: map,
-    });
-    marker.setMap(map);
+    const marker = addMarker(google, map, place[0], '!');
     setMarker(marker);
     setPlace(place[0]);
   }

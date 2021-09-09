@@ -149,7 +149,7 @@ export function showMarker(google, map, itinerary){
   return {originMarker, destinationMarker, spotMarkers};
 }
 
-function addMarker(google, map, place, label){
+export function addMarker(google, map, place, label){
   const infoWindow = new google.maps.InfoWindow();
   const option = {
     position: {
