@@ -7,11 +7,10 @@ import { findPlace, } from './funcs';
 import TextForm from './TextForm'
 
 export default function AddPage(props){
-  const [checked, setChecked] = useState(false);
   const [place, setPlace] = useState(null);
   const [marker, setMarker] = useState(null);
   const history = useHistory();
-  const {google, map, plan, setPlan, markers, setMarkers} = useContext(AppContext);
+  const {google, map, plan, setPlan, markers, setMarkers, places} = useContext(AppContext);
   const handleClick = () => {
     plan.newSpots.push(place[0]);
     setPlan({...plan});
@@ -19,7 +18,6 @@ export default function AddPage(props){
     setMarkers({...markers});
   }
   const handleSubmit = async (text) => {
-    setChecked(false);
     var place = await findPlace(google, map, text);
     const marker = new google.maps.Marker({
       position: {
@@ -31,29 +29,22 @@ export default function AddPage(props){
     });
     marker.setMap(map);
     setMarker(marker);
-    setPlace(place);
-    setChecked(true);
+    setPlace(place[0]);
   }
   return(
     <>
       <Box mx={5} my={5}>
         <TextForm fullWidth={true} onSubmit={handleSubmit}/>
         <Box my={5}>
-          <Zoom in={checked}>
-            <Box>
-              <MediaCard place={place} onClick={handleClick}/>
-            </Box>
-          </Zoom>
+          <MediaCard place={place} onClick={handleClick}/>
         </Box>
         <Divider variant='middle'/>
-        <ListSubheader>人気のスポット</ListSubheader>
-        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => {
+        <ListSubheader>付近の人気のスポット</ListSubheader>
+        {places.map((place) => {
           return(
-            <Zoom in={checked} style={{ transitionDelay: checked ? `${500 * i}ms` : '0ms' }}>
-              <Box my={5}>
-                <MediaCard place={place} />
-              </Box>
-            </Zoom>
+            <Box my={5}>
+              <MediaCard place={place} />
+            </Box>
           )
         })}
       </Box>

@@ -10,6 +10,10 @@ import TrainIcon from '@material-ui/icons/Train';
 import Rating from '@material-ui/lab/Rating';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { Box, Avatar, Zoom, Badge, Typography, Paper } from '@material-ui/core'
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import { useContext } from 'react';
 import { AppContext } from './App'
@@ -41,20 +45,35 @@ function SpotTimelineItem(props){
         </Box>
         <TimelineConnector />
       </TimelineSeparator>
-      <TimelineContent>
-        <Paper elevation={3} className={classes.paper}>
-          <Typography variant="h6" component="h1">{spot.name}</Typography>
-          <Typography variant='caption'>
-          <>
-            <Box display="flex" alignItems="center">
-              {spot.rating}
-              <Rating name="read-only" value={spot.rating} precision={0.5} readOnly size='small' />
-              ({spot.user_ratings_total})
-            </Box>
-            滞在時間: {spot.stayTime.text}
-          </>
-          </Typography>
-        </Paper>
+      <TimelineContent style={{ flexGrow: 1}}>
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+              <Box>
+              <Typography variant="h6" component="h1">{spot.name}</Typography>
+              <Typography variant='caption'>
+              <>
+                <Box display="flex" alignItems="center">
+                  {spot.rating}
+                  <Rating name="read-only" value={spot.rating} precision={0.5} readOnly size='small' />
+                  
+                </Box>
+                滞在時間: {spot.stayTime.text}
+              </>
+              </Typography>
+              </Box>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
+                sit amet blandit leo lobortis eget.
+              </Typography>
+            </AccordionDetails>
+          </Accordion>
+
       </TimelineContent>
     </TimelineItem>
   )

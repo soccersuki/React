@@ -5,6 +5,8 @@ import PopularRegions from './PopularRegions';
 import { Box, Divider, } from '@material-ui/core';
 import { useGoogle } from './funcs';
 
+import SwipeableTemporaryDrawer from './SwipeableTemporaryDrawer';
+
 export default function HomePage(){
   const history = useHistory();
   useGoogle();
@@ -41,6 +43,7 @@ export default function HomePage(){
           </Box>
         </Box>
       </Box>
+      <SwipeableTemporaryDrawer />
 
     </>
   )

@@ -7,7 +7,7 @@ import { Loader } from "@googlemaps/js-api-loader"
 import { AppContext } from './App';
 
 export const usePlan = () => {
-  const {google, map, plan, setPlan, markers, setMarkers, condition} = useContext(AppContext);
+  const {google, map, plan, setPlan, markers, setMarkers, condition, setPlaces} = useContext(AppContext);
 
   useEffect(async () => {
     if(google == null || map == null) return;
@@ -22,7 +22,9 @@ export const usePlan = () => {
     const {regionName, originName, destinationName, meal, status} = condition;
     var spots;
     if(plan == null){
-      spots = await findSpots(google, map, regionName, originName)
+      spots = await findSpots(google, map, regionName, originName);
+      setPlaces(spots.slice(5))
+      spots = spots.slice(0, 5);
     }
     else{
       spots = plan.newSpots;
@@ -46,7 +48,6 @@ const findSpots = async (google, map, regionName, originName) => {
   var region = await findPlace(google, map, regionName);
   var origin = await findPlace(google, map, originName);
   var spots = await findPlaces(google, map, regionName + '観光', origin[0].geometry.location);
-  spots = spots.slice(0, 5);
   return spots;
 }
 
@@ -141,31 +142,37 @@ export function showMarker(google, map, itinerary){
   const spotMarkers = [];
   const infoWindow = new google.maps.InfoWindow();
   for(var i = 1; i < itinerary.length-1; i++){
-    const option = {
-      position: {
-        lat: itinerary[i].geometry.location.lat(),
-        lng: itinerary[i].geometry.location.lng(),
-      },
-      map: map,
-      label: {
-        text: label[(i-1) % label.length],
-        color: 'white',
-      },
-      title: itinerary[i].name,
-      optimized: false,
-      animation: google.maps.Animation.DROP,
-    }
-    const marker = new google.maps.Marker(option);
-    marker.addListener("click", () => {
-      infoWindow.close();
-      infoWindow.setContent(marker.getTitle());
-      infoWindow.open(marker.getMap(), marker);
-    });
-    marker.setMap(map)
+    const marker = addMarker(google, map, itinerary[i], label[(i-1) % label.length]);
     spotMarkers.push(marker);
   }
   map.setCenter({lat: itinerary[0].geometry.location.lat(), lng: itinerary[0].geometry.location.lng()});
   return {originMarker, destinationMarker, spotMarkers};
+}
+
+function addMarker(google, map, place, label){
+  const infoWindow = new google.maps.InfoWindow();
+  const option = {
+    position: {
+      lat: place.geometry.location.lat(),
+      lng: place.geometry.location.lng(),
+    },
+    map: map,
+    label: {
+      text: label,
+      color: 'white',
+    },
+    title: place.name,
+    optimized: false,
+    animation: google.maps.Animation.DROP,
+  }
+  const marker = new google.maps.Marker(option);
+  marker.addListener("click", () => {
+    infoWindow.close();
+    infoWindow.setContent(marker.getTitle());
+    infoWindow.open(marker.getMap(), marker);
+  });
+  marker.setMap(map)
+  return marker;
 }
 
 export async function makePlan(google, map, originName, destinationName, spots){
