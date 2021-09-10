@@ -69,7 +69,7 @@ export default function TitlebarImageList(props) {
               title={item.name}
               subtitle={<span>by: {item.name}</span>}
               actionIcon={
-                <IconButton aria-label={`info about ${item.name}`} className={classes.icon}>
+                <IconButton aria-label={`info about ${item.name}`} className={classes.icon} onClick={props.onClickInfo}>
                   <InfoIcon />
                 </IconButton>
               }

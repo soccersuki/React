@@ -19,17 +19,20 @@ export default function EditPage(props){
     setPlan({...plan});
     markers.spotMarkers[i].setMap(null);
     markers.spotMarkers.splice(i, 1);
-    setMarkers({...markers});    
+    setMarkers({...markers});
   }
   const handleSubmit = (condition) => {
     setCondition({...condition, status: 'new'});
     setValue(0);
   }
+  const handleClickInfo = (i) => {
+
+  }
   return(
     <>
       <Box>
         <Box my={5} mx={1}>
-          <TitlebarImageList onClickAdd={handleClickAdd} onClickCancel={handleClickCancel} spots={plan.newSpots}/>
+          <TitlebarImageList onClickInfo={props.onClickPlace} onClickAdd={handleClickAdd} onClickCancel={handleClickCancel} spots={plan.newSpots}/>
         </Box>
         <Divider variant='middle'/>
         <Box my={5} mx={1}>

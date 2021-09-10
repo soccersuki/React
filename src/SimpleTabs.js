@@ -7,6 +7,8 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import { Zoom, } from '@material-ui/core'
+import SwipeableTemporaryDrawer from './SwipeableTemporaryDrawer';
+
 
 import ItineraryPage from './ItineraryPage';
 import EditPage from './EditPage';
@@ -57,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SimpleTabs() {
+export default function SimpleTabs(props) {
   const classes = useStyles();
   const history = useHistory();
   const [value, setValue] = React.useState(0);
@@ -80,7 +82,7 @@ export default function SimpleTabs() {
         <ItineraryPage />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <EditPage setValue={setValue}/>
+        <EditPage setValue={setValue} onClickPlace={props.onClickPlace}/>
       </TabPanel>
       <TabPanel value={value} index={2}>
         <AddPage />
