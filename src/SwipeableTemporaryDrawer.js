@@ -50,6 +50,9 @@ export default function SwipeableTemporaryDrawer() {
       onKeyDown={toggleDrawer(anchor, false)}
     >
       <img src={imgOsaka} width='100%'/>
+      <img src={imgOsaka} width='100%'/>
+      <img src={imgOsaka} width='100%'/>
+      <img src={imgOsaka} width='100%'/>
       <List>
         {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
           <ListItem button key={text}>

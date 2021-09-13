@@ -6,6 +6,7 @@ import PlanPage from './PlanPage';
 import ButtonAppBar from './ButtonAppBar';
 import BottomNavigation from './BottomNavigation';
 import { makeStyles, } from '@material-ui/core/styles';
+import Home from './Home';
 
 import { Box, } from '@material-ui/core'
 
@@ -49,7 +50,7 @@ export default function App() {
               <PlanPage />
             </Route>
             <Route path="/">
-              <HomePage />
+              <Home />
             </Route>
           </Switch>
         </Box>
