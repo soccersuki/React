@@ -19,6 +19,13 @@ export const usePlan = () => {
     }
 
     // var regionName = '大阪', originName = '大阪駅', destinationName = '萱嶋駅';
+    const condition = {
+      regionName: '大阪',
+      originName: '大阪駅',
+      destinationName: '萱嶋駅',
+      meal: false,
+      status: 'first',
+    }
     const {regionName, originName, destinationName, meal, status} = condition;
     var spots;
     if(plan == null){

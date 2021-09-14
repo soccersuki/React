@@ -8,6 +8,10 @@ import MediaCard from './MediaCard';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
 
+import MyComponent from './Carousel'
+
+import { usePlan } from './funcs'
+
 const useStyles = makeStyles((theme) => ({
   root: {
     position: 'relative',
@@ -18,31 +22,16 @@ export default function Home(){
   const classes = useStyles();
   const [value, setValue] = useState(0);
   useGoogle();
-  const handleClickRight = () => {
-    setValue(value + 1);
-  }
-  const handleClickLeft = () => {
-    setValue(value - 1);
-  }
+  const plan = usePlan();
   return(
     <>
     <Box className={classes.root}>
       <Map/>
-      <Box style={{position: 'absolute', width: '100%', height: 300, backgroundColor: 'red', bottom: 10}}>
+      <Box style={{position: 'absolute', width: '100%', backgroundColor: 'red', bottom: 0}}>
       <Box display='flex' justifyContent='center'height='100%'>
-        <IconButton onClick={handleClickLeft}><ArrowLeftIcon /></IconButton>
-        <Box width='80%'>
-          {[0, 1, 2].map((index) => (
-            <Box hidden={value !== index}>
-            {value === index && (
-              <MediaCard value={value} index={index}/>
-            )}
-            </Box>
-          ))}
-
+        <Box width='100%'>
+        <MyComponent plan={plan}/>
         </Box>
-
-        <IconButton onClick={handleClickRight}><ArrowRightIcon /></IconButton>
       </Box>
       </Box>
     </Box>
