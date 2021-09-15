@@ -29,16 +29,18 @@ export default function App() {
   const [markers, setMarkers] = useState(null);
   const [condition, setCondition] = useState(null);
   const [places, setPlaces] = useState(null);
-  const value = {
+  const [value, setValue] = useState(0);
+  const contextValue = {
     google, setGoogle,
     map, setMap,
     plan, setPlan,
     markers, setMarkers,
     condition, setCondition,
     places, setPlaces,
+    value, setValue,
   }
   return(
-    <AppContext.Provider value={value}>
+    <AppContext.Provider value={contextValue}>
       <Router>
         <ButtonAppBar />
         <Box mb={10}>
@@ -56,7 +58,6 @@ export default function App() {
         </Box>
         <BottomNavigation/>
       </Router>
-
     </AppContext.Provider>
   )
 }

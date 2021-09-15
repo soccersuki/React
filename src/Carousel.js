@@ -5,6 +5,12 @@ import MediaCard from './MediaCard';
 
 import { Box, } from '@material-ui/core';
 
+import { useState, useContext, } from 'react'
+
+import SwipeableTemporaryDrawer from './SwipeableTemporaryDrawer'
+
+import { AppContext, } from './App'
+
 const styles = {
   slide: {
     padding: 15,
@@ -24,8 +30,19 @@ const styles = {
 
 const MyComponent = (props) => {
   const {plan} = props
+  // const [value, setValue] = useState(1);
+  const { map, value, setValue, } = useContext(AppContext)
+  const handleChangeIndex = (index) => {
+    setValue(index);
+    console.log(index);
+  }
+  const handleClick = (spot) => {
+    console.log(spot)
+    map.setCenter({lat: spot.geometry.location.lat(), lng: spot.geometry.location.lng()})
+  }
   return(
-    <SwipeableViews enableMouseEvents>
+    <>
+    <SwipeableViews enableMouseEvents index={value} onChangeIndex={(index) => handleChangeIndex(index)}>
       {
         plan == null ?
           [0, 1, 2].map(() => (
@@ -35,14 +52,13 @@ const MyComponent = (props) => {
           ))
         :
           plan.spots.map((place) => (
-            <Box p={2}>
-              <MediaCard place={place}/>
+            <Box p={2} onClick={() => handleClick(place)}>
+              <SwipeableTemporaryDrawer place={place}/>
             </Box>
           ))
-    }
-
-
+      }
     </SwipeableViews>
+    </>
   )
 };
 

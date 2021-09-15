@@ -11,11 +11,16 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import imgOsaka from './images/img_osaka.jpg';
-import { Box, } from '@material-ui/core'
+import { Box, Fab, } from '@material-ui/core'
 import SimpleTabs from './SimpleTabs';
 
 import MyComponent from './Carousel'
 import MediaCard from './MediaCard'
+
+import ListIcon from '@material-ui/icons/List';
+
+import CustomizedTimeline from './CustomizedTimeline'
+
 
 const useStyles = makeStyles({
   list: {
@@ -26,7 +31,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function SwipeableTemporaryDrawer(props) {
+export default function SwipeableTemporaryDrawerPlan(props) {
   const classes = useStyles();
   const [state, setState] = React.useState({
     top: false,
@@ -52,45 +57,24 @@ export default function SwipeableTemporaryDrawer(props) {
       onClick={toggleDrawer(anchor, false)}
       onKeyDown={toggleDrawer(anchor, false)}
     >
-      <img src={place.photos[0].getUrl()} width='100%'/>
-      <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List>
+      <CustomizedTimeline />
     </div>
   );
 
   return (
     <div>
-      {['left', 'right', 'top', 'bottom'].map((anchor) => (
-        <React.Fragment key={anchor}>
-          <Button onClick={toggleDrawer(anchor, true)}>{anchor}</Button>
-          <SwipeableDrawer
-            anchor={anchor}
-            open={state[anchor]}
-            onClose={toggleDrawer(anchor, false)}
-            onOpen={toggleDrawer(anchor, true)}
-          >
-            {list(anchor)}
-          </SwipeableDrawer>
-
-        </React.Fragment>
-      ))}
-      <Box onClick={toggleDrawer('bottom', true)}>
-        <MediaCard place={props.place}/>
+      <SwipeableDrawer
+        anchor={'right'}
+        open={state['right']}
+        onClose={toggleDrawer('right', false)}
+        onOpen={toggleDrawer('right', true)}
+      >
+        {list('bottom')}
+      </SwipeableDrawer>
+      <Box onClick={toggleDrawer('right', true)}>
+        <Fab color="primary" aria-label="add">
+          <ListIcon />
+        </Fab>
       </Box>
 
     </div>

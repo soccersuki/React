@@ -7,7 +7,7 @@ import { Loader } from "@googlemaps/js-api-loader"
 import { AppContext } from './App';
 
 export const usePlan = () => {
-  const {google, map, plan, setPlan, markers, setMarkers, condition, setPlaces} = useContext(AppContext);
+  const {google, map, plan, setPlan, markers, setMarkers, condition, setPlaces, setValue} = useContext(AppContext);
 
   useEffect(async () => {
     if(google == null || map == null) return;
@@ -43,7 +43,7 @@ export const usePlan = () => {
     newPlan.newSpots = [...newPlan.spots];
     setPlan({...newPlan});
 
-    var newMarkers = showMarker(google, map, newPlan.itinerary)
+    var newMarkers = showMarker(google, map, newPlan.itinerary, setValue)
     setMarkers({...newMarkers});
 
     console.log(newPlan);
@@ -120,7 +120,7 @@ export const useMap = (mapContainerRef) => {
   // return map;
 }
 
-export function showMarker(google, map, itinerary){
+export function showMarker(google, map, itinerary, setValue){
   const label = 'abcdefghijklmnopqrstuvwxyz';
   const originOption = {
     position: {
@@ -149,14 +149,14 @@ export function showMarker(google, map, itinerary){
   const spotMarkers = [];
   const infoWindow = new google.maps.InfoWindow();
   for(var i = 1; i < itinerary.length-1; i++){
-    const marker = addMarker(google, map, itinerary[i], label[(i-1) % label.length]);
+    const marker = addMarker(google, map, itinerary[i], label[(i-1) % label.length], i-1, setValue);
     spotMarkers.push(marker);
   }
   map.setCenter({lat: itinerary[0].geometry.location.lat(), lng: itinerary[0].geometry.location.lng()});
   return {originMarker, destinationMarker, spotMarkers};
 }
 
-export function addMarker(google, map, place, label){
+export function addMarker(google, map, place, label, index, setValue){
   const infoWindow = new google.maps.InfoWindow();
   const option = {
     position: {
@@ -177,6 +177,7 @@ export function addMarker(google, map, place, label){
     infoWindow.close();
     infoWindow.setContent(marker.getTitle());
     infoWindow.open(marker.getMap(), marker);
+    setValue(index)
   });
   marker.setMap(map)
   return marker;
