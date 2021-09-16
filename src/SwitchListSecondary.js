@@ -70,15 +70,14 @@ export default function SwitchListSecondary(props) {
           <ListItemIcon>
             <LocationOnIcon />
           </ListItemIcon>
-          <ListItemText primary="エリア"/>
-          <TextField required variant="filled" onChange={handleChangeRegionName} value={regionName}/>
+          <TextField label="エリア"required variant="filled" onChange={handleChangeRegionName} value={regionName}/>
+
         </ListItem>
         <ListItem>
           <ListItemIcon>
             <HouseIcon />
           </ListItemIcon>
-          <ListItemText primary="出発"/>
-          <TextField required variant="filled" onChange={handleChangeOriginName} value={originName}/>
+          <TextField label='出発'required variant="filled" onChange={handleChangeOriginName} value={originName}/>
         </ListItem>
         <ListItem>
           <Checkbox

@@ -2,11 +2,13 @@ import { useState, } from 'react'
 import Map from './Map';
 import { useGoogle } from './funcs';
 import { makeStyles } from '@material-ui/core/styles';
-import { Box, IconButton, Chip, Fab} from '@material-ui/core'
+import { Box, IconButton, Chip, Fab, Zoom} from '@material-ui/core'
 
 import MediaCard from './MediaCard';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import AddIcon from '@material-ui/icons/Add';
 
 import MyComponent from './Carousel'
 import SwipeableTemporaryDrawer from './SwipeableTemporaryDrawer'
@@ -26,11 +28,24 @@ const useStyles = makeStyles((theme) => ({
 export default function Home(){
   const classes = useStyles();
   const [value, setValue] = useState(0);
+  const [num, setNum] = useState(0);
+  const [color, setColor] = useState('default');
   useGoogle();
-  const plan = usePlan();
-  const handleClick = () => {
-    console.log('click')
+  // const plan = usePlan();
+  var plan
+  const handleClick0 = () => {
+    setNum(0)
+    setColor('primary');
   }
+  const handleClick1 = () => {
+    setNum(1);
+    setColor('default')
+  }
+  return(
+    <>
+    <Map />
+    </>
+  )
   return(
     <>
     <Box className={classes.root}>
@@ -38,22 +53,29 @@ export default function Home(){
       <Box style={{position: 'absolute', width: '100%', top: 0}}>
         <Box p={5}>
           <TextForm fullWidth={true}/>
-          <Chip label="PLAN" variant="outlined" onClick={handleClick}/>
-          <Chip label="人気のエリア" variant="outlined" onClick={handleClick}/>
-          <Chip label="レストラン" variant="outlined" onClick={handleClick}/>
+          <Chip label="PLAN" variant="outlined" onClick={handleClick0} color={color}/>
+          <Chip label="人気のエリア" variant="outlined" onClick={handleClick1}/>
+          <Chip label="レストラン" variant="outlined" onClick={handleClick1}/>
         </Box>
       </Box>
       <Box style={{position: 'absolute', width: '100%', backgroundColor: 'red', bottom: 0}}>
-        <Box display='flex' justifyContent='center'height='100%'>
-          <Box width='100%'>
-            <MyComponent plan={plan}/>
+        <Zoom in={num==0}>
+          <Box>
+            <Box display="flex" justifyContent="flex-end">
+              <SwipeableTemporaryDrawerPlan />
+            </Box>
+            <Box display='flex' justifyContent='center'height='100%'>
+              <Box width='100%'>
+                <MyComponent plan={plan}/>
+              </Box>
+            </Box>
           </Box>
-        </Box>
-      </Box>
-      <Box style={{position: 'absolute', width: '100%', bottom: 400}}>
-        <Box display="flex" justifyContent="flex-end">
-          <SwipeableTemporaryDrawerPlan />
-        </Box>
+        </Zoom>
+        <>
+          <Zoom in={num==1}>
+            <Box>hello</Box>
+          </Zoom>
+        </>
 
       </Box>
     </Box>

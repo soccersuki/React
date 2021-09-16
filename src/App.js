@@ -10,6 +10,8 @@ import Home from './Home';
 
 import { Box, } from '@material-ui/core'
 
+import ScrollDialog from './ScrollDialog'
+
 export const AppContext = createContext();
 
 const useStyles = makeStyles((theme) => ({
@@ -56,7 +58,6 @@ export default function App() {
             </Route>
           </Switch>
         </Box>
-        <BottomNavigation/>
       </Router>
     </AppContext.Provider>
   )
