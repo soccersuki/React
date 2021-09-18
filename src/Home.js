@@ -15,7 +15,12 @@ import SwipeableTemporaryDrawer from './SwipeableTemporaryDrawer'
 import SwipeableTemporaryDrawerPlan from './SwipeableTemporaryDrawerPlan'
 import TextForm from './TextForm'
 
+import ButtonAppBar from './ButtonAppBar'
+
 import ListIcon from '@material-ui/icons/List';
+
+import LoyaltyIcon from '@material-ui/icons/Loyalty';
+
 
 import { usePlan } from './funcs'
 
@@ -42,9 +47,33 @@ export default function Home(){
     setColor('default')
   }
   return(
-    <>
+    <Box className={classes.root}>
+    <div style={{height: window.innerHeight}}>
     <Map />
-    </>
+    </div>
+    <Box style={{position: 'absolute', width: '100%', top: 0}}>
+      <Box p={5}>
+        <Box sx={{ display: 'flex' }}>
+        <Box style={{flexGrow: 1}}>
+        <Box sx={{display: 'flex', justifyContent: 'center', height: '100%', alignItems: 'center'}}>
+        <LoyaltyIcon color='secondary'fontSize="large"/>
+        </Box>
+
+        </Box>
+
+        <Box style={{flexGrow: 1}}>
+        <TextForm fullWidth={true}/>
+        </Box>
+
+        </Box>
+
+
+        <Chip label="PLAN" variant="outlined" onClick={handleClick0} color={color}/>
+        <Chip label="人気のエリア" variant="outlined" onClick={handleClick1}/>
+        <Chip label="レストラン" variant="outlined" onClick={handleClick1}/>
+      </Box>
+    </Box>
+    </Box>
   )
   return(
     <>

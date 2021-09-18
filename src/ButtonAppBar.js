@@ -37,7 +37,7 @@ export default function ButtonAppBar() {
   }
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} style={{height: '100%'}}>
       <AppBar position="static">
         <Toolbar>
           <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={handleClick}>

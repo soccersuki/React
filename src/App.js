@@ -44,8 +44,7 @@ export default function App() {
   return(
     <AppContext.Provider value={contextValue}>
       <Router>
-        <ButtonAppBar />
-        <Box mb={10}>
+        <Box>
           <Switch>
             <Route path="/condition">
               <ConditionPage />
