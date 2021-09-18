@@ -31,7 +31,6 @@ export default function App() {
   const [markers, setMarkers] = useState(null);
   const [condition, setCondition] = useState(null);
   const [places, setPlaces] = useState(null);
-  const [value, setValue] = useState(0);
   const contextValue = {
     google, setGoogle,
     map, setMap,
@@ -39,7 +38,6 @@ export default function App() {
     markers, setMarkers,
     condition, setCondition,
     places, setPlaces,
-    value, setValue,
   }
   return(
     <AppContext.Provider value={contextValue}>

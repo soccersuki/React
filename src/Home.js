@@ -10,7 +10,7 @@ import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import AddIcon from '@material-ui/icons/Add';
 
-import MyComponent from './Carousel'
+import Carousel from './Carousel'
 import SwipeableTemporaryDrawer from './SwipeableTemporaryDrawer'
 import SwipeableTemporaryDrawerPlan from './SwipeableTemporaryDrawerPlan'
 import TextForm from './TextForm'
@@ -21,6 +21,7 @@ import ListIcon from '@material-ui/icons/List';
 
 import LoyaltyIcon from '@material-ui/icons/Loyalty';
 
+import CustomizedTimeline from './CustomizedTimeline';
 
 import { usePlan } from './funcs'
 
@@ -32,82 +33,50 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Home(){
   const classes = useStyles();
-  const [value, setValue] = useState(0);
-  const [num, setNum] = useState(0);
-  const [color, setColor] = useState('default');
+  const [chipIndex, setChipIndex] = useState(0);
   useGoogle();
-  // const plan = usePlan();
-  var plan
-  const handleClick0 = () => {
-    setNum(0)
-    setColor('primary');
+  const plan = usePlan();
+  // var plan
+  const handleClick = (id) => () => {
+    setChipIndex(id);
   }
-  const handleClick1 = () => {
-    setNum(1);
-    setColor('default')
-  }
+  const chips = ['PLAN', '人気のエリア', 'レストラン'].map((name, id) => (
+    <Chip label={name} variant='outlined' onClick={handleClick(id)} style={{margin: 5}} color={chipIndex == id ? 'primary': 'default'}/>
+  ))
   return(
     <Box className={classes.root}>
-    <div style={{height: window.innerHeight}}>
-    <Map />
-    </div>
-    <Box style={{position: 'absolute', width: '100%', top: 0}}>
-      <Box p={5}>
-        <Box sx={{ display: 'flex' }}>
-        <Box style={{flexGrow: 1}}>
-        <Box sx={{display: 'flex', justifyContent: 'center', height: '100%', alignItems: 'center'}}>
-        <LoyaltyIcon color='secondary'fontSize="large"/>
-        </Box>
-
-        </Box>
-
-        <Box style={{flexGrow: 1}}>
-        <TextForm fullWidth={true}/>
-        </Box>
-
-        </Box>
-
-
-        <Chip label="PLAN" variant="outlined" onClick={handleClick0} color={color}/>
-        <Chip label="人気のエリア" variant="outlined" onClick={handleClick1}/>
-        <Chip label="レストラン" variant="outlined" onClick={handleClick1}/>
-      </Box>
-    </Box>
-    </Box>
-  )
-  return(
-    <>
-    <Box className={classes.root}>
-      <Map/>
-      <Box style={{position: 'absolute', width: '100%', top: 0}}>
-        <Box p={5}>
-          <TextForm fullWidth={true}/>
-          <Chip label="PLAN" variant="outlined" onClick={handleClick0} color={color}/>
-          <Chip label="人気のエリア" variant="outlined" onClick={handleClick1}/>
-          <Chip label="レストラン" variant="outlined" onClick={handleClick1}/>
+      <div style={{height: window.innerHeight}}>
+        <Map />
+      </div>
+      <Box style={{position: 'absolute', width: '100%', top: 20}}>
+        <Box mx={5}>
+          <Box sx={{ display: 'flex' }} mb={2}>
+            <Box style={{flexGrow: 1}}>
+              <Box sx={{display: 'flex', justifyContent: 'center', height: '100%', alignItems: 'center'}}>
+                <LoyaltyIcon color='secondary'fontSize="large"/>
+              </Box>
+            </Box>
+            <Box style={{flexGrow: 1}}>
+              <TextForm fullWidth={true}/>
+            </Box>
+          </Box>
+          {chips}
         </Box>
       </Box>
-      <Box style={{position: 'absolute', width: '100%', backgroundColor: 'red', bottom: 0}}>
-        <Zoom in={num==0}>
+      <Box style={{position: 'absolute', width: '100%', bottom: 0}}>
+        <Zoom in={chipIndex==0}>
           <Box>
-            <Box display="flex" justifyContent="flex-end">
-              <SwipeableTemporaryDrawerPlan />
+            <Box display="flex" justifyContent="flex-end" mx={2}>
+              <SwipeableTemporaryDrawerPlan anchor='right' contents={<Fab color="primary" aria-label="add"><ListIcon /></Fab>} drawer={<CustomizedTimeline />}/>
             </Box>
             <Box display='flex' justifyContent='center'height='100%'>
               <Box width='100%'>
-                <MyComponent plan={plan}/>
+                <Carousel plan={plan}/>
               </Box>
             </Box>
           </Box>
         </Zoom>
-        <>
-          <Zoom in={num==1}>
-            <Box>hello</Box>
-          </Zoom>
-        </>
-
       </Box>
     </Box>
-    </>
   );
 }

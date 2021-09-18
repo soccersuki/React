@@ -44,7 +44,6 @@ export default function SwipeableTemporaryDrawerPlan(props) {
     if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
     }
-
     setState({ ...state, [anchor]: open });
   };
 
@@ -57,24 +56,22 @@ export default function SwipeableTemporaryDrawerPlan(props) {
       onClick={toggleDrawer(anchor, false)}
       onKeyDown={toggleDrawer(anchor, false)}
     >
-      <CustomizedTimeline />
+      {props.drawer}
     </div>
   );
 
   return (
     <div>
       <SwipeableDrawer
-        anchor={'right'}
-        open={state['right']}
-        onClose={toggleDrawer('right', false)}
-        onOpen={toggleDrawer('right', true)}
+        anchor={props.anchor}
+        open={state[props.anchor]}
+        onClose={toggleDrawer(props.anchor, false)}
+        onOpen={toggleDrawer(props.anchor, true)}
       >
-        {list('bottom')}
+        {list(props.anchor)}
       </SwipeableDrawer>
-      <Box onClick={toggleDrawer('right', true)}>
-        <Fab color="primary" aria-label="add">
-          <ListIcon />
-        </Fab>
+      <Box onClick={toggleDrawer(props.anchor, true)}>
+        {props.contents}
       </Box>
 
     </div>

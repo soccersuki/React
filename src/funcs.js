@@ -7,7 +7,7 @@ import { Loader } from "@googlemaps/js-api-loader"
 import { AppContext } from './App';
 
 export const usePlan = () => {
-  const {google, map, plan, setPlan, markers, setMarkers, condition, setPlaces, setValue} = useContext(AppContext);
+  const {google, map, plan, setPlan, markers, setMarkers, condition, setPlaces} = useContext(AppContext);
 
   useEffect(async () => {
     if(google == null || map == null) return;
@@ -43,7 +43,7 @@ export const usePlan = () => {
     newPlan.newSpots = [...newPlan.spots];
     setPlan({...newPlan});
 
-    var newMarkers = showMarker(google, map, newPlan.itinerary, setValue)
+    var newMarkers = showMarker(google, map, newPlan.itinerary)
     setMarkers({...newMarkers});
 
     console.log(newPlan);
@@ -89,7 +89,6 @@ export const usePlace = (query, location) => {
 export const useGoogle = () => {
   // const [google, setGoogle] = useState(null);
   const {google, setGoogle} = useContext(AppContext);
-  console.log(google);
   useEffect(() => {
     // if(google != null) return;
     const API_KEY = "AIzaSyCkNip5D4glIDSddF__OlVzY1ovG5yVf7g";
@@ -108,11 +107,11 @@ export const useMap = (mapContainerRef) => {
   // const [map, setMap] = useState(null);
   const {google, setMap} = useContext(AppContext);
   useEffect(() => {
-    console.log('useMap')
     if(google == null || mapContainerRef == null) return;
     const initialConfig = {
       zoom: 15,
-      center: { lat: 35.6432027, lng: 139.6729435 }
+      center: { lat: 35.6432027, lng: 139.6729435 },
+      disableDefaultUI: true,
     }
     const map = new google.maps.Map(mapContainerRef.current, initialConfig);
     setMap(map);
@@ -120,7 +119,7 @@ export const useMap = (mapContainerRef) => {
   // return map;
 }
 
-export function showMarker(google, map, itinerary, setValue){
+export function showMarker(google, map, itinerary){
   const label = 'abcdefghijklmnopqrstuvwxyz';
   const originOption = {
     position: {
@@ -149,14 +148,14 @@ export function showMarker(google, map, itinerary, setValue){
   const spotMarkers = [];
   const infoWindow = new google.maps.InfoWindow();
   for(var i = 1; i < itinerary.length-1; i++){
-    const marker = addMarker(google, map, itinerary[i], label[(i-1) % label.length], i-1, setValue);
+    const marker = addMarker(google, map, itinerary[i], label[(i-1) % label.length], i-1);
     spotMarkers.push(marker);
   }
   map.setCenter({lat: itinerary[0].geometry.location.lat(), lng: itinerary[0].geometry.location.lng()});
   return {originMarker, destinationMarker, spotMarkers};
 }
 
-export function addMarker(google, map, place, label, index, setValue){
+export function addMarker(google, map, place, label, index){
   const infoWindow = new google.maps.InfoWindow();
   const option = {
     position: {
@@ -177,7 +176,6 @@ export function addMarker(google, map, place, label, index, setValue){
     infoWindow.close();
     infoWindow.setContent(marker.getTitle());
     infoWindow.open(marker.getMap(), marker);
-    setValue(index)
   });
   marker.setMap(map)
   return marker;
