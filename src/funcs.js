@@ -10,7 +10,7 @@ export const usePlan = () => {
   const {google, map, plan, setPlan, markers, setMarkers, condition, setPlaces} = useContext(AppContext);
 
   useEffect(async () => {
-    if(google == null || map == null) return;
+    if(google == null || map == null || condition == null) return;
 
     if(markers != null){
       markers.originMarker.setMap(null);
@@ -18,14 +18,13 @@ export const usePlan = () => {
       markers.spotMarkers.map(marker => {marker.setMap(null)});
     }
 
-    // var regionName = '大阪', originName = '大阪駅', destinationName = '萱嶋駅';
-    const condition = {
-      regionName: '大阪',
-      originName: '大阪駅',
-      destinationName: '萱嶋駅',
-      meal: false,
-      status: 'first',
-    }
+    // const condition = {
+    //   regionName: '大阪',
+    //   originName: '大阪駅',
+    //   destinationName: '萱嶋駅',
+    //   meal: false,
+    //   status: 'first',
+    // }
     const {regionName, originName, destinationName, meal, status} = condition;
     var spots;
     if(plan == null){

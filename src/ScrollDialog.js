@@ -8,17 +8,15 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 import SwitchListSecondary from './SwitchListSecondary'
 
-export default function ScrollDialog() {
+export default function ScrollDialog(props) {
   const [open, setOpen] = React.useState(false);
-  const [scroll, setScroll] = React.useState('paper');
 
-  const handleClickOpen = (scrollType) => () => {
-    setOpen(true);
-    setScroll(scrollType);
+  const handleClickOpen = () => {
+    props.handleOpen();
   };
 
   const handleClose = () => {
-    setOpen(false);
+    props.handleClose();
   };
 
   const descriptionElementRef = React.useRef(null);
@@ -33,17 +31,15 @@ export default function ScrollDialog() {
 
   return (
     <div>
-      <Button onClick={handleClickOpen('paper')}>scroll=paper</Button>
-      <Button onClick={handleClickOpen('body')}>scroll=body</Button>
       <Dialog
-        open={open}
+        open={props.open}
         onClose={handleClose}
-        scroll={scroll}
+        scroll={'paper'}
         aria-labelledby="scroll-dialog-title"
         aria-describedby="scroll-dialog-description"
       >
         <DialogTitle id="scroll-dialog-title">Subscribe</DialogTitle>
-        <DialogContent dividers={scroll === 'paper'}>
+        <DialogContent dividers={'paper' === 'paper'}>
           <DialogContentText
             id="scroll-dialog-description"
             ref={descriptionElementRef}

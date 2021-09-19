@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -13,6 +13,7 @@ import { TextField, Button, Box, Checkbox, Collapse, Fab } from '@material-ui/co
 import NavigationIcon from '@material-ui/icons/Navigation';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 
+import {AppContext} from './App'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,6 +31,8 @@ export default function SwitchListSecondary(props) {
   const [regionName, setRegionName] = useState(props.condition.regionName);
   const [originName, setOriginName] = useState(props.condition.originName);
   const [destinationName, setDestinationName] = useState('');
+
+  const { condition, setCondition, } = useContext(AppContext);
 
   const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);
@@ -60,7 +63,7 @@ export default function SwitchListSecondary(props) {
       meal,
     };
     if(checked.indexOf('checkBox') != -1) condition.destinationName = originName;
-    props.onSubmit(condition);
+    setCondition({...condition})
   }
 
   return (
