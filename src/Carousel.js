@@ -64,12 +64,12 @@ const PlaceDetail = (props) => {
 }
 
 const Carousel = (props) => {
-  const {plan} = props
+  const {spots} = props
   const [value, setValue] = useState(0);
   const { map, markers} = useContext(AppContext)
   const handleChangeIndex = (index) => {
     setValue(index);
-    const spot = plan.spots[index];
+    const spot = spots[index];
     map.setCenter({lat: spot.geometry.location.lat(), lng: spot.geometry.location.lng()})
     console.log(index);
   }
@@ -89,14 +89,14 @@ const Carousel = (props) => {
     <>
     <SwipeableViews enableMouseEvents index={value} onChangeIndex={(index) => handleChangeIndex(index)}>
       {
-        plan == null ?
+        spots == null ?
           [0, 1, 2].map(() => (
             <Box p={2}>
               <SwipeableTemporaryDrawerPlan anchor='bottom'contents={<MediaCard/>} drawer={<PlaceDetail/>}/>
             </Box>
           ))
         :
-          plan.spots.map((place) => (
+          spots.map((place) => (
             <Box p={2} onClick={() => handleClick(place)}>
               <SwipeableTemporaryDrawerPlan anchor='bottom' contents={<MediaCard place={place} />} drawer={<PlaceDetail place={place}/>}/>
             </Box>

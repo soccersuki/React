@@ -9,25 +9,19 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import SwitchListSecondary from './SwitchListSecondary'
 
 export default function ScrollDialog(props) {
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    props.handleOpen();
-  };
-
   const handleClose = () => {
     props.handleClose();
   };
 
   const descriptionElementRef = React.useRef(null);
   React.useEffect(() => {
-    if (open) {
+    if (props.open) {
       const { current: descriptionElement } = descriptionElementRef;
       if (descriptionElement !== null) {
         descriptionElement.focus();
       }
     }
-  }, [open]);
+  }, [props.open]);
 
   return (
     <div>
@@ -45,8 +39,7 @@ export default function ScrollDialog(props) {
             ref={descriptionElementRef}
             tabIndex={-1}
           >
-          <SwitchListSecondary condition={{regionName: 'Osaka'}}/>
-
+          {props.content}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

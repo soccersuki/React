@@ -20,7 +20,6 @@ import MediaCard from './MediaCard'
 import ListIcon from '@material-ui/icons/List';
 
 import CustomizedTimeline from './CustomizedTimeline'
-import SpeedDials from './SpeedDials'
 
 const useStyles = makeStyles({
   list: {
@@ -31,18 +30,17 @@ const useStyles = makeStyles({
   },
 });
 
-export default function DrawerSpeedDial(props) {
+export default function MyDrawer(props) {
   const classes = useStyles();
 
   const handleOpen = () => {
-    console.log('speedDial')
     props.toggleDrawer(props.anchor, true)
   }
   const handleClose = () => {
     props.toggleDrawer(props.anchor, false);
   }
 
-  const list = (anchor) => (
+  const content = (anchor) => (
     <div
       className={clsx(classes.list, {
         [classes.fullList]: anchor === 'top' || anchor === 'bottom',
@@ -62,10 +60,8 @@ export default function DrawerSpeedDial(props) {
         onClose={handleClose}
         onOpen={handleOpen}
       >
-        {list(props.anchor)}
+        {content(props.anchor)}
       </SwipeableDrawer>
-
-
     </div>
   );
 }

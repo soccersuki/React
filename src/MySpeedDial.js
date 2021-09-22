@@ -45,7 +45,7 @@ const actions = [
   { icon: <FavoriteIcon />, name: 'Like' },
 ];
 
-export default function SpeedDials(props) {
+export default function MySpeedDial(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
 
@@ -55,8 +55,8 @@ export default function SpeedDials(props) {
 
   const handleClick = (id) => () => {
     handleClose();
-    if(id == 0) props.onClickDrawer('right', true)
-    else props.onClickDialog();
+    if(id == 0) props.toggleDrawer('right', true)
+    else props.handleOpen();
   }
 
   const handleOpen = () => {
