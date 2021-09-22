@@ -42,8 +42,8 @@ export const usePlan = () => {
     newPlan.newSpots = [...newPlan.spots];
     setPlan({...newPlan});
 
-    var newMarkers = showMarker(google, map, newPlan.itinerary)
-    setMarkers({...newMarkers});
+    // var newMarkers = showMarker(google, map, newPlan.itinerary)
+    // setMarkers({...newMarkers});
 
     console.log(newPlan);
   }, [google, map, condition])
@@ -147,14 +147,14 @@ export function showMarker(google, map, itinerary){
   const spotMarkers = [];
   const infoWindow = new google.maps.InfoWindow();
   for(var i = 1; i < itinerary.length-1; i++){
-    const marker = addMarker(google, map, itinerary[i], label[(i-1) % label.length], i-1);
+    const marker = addMarker(google, map, itinerary[i], label[(i-1) % label.length]);
     spotMarkers.push(marker);
   }
   map.setCenter({lat: itinerary[0].geometry.location.lat(), lng: itinerary[0].geometry.location.lng()});
   return {originMarker, destinationMarker, spotMarkers};
 }
 
-export function addMarker(google, map, place, label, index){
+export function addMarker(google, map, place, label){
   const infoWindow = new google.maps.InfoWindow();
   const option = {
     position: {

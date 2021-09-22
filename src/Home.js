@@ -1,4 +1,4 @@
-import { useState, useContext} from 'react'
+import { useState, useContext, useEffect ,} from 'react'
 import Map from './Map';
 import { useGoogle } from './funcs';
 import { makeStyles } from '@material-ui/core/styles';
@@ -25,7 +25,7 @@ import LoyaltyIcon from '@material-ui/icons/Loyalty';
 
 import CustomizedTimeline from './CustomizedTimeline';
 import MySpeedDial from './MySpeedDial'
-import { usePlan } from './funcs'
+import { usePlan, addMarker } from './funcs'
 
 import MyDrawer from './MyDrawer'
 
@@ -34,7 +34,6 @@ import ScrollDialog from './ScrollDialog'
 import {AppContext} from './App'
 
 import SwitchListSecondary from './SwitchListSecondary'
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,8 +47,8 @@ function Top(props){
   const handleClick = (id) => () => {
     props.onClick(id);
   }
-  const chips = ['PLAN', '人気のエリア', 'レストラン'].map((name, id) => (
-    <Chip label={name} variant='outlined' onClick={handleClick(id)} style={{margin: 5}} color={props.chipIndex == id ? 'primary': 'default'}/>
+  const chips = props.types.map((type, id) => (
+    <Chip label={type.jpName} variant='outlined' onClick={handleClick(id)} style={{margin: 5}} color={props.chipIndex == id ? 'primary': 'default'}/>
   ))
   return(
     <Box mx={5}>
@@ -96,7 +95,8 @@ function Action(props){
 }
 
 function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+  const { children, value, index, places, markers, setMarkers, ...other} = props;
+
   return (
     <div
       role="tabpanel"
@@ -121,30 +121,42 @@ TabPanel.propTypes = {
 };
 
 function Bottom(props){
-  const {plan, places} = useContext(AppContext)
+  const {plan} = useContext(AppContext)
+  const [markers, setMarkers] = useState([]);
+  const { google, map, } = useContext(AppContext)
+  const {index} = props;
+  const [places, setPlaces] = useState(null);
+  useEffect(()=>{
+    var places;
+    if(index == 0 && plan != null) places = plan.spots;
+    else if(index >= 1){
+      places = null;
+    }
+    if(places == null) return;
+    setPlaces(places)
+    markers.map((marker) => marker.setMap(null))
+    setMarkers(places.map((place, id) => addMarker(google, map, place, id)))
+  }, [index])
 
   return(
     <>
-      <TabPanel value={props.index} index={0}>
-        <Box display='flex' justifyContent='center'height='100%'>
-          <Box width='100%'>
-            <Carousel spots={plan == null ? null : plan.spots}/>
-          </Box>
-        </Box>
-      </TabPanel>
-      <TabPanel value={props.index} index={1}>
-        <Box display='flex' justifyContent='center'height='100%'>
-          <Box width='100%'>
-            <Carousel spots={places}/>
-          </Box>
-        </Box>
-      </TabPanel>
+    <Box display='flex' justifyContent='center'height='100%'>
+      <Box width='100%'>
+        <Carousel places={places} id={id}/>
+      </Box>
+    </Box>
     </>
   )
 }
 
 export default function Home(){
   const classes = useStyles();
+  const types = [
+    {name: 'plan', jpName: 'プラン'},
+    {name: 'popularRegion', jpName: '人気のエリア'},
+    {name: 'restrant', jpName: 'レストラン'},
+    {name: 'park', jpName: '公園'},
+  ]
   const [chipIndex, setChipIndex] = useState(0);
 
   useGoogle();
@@ -159,13 +171,13 @@ export default function Home(){
         <Map />
       </div>
       <Box style={{position: 'absolute', width: '100%', top: 20}}>
-        <Top onClick={handleClick} chipIndex={chipIndex}/>
+        <Top onClick={handleClick} chipIndex={chipIndex} types={types}/>
       </Box>
       <Box style={{position: 'absolute', top: 100, left: 20}}>
         <Action />
       </Box>
       <Box style={{position: 'absolute', width: '100%', bottom: 0}}>
-        <Bottom index={chipIndex}/>
+        <Bottom index={chipIndex} types={types}/>
       </Box>
     </Box>
   );

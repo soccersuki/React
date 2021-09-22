@@ -37,6 +37,7 @@ export default function MyDrawer(props) {
     props.toggleDrawer(props.anchor, true)
   }
   const handleClose = () => {
+    console.log('open')
     props.toggleDrawer(props.anchor, false);
   }
 

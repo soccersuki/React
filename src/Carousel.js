@@ -18,6 +18,8 @@ import { useState, useContext, useEffect} from 'react'
 
 import SwipeableTemporaryDrawerPlan from './SwipeableTemporaryDrawerPlan'
 
+import MyDrawer from './MyDrawer'
+
 import { AppContext, } from './App'
 
 const styles = {
@@ -63,43 +65,62 @@ const PlaceDetail = (props) => {
   )
 }
 
+function PlaceCard(props){
+  const {place} = props;
+  const [openDrawer, setOpenDrawer] = useState({
+    top: false,
+    left: false,
+    bottom: false,
+    right: false,
+  });
+  const toggleDrawer = (anchor, open) => {
+    setOpenDrawer({ ...openDrawer, [anchor]: open });
+  };
+
+  const handleClick = () => {
+    toggleDrawer('bottom', true)
+  }
+  return(
+    <Box>
+      <Box onClick={handleClick}><MediaCard place={place} /></Box>
+      <MyDrawer drawer={<PlaceDetail place={place}/>} toggleDrawer={toggleDrawer} state={openDrawer} anchor={'bottom'}/>
+    </Box>
+  )
+}
+
 const Carousel = (props) => {
-  const {spots} = props
+  const {places} = props
   const [value, setValue] = useState(0);
-  const { map, markers} = useContext(AppContext)
+  const { map, markers } = useContext(AppContext)
   const handleChangeIndex = (index) => {
     setValue(index);
-    const spot = spots[index];
-    map.setCenter({lat: spot.geometry.location.lat(), lng: spot.geometry.location.lng()})
+    const place = places[index];
+    map.setCenter({lat: place.geometry.location.lat(), lng: place.geometry.location.lng()})
     console.log(index);
   }
-  const handleClick = (spot) => {
-    console.log(spot)
-    map.setCenter({lat: spot.geometry.location.lat(), lng: spot.geometry.location.lng()})
-  }
   useEffect(() => {
-    if(markers==null) return;
-    markers.spotMarkers.map((marker, id) => {
-      marker.addListener('click', ()=>{
-        setValue(id);
-      })
-    })
-  }, [markers])
+    console.log(props.id)
+
+    if(places == null) return;
+    // markers.spotMarkers.map((marker, id) => {
+    //   marker.addListener('click', ()=>{
+    //     setValue(id);
+    //   })
+    // })
+    map.setCenter({lat: places[0].geometry.location.lat(), lng: places[0].geometry.location.lng()})
+  }, [places])
   return(
     <>
+    {props.id}
     <SwipeableViews enableMouseEvents index={value} onChangeIndex={(index) => handleChangeIndex(index)}>
       {
-        spots == null ?
+        places == null ?
           [0, 1, 2].map(() => (
-            <Box p={2}>
-              <SwipeableTemporaryDrawerPlan anchor='bottom'contents={<MediaCard/>} drawer={<PlaceDetail/>}/>
-            </Box>
+            <PlaceCard />
           ))
         :
-          spots.map((place) => (
-            <Box p={2} onClick={() => handleClick(place)}>
-              <SwipeableTemporaryDrawerPlan anchor='bottom' contents={<MediaCard place={place} />} drawer={<PlaceDetail place={place}/>}/>
-            </Box>
+          places.map((place) => (
+            <PlaceCard place={place}/>
           ))
       }
     </SwipeableViews>
