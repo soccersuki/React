@@ -62,7 +62,10 @@ function Top(props){
           <TextForm fullWidth={true}/>
         </Box>
       </Box>
-      {chips}
+      <Box style={{overflowX: 'auto', whiteSpace: 'nowrap'}}>
+        {chips}
+      </Box>
+
     </Box>
   )
 }
@@ -126,26 +129,30 @@ function Bottom(props){
   const { google, map, } = useContext(AppContext)
   const {index} = props;
   const [places, setPlaces] = useState(null);
+  const [display, setDisplay] = useState(false);
   useEffect(()=>{
+    setDisplay(false);
     var places;
     if(index == 0 && plan != null) places = plan.spots;
     else if(index >= 1){
       places = null;
     }
-    if(places == null) return;
     setPlaces(places)
+
+    if(places == null) return;
     markers.map((marker) => marker.setMap(null))
     setMarkers(places.map((place, id) => addMarker(google, map, place, id)))
+    setDisplay(true);
   }, [index])
 
   return(
-    <>
-    <Box display='flex' justifyContent='center'height='100%'>
-      <Box width='100%'>
-        <Carousel places={places} id={id}/>
+    <Zoom in={display}>
+      <Box display='flex' justifyContent='center'height='100%'>
+        <Box width='100%'>
+          <Carousel places={places}/>
+        </Box>
       </Box>
-    </Box>
-    </>
+    </Zoom>
   )
 }
 

@@ -57,34 +57,6 @@ const findSpots = async (google, map, regionName, originName) => {
   return spots;
 }
 
-
-export const usePlace = (query, location) => {
-  const [place, setPlace] = useState(null);
-  const {google, map} = useContext(AppContext);
-  useEffect(() => {
-    if(google == null || map == null) return;
-    var service = new google.maps.places.PlacesService(map);
-    var request = {
-      query: query,
-      fields: ['name', 'geometry', 'formatted_address', 'photos'],
-    };
-    if(location == null){
-      request.locationBias = {north: 45.29328154474485, east: 153.2360484603554, south: 26.151593390188783, west: 126.5636657976794};
-    }
-    else{
-      request.locationBias = {lat: location.lat(), lng: location.lng()};
-    }
-    console.log(request)
-    service.findPlaceFromQuery(request, function(results, status) {
-      if (status === google.maps.places.PlacesServiceStatus.OK) {
-        setPlace(results);
-        console.log(results);
-      }
-    });
-  }, [google, map])
-  return place;
-}
-
 export const useGoogle = () => {
   // const [google, setGoogle] = useState(null);
   const {google, setGoogle} = useContext(AppContext);

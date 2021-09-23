@@ -99,7 +99,6 @@ const Carousel = (props) => {
     console.log(index);
   }
   useEffect(() => {
-    console.log(props.id)
 
     if(places == null) return;
     // markers.spotMarkers.map((marker, id) => {
