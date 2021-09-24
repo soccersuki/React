@@ -3,13 +3,12 @@ import Hero from './Hero';
 import TextForm from './TextForm';
 import PopularRegions from './PopularRegions';
 import { Box, Divider, } from '@material-ui/core';
-import { useGoogle } from './funcs';
 
 import SwipeableTemporaryDrawer from './SwipeableTemporaryDrawer';
 
 export default function HomePage(){
   const history = useHistory();
-  useGoogle();
+  // useGoogle();
   const handleSubmit = (regionName) => {
     const region = {
       name: regionName,

@@ -3,8 +3,9 @@ import {
   useEffect,
   useContext
 } from 'react';
-import { Loader } from "@googlemaps/js-api-loader"
 import { AppContext } from './App';
+
+import { findPlace, findPlaces, drivingDirection, } from './googleMapAPI'
 
 export const usePlan = () => {
   const {google, map, plan, setPlan, markers, setMarkers, condition, setPlaces} = useContext(AppContext);
@@ -55,39 +56,6 @@ const findSpots = async (google, map, regionName, originName) => {
   var origin = await findPlace(google, map, originName);
   var spots = await findPlaces(google, map, regionName + '観光', origin[0].geometry.location);
   return spots;
-}
-
-export const useGoogle = () => {
-  // const [google, setGoogle] = useState(null);
-  const {google, setGoogle} = useContext(AppContext);
-  useEffect(() => {
-    // if(google != null) return;
-    const API_KEY = "AIzaSyCkNip5D4glIDSddF__OlVzY1ovG5yVf7g";
-    const loader = new Loader({
-      apiKey: API_KEY,
-      version: "weekly",
-      libraries: ["places"],
-    });
-    loader.load().then((google) => {
-      setGoogle(google);
-    })
-  }, [])
-  // return google;
-}
-export const useMap = (mapContainerRef) => {
-  // const [map, setMap] = useState(null);
-  const {google, setMap} = useContext(AppContext);
-  useEffect(() => {
-    if(google == null || mapContainerRef == null) return;
-    const initialConfig = {
-      zoom: 15,
-      center: { lat: 35.6432027, lng: 139.6729435 },
-      disableDefaultUI: true,
-    }
-    const map = new google.maps.Map(mapContainerRef.current, initialConfig);
-    setMap(map);
-  }, [google, mapContainerRef]);
-  // return map;
 }
 
 export function showMarker(google, map, itinerary){
@@ -268,73 +236,7 @@ const insertLunch = async (google, map, plan) => {
   }
 }
 
-export const findPlace = async (google, map, query, location) => {
-  var service = new google.maps.places.PlacesService(map);
-  var request = {
-    query: query,
-    fields: ['name', 'geometry', 'formatted_address', 'photos'],
-  };
-  if(location == null){
-    request.locationBias = {north: 45.29328154474485, east: 153.2360484603554, south: 26.151593390188783, west: 126.5636657976794};
-  }
-  else{
-    request.locationBias = {lat: location.lat(), lng: location.lng()};
-  }
-  var place = await new Promise(resolve => {
-    service.findPlaceFromQuery(request, function(results, status) {
-      if (status === google.maps.places.PlacesServiceStatus.OK) {
-        resolve(results);
-      }
-    });
-  });
-  return place;
-}
 
-export const findPlaces = async (google, map, query, location) => {
-  var service = new google.maps.places.PlacesService(map);
-  var request = {
-    query,
-  }
-  if(location == null){
-    request.bounds = {north: 45.29328154474485, east: 153.2360484603554, south: 26.151593390188783, west: 126.5636657976794};
-  }
-  else{
-    request.location = {lat: location.lat(), lng: location.lng()};
-    request.radius = 50000;
-  }
-  var places = await new Promise(resolve => {
-    service.textSearch(request, (results, status) => {
-      if (status == google.maps.places.PlacesServiceStatus.OK) {
-        resolve(results);
-      }
-    })
-  })
-  return places;
-}
-
-const drivingDirection = async (google, origin, destination, waypoints) => {
-  const directionsService = new google.maps.DirectionsService();
-  // const directionsRenderer = new google.maps.DirectionsRenderer({suppressPolylines: true});
-  // directionsRenderer.setMap(map);
-  var request = {
-    origin,
-    destination,
-    travelMode: google.maps.TravelMode.DRIVING,
-  };
-  if(waypoints != null){
-    request.waypoints = waypoints;
-    request.optimizeWaypoints = true;
-  }
-
-  var direction = await directionsService
-    .route(request)
-    .then((response) => {
-      // directionsRenderer.setDirections(response);
-      return response;
-    })
-    .catch((e) => console.log("Directions request failed due to " + e));
-  return direction
-}
 
 function getTimeStr(time){
   var h = Math.floor(time / 3600);

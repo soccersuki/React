@@ -62,7 +62,7 @@ export default function MediaCard(props) {
       <CardActionArea>
         <CardMedia
           className={classes.media}
-          image={place.photos[0].getUrl()}
+          image={place.photos == null ? null : place.photos[0].getUrl()}
           title="Contemplative Reptile"
         />
         <CardContent>

@@ -89,9 +89,9 @@ function PlaceCard(props){
 }
 
 const Carousel = (props) => {
-  const {places} = props
+  const { places, carouselIndex, markers, setMarkers} = props
   const [value, setValue] = useState(0);
-  const { map, markers } = useContext(AppContext)
+  const { map } = useContext(AppContext)
   const handleChangeIndex = (index) => {
     setValue(index);
     const place = places[index];
@@ -101,16 +101,16 @@ const Carousel = (props) => {
   useEffect(() => {
 
     if(places == null) return;
-    // markers.spotMarkers.map((marker, id) => {
-    //   marker.addListener('click', ()=>{
-    //     setValue(id);
-    //   })
-    // })
-    map.setCenter({lat: places[0].geometry.location.lat(), lng: places[0].geometry.location.lng()})
-  }, [places])
+    markers.map((marker, id) => {
+      marker.addListener('click', ()=>{
+        setValue(id);
+      })
+    })
+    setMarkers(markers)
+    // map.setCenter({lat: places[0].geometry.location.lat(), lng: places[0].geometry.location.lng()})
+  }, [markers])
   return(
     <>
-    {props.id}
     <SwipeableViews enableMouseEvents index={value} onChangeIndex={(index) => handleChangeIndex(index)}>
       {
         places == null ?

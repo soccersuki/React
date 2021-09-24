@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect ,} from 'react'
 import Map from './Map';
-import { useGoogle } from './funcs';
+import { useGoogle } from './customHooks';
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, IconButton, Chip, Fab, Zoom, Typography, } from '@material-ui/core'
 
@@ -35,6 +35,8 @@ import {AppContext} from './App'
 
 import SwitchListSecondary from './SwitchListSecondary'
 
+import { findPlaces } from './googleMapAPI';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     position: 'relative',
@@ -59,7 +61,7 @@ function Top(props){
           </Box>
         </Box>
         <Box style={{flexGrow: 1}}>
-          <TextForm fullWidth={true}/>
+          <TextForm fullWidth={true} onSubmit={props.onSubmit}/>
         </Box>
       </Box>
       <Box style={{overflowX: 'auto', whiteSpace: 'nowrap'}}>
@@ -97,59 +99,31 @@ function Action(props){
   )
 }
 
-function TabPanel(props) {
-  const { children, value, index, places, markers, setMarkers, ...other} = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Zoom in={value == index}>
-          {children}
-        </Zoom>
-      )}
-    </div>
-  );
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired,
-};
-
 function Bottom(props){
   const {plan} = useContext(AppContext)
   const [markers, setMarkers] = useState([]);
   const { google, map, } = useContext(AppContext)
-  const {index} = props;
-  const [places, setPlaces] = useState(null);
+  const { index, places, } = props;
   const [display, setDisplay] = useState(false);
   useEffect(()=>{
     setDisplay(false);
-    var places;
-    if(index == 0 && plan != null) places = plan.spots;
-    else if(index >= 1){
-      places = null;
-    }
-    setPlaces(places)
-
-    if(places == null) return;
     markers.map((marker) => marker.setMap(null))
-    setMarkers(places.map((place, id) => addMarker(google, map, place, id)))
-    setDisplay(true);
-  }, [index])
+    if(places == null) return;
+
+    setTimeout(()=>{
+      setDisplay(true);
+      setMarkers(places.map((place, id) => addMarker(google, map, place, id)));
+    }, 1000)
+
+  }, [places])
+
+  if(places == null) return null;
 
   return(
     <Zoom in={display}>
       <Box display='flex' justifyContent='center'height='100%'>
         <Box width='100%'>
-          <Carousel places={places}/>
+          <Carousel places={places} markers={markers} setMarkers={setMarkers}/>
         </Box>
       </Box>
     </Zoom>
@@ -159,17 +133,32 @@ function Bottom(props){
 export default function Home(){
   const classes = useStyles();
   const types = [
-    {name: 'plan', jpName: 'プラン'},
-    {name: 'popularRegion', jpName: '人気のエリア'},
-    {name: 'restrant', jpName: 'レストラン'},
-    {name: 'park', jpName: '公園'},
+    {name: 'plan', jpName: 'プラン', query: ''},
+    {name: 'popularRegion', jpName: '人気のエリア', query: '観光'},
+    {name: 'restrant', jpName: 'レストラン', query: 'レストラン'},
+    {name: 'park', jpName: '公園', query: '公園'},
   ]
   const [chipIndex, setChipIndex] = useState(0);
+  const { google, map, plan } = useContext(AppContext)
+  const [places, setPlaces] = useState(null);
 
   useGoogle();
   usePlan();
-  const handleClick = (id) => {
+  const handleClick = async (id) => {
     setChipIndex(id);
+    var places;
+    if(id == 0){
+      places = plan == null ? null : plan.spots;
+    }
+    else{
+      places = await findPlaces(google, map, types[id].query);
+    }
+    setPlaces(places);
+  }
+  const handleSubmit = async (text) => {
+    setChipIndex(-1);
+    const places = await findPlaces(google, map, text);
+    setPlaces(places);
   }
 
   return(
@@ -178,13 +167,13 @@ export default function Home(){
         <Map />
       </div>
       <Box style={{position: 'absolute', width: '100%', top: 20}}>
-        <Top onClick={handleClick} chipIndex={chipIndex} types={types}/>
+        <Top onClick={handleClick} chipIndex={chipIndex} types={types} onSubmit={handleSubmit}/>
       </Box>
       <Box style={{position: 'absolute', top: 100, left: 20}}>
         <Action />
       </Box>
       <Box style={{position: 'absolute', width: '100%', bottom: 0}}>
-        <Bottom index={chipIndex} types={types}/>
+        <Bottom index={chipIndex} types={types} places={places}/>
       </Box>
     </Box>
   );
