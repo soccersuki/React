@@ -101,13 +101,12 @@ const Carousel = (props) => {
   useEffect(() => {
 
     if(places == null) return;
-    markers.map((marker, id) => {
+    markers.markers.map((marker, id) => {
       marker.addListener('click', ()=>{
         setValue(id);
       })
     })
     setMarkers(markers)
-    // map.setCenter({lat: places[0].geometry.location.lat(), lng: places[0].geometry.location.lng()})
   }, [markers])
   return(
     <>

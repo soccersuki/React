@@ -25,7 +25,7 @@ import LoyaltyIcon from '@material-ui/icons/Loyalty';
 
 import CustomizedTimeline from './CustomizedTimeline';
 import MySpeedDial from './MySpeedDial'
-import { usePlan, addMarker } from './funcs'
+import { usePlan, addMarkers } from './funcs'
 
 import MyDrawer from './MyDrawer'
 
@@ -101,18 +101,22 @@ function Action(props){
 
 function Bottom(props){
   const {plan} = useContext(AppContext)
-  const [markers, setMarkers] = useState([]);
+  const [markers, setMarkers] = useState(null);
   const { google, map, } = useContext(AppContext)
   const { index, places, } = props;
   const [display, setDisplay] = useState(false);
   useEffect(()=>{
     setDisplay(false);
-    markers.map((marker) => marker.setMap(null))
+    if(markers != null) {
+      markers.markers.map((marker) => marker.setMap(null));
+      if(markers.originMarker != null) markers.originMarker.setMap(null);
+      if(markers.destinationMarker != null) markers.destinationMarker.setMap(null);
+    }
     if(places == null) return;
 
     setTimeout(()=>{
       setDisplay(true);
-      setMarkers(places.map((place, id) => addMarker(google, map, place, id)));
+      setMarkers(addMarkers(google, map, places, plan.origin, plan.destination));
     }, 1000)
 
   }, [places])
@@ -148,7 +152,7 @@ export default function Home(){
     setChipIndex(id);
     var places;
     if(id == 0){
-      places = plan == null ? null : plan.spots;
+      places = plan == null ? null : plan.places;
     }
     else{
       places = await findPlaces(google, map, types[id].query);

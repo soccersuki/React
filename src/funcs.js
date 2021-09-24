@@ -8,16 +8,16 @@ import { AppContext } from './App';
 import { findPlace, findPlaces, drivingDirection, } from './googleMapAPI'
 
 export const usePlan = () => {
-  const {google, map, plan, setPlan, markers, setMarkers, condition, setPlaces} = useContext(AppContext);
+  const {google, map, plan, setPlan, condition, } = useContext(AppContext);
 
   useEffect(async () => {
     if(google == null || map == null || condition == null) return;
 
-    if(markers != null){
-      markers.originMarker.setMap(null);
-      markers.destinationMarker.setMap(null);
-      markers.spotMarkers.map(marker => {marker.setMap(null)});
-    }
+    // if(markers != null){
+    //   markers.originMarker.setMap(null);
+    //   markers.destinationMarker.setMap(null);
+    //   markers.placeMarkers.map(marker => {marker.setMap(null)});
+    // }
 
     // const condition = {
     //   regionName: '大阪',
@@ -27,151 +27,93 @@ export const usePlan = () => {
     //   status: 'first',
     // }
     const {regionName, originName, destinationName, meal, status} = condition;
-    var spots;
-    if(plan == null){
-      spots = await findSpots(google, map, regionName, originName);
-      setPlaces(spots.slice(5))
-      spots = spots.slice(0, 5);
+    var places;
+    if(status == 'new'){
+      places = await findPlaces(google, map, regionName, originName);
+      places = places.slice(0, 5);
     }
     else{
-      spots = plan.newSpots;
-      setPlan(null);
+      places = plan.places;
+      // setPlan(null);
     }
 
-    const newPlan = await makePlan(google, map, originName, destinationName, spots);
-    if(meal) await insertLunch(google, map, newPlan);
-    newPlan.newSpots = [...newPlan.spots];
-    setPlan({...newPlan});
+    const plan = await makePlan(google, map, originName, destinationName, places);
+    if(meal) await insertLunch(google, map, plan);
+    // newPlan.newplaces = [...newPlan.places];
+    setPlan({...plan});
 
-    // var newMarkers = showMarker(google, map, newPlan.itinerary)
-    // setMarkers({...newMarkers});
-
-    console.log(newPlan);
+    console.log(plan);
   }, [google, map, condition])
-  return plan;
 }
 
-const findSpots = async (google, map, regionName, originName) => {
+const findplaces = async (google, map, regionName, originName) => {
   var region = await findPlace(google, map, regionName);
   var origin = await findPlace(google, map, originName);
-  var spots = await findPlaces(google, map, regionName + '観光', origin[0].geometry.location);
-  return spots;
+  var places = await findPlaces(google, map, regionName + ' 観光', origin[0].geometry.location);
+  return places;
 }
 
-export function showMarker(google, map, itinerary){
-  const label = 'abcdefghijklmnopqrstuvwxyz';
-  const originOption = {
-    position: {
-      lat: itinerary[0].geometry.location.lat(),
-      lng: itinerary[0].geometry.location.lng(),
-    },
-    map: map,
-    icon: {
-      url: "http://maps.google.com/mapfiles/ms/icons/flag.png",
-    },
-  }
-  const originMarker = new google.maps.Marker(originOption);
-  originMarker.setMap(map)
-  const destinationOption = {
-    position: {
-      lat: itinerary.slice(-1)[0].geometry.location.lat(),
-      lng: itinerary.slice(-1)[0].geometry.location.lng(),
-    },
-    map: map,
-    icon: {
-      url: "http://maps.google.com/mapfiles/ms/icons/flag.png",
-    },
-  }
-  const destinationMarker = new google.maps.Marker(destinationOption);
-  destinationMarker.setMap(map);
-  const spotMarkers = [];
-  const infoWindow = new google.maps.InfoWindow();
-  for(var i = 1; i < itinerary.length-1; i++){
-    const marker = addMarker(google, map, itinerary[i], label[(i-1) % label.length]);
-    spotMarkers.push(marker);
-  }
-  map.setCenter({lat: itinerary[0].geometry.location.lat(), lng: itinerary[0].geometry.location.lng()});
-  return {originMarker, destinationMarker, spotMarkers};
-}
-
-export function addMarker(google, map, place, label){
-  const infoWindow = new google.maps.InfoWindow();
-  const option = {
-    position: {
-      lat: place.geometry.location.lat(),
-      lng: place.geometry.location.lng(),
-    },
-    map: map,
-    label: {
-      text: label,
-      color: 'white',
-    },
-    title: place.name,
-    optimized: false,
-    animation: google.maps.Animation.DROP,
-  }
-  const marker = new google.maps.Marker(option);
-  marker.addListener("click", () => {
-    infoWindow.close();
-    infoWindow.setContent(marker.getTitle());
-    infoWindow.open(marker.getMap(), marker);
-  });
-  marker.setMap(map)
-  return marker;
-}
-
-export async function makePlan(google, map, originName, destinationName, spots){
-  var waypts = spots.map(spot => {
+export async function makePlan(google, map, originName, destinationName, places){
+  var waypts = places.map(place => {
     return {
-      location: spot.formatted_address,
+      location: place.formatted_address,
       stopover: true,
     }
   });
+  const origin = await findPlace(google, map, originName);
+  const destination = await findPlace(google, map, destinationName);
   var direction = await drivingDirection(google, originName, destinationName, waypts);
   var legs = direction.routes[0].legs;
   legs.map(leg => {
     leg.duration.value *= 2;
     leg.duration.newText = getDurationStr(leg.duration.value);
   })
-  var newSpots = updateSpots(direction, spots);
-  var itinerary = getItinerary(newSpots, legs, direction);
-  return {spots: newSpots, itinerary, legs};
+  places = updatePlaces(direction, places);
+  var itinerary = getItinerary(places, origin, destination, legs, direction);
+  return {places, origin, destination, itinerary, legs};
 }
 
-const updateSpots = (direction, spots) => {
-  var newSpots = direction.routes[0].waypoint_order.map(i => {
-    var spot = spots[i];
-    spot.stayTime = {
+const updatePlaces = (direction, places, origin, destination) => {
+  origin.stayTime = {
+    value: 0,
+    text: getDurationStr(0),
+  }
+  destination.stayTime = {
+    value: 0,
+    text: getDurationStr(0),
+  }
+  return direction.routes[0].waypoint_order.map(i => {
+    var place = places[i];
+    place.stayTime = {
       value: 1 * 3600,
       text: getDurationStr(1 * 3600),
     };
-    return spot;
+    return place;
   });
-  return newSpots;
 }
 
-const getItinerary = (spots, legs, direction) => {
-  var itinerary = spots.slice();
-  var origin = {
-    name: direction.request.origin.query,
-    geometry: {
-      location: direction.routes[0].legs[0].start_location,
-    },
-    stayTime: {
-      value: 0,
-      text: getDurationStr(0),
-    }
-  };
-  var destination = {
-    name: direction.request.destination.query,
-    geometry: {
-      location: direction.routes[0].legs.slice(-1)[0].end_location,
-    },
-    stayTime: {
-      value: 0,
-      text: getDurationStr(0),
-    }
-  };
+const getItinerary = (places, origin, destination, legs, direction) => {
+  var itinerary = places.slice();
+  // var origin = {
+  //   name: direction.request.origin.query,
+  //   geometry: {
+  //     location: direction.routes[0].legs[0].start_location,
+  //   },
+  //   stayTime: {
+  //     value: 0,
+  //     text: getDurationStr(0),
+  //   }
+  // };
+  // var destination = {
+  //   name: direction.request.destination.query,
+  //   geometry: {
+  //     location: direction.routes[0].legs.slice(-1)[0].end_location,
+  //   },
+  //   stayTime: {
+  //     value: 0,
+  //     text: getDurationStr(0),
+  //   }
+  // };
   itinerary.unshift(origin);
   itinerary.push(destination);
 
@@ -194,7 +136,7 @@ const getItinerary = (spots, legs, direction) => {
 }
 
 const insertLunch = async (google, map, plan) => {
-  const {itinerary, legs, spots} = plan;
+  const {itinerary, legs, places} = plan;
   for(var i = 0; i < itinerary.length - 1; i++){
     if(itinerary[i].departureTime.value >= 12 * 3600){
       var [lunch] = await findPlace(google, map, '昼食', itinerary[i].geometry.location);
@@ -230,7 +172,7 @@ const insertLunch = async (google, map, plan) => {
       }
       itinerary.splice(i+1, 0, lunch);
       legs.splice(i, 1, goLeg, backLeg);
-      spots.splice(i+1, 0, lunch);
+      places.splice(i+1, 0, lunch);
       break;
     }
   }
