@@ -19,6 +19,7 @@ import { useState, useContext, useEffect} from 'react'
 import SwipeableTemporaryDrawerPlan from './SwipeableTemporaryDrawerPlan'
 
 import MyDrawer from './MyDrawer'
+import PlaceDetail from './PlaceDetail'
 
 import { AppContext, } from './App'
 
@@ -39,31 +40,7 @@ const styles = {
   },
 };
 
-const PlaceDetail = (props) => {
-  const {place} = props;
-  return(
-    <>
-    <img src={place == null ? null: place.photos[0].getUrl()} width='100%'/>
-    <List>
-      {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-        <ListItem button key={text}>
-          <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-          <ListItemText primary={text} />
-        </ListItem>
-      ))}
-    </List>
-    <Divider />
-    <List>
-      {['All mail', 'Trash', 'Spam'].map((text, index) => (
-        <ListItem button key={text}>
-          <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-          <ListItemText primary={text} />
-        </ListItem>
-      ))}
-    </List>
-    </>
-  )
-}
+
 
 function PlaceCard(props){
   const {place} = props;
@@ -95,12 +72,12 @@ const Carousel = (props) => {
   const handleChangeIndex = (index) => {
     setValue(index);
     const place = places[index];
-    map.setCenter({lat: place.geometry.location.lat(), lng: place.geometry.location.lng()})
+    map.panTo({lat: place.geometry.location.lat(), lng: place.geometry.location.lng()})
     console.log(index);
   }
   useEffect(() => {
 
-    if(places == null) return;
+    if(markers == null) return;
     markers.markers.map((marker, id) => {
       marker.addListener('click', ()=>{
         setValue(id);

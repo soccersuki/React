@@ -61,6 +61,7 @@ export default function SwitchListSecondary(props) {
       originName,
       destinationName,
       meal,
+      status: 'new',
     };
     if(checked.indexOf('checkBox') != -1) condition.destinationName = originName;
     setCondition({...condition})

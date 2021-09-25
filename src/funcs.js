@@ -1,13 +1,9 @@
-import {
-  useState,
-  useEffect,
-  useContext
-} from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { AppContext } from './App';
 
 import { findPlace, findPlaces, drivingDirection, } from './googleMapAPI'
 
-export const usePlan = () => {
+export const usePlan = (setChipIndex) => {
   const {google, map, plan, setPlan, condition, } = useContext(AppContext);
 
   useEffect(async () => {
@@ -27,9 +23,11 @@ export const usePlan = () => {
     //   status: 'first',
     // }
     const {regionName, originName, destinationName, meal, status} = condition;
+    const origin = await findPlace(google, map, originName);
+    const destination = await findPlace(google, map, destinationName);
     var places;
     if(status == 'new'){
-      places = await findPlaces(google, map, regionName, originName);
+      places = await findPlaces(google, map, regionName + ' 観光');
       places = places.slice(0, 5);
     }
     else{
@@ -37,20 +35,14 @@ export const usePlan = () => {
       // setPlan(null);
     }
 
-    const plan = await makePlan(google, map, originName, destinationName, places);
-    if(meal) await insertLunch(google, map, plan);
+    const newPlan = await makePlan(google, map, originName, destinationName, places);
+    if(meal) await insertLunch(google, map, newPlan);
     // newPlan.newplaces = [...newPlan.places];
-    setPlan({...plan});
+    setPlan({...newPlan});
+    setChipIndex(0)
 
-    console.log(plan);
+    console.log(newPlan);
   }, [google, map, condition])
-}
-
-const findplaces = async (google, map, regionName, originName) => {
-  var region = await findPlace(google, map, regionName);
-  var origin = await findPlace(google, map, originName);
-  var places = await findPlaces(google, map, regionName + ' 観光', origin[0].geometry.location);
-  return places;
 }
 
 export async function makePlan(google, map, originName, destinationName, places){
@@ -68,7 +60,7 @@ export async function makePlan(google, map, originName, destinationName, places)
     leg.duration.value *= 2;
     leg.duration.newText = getDurationStr(leg.duration.value);
   })
-  places = updatePlaces(direction, places);
+  places = updatePlaces(direction, places, origin, destination);
   var itinerary = getItinerary(places, origin, destination, legs, direction);
   return {places, origin, destination, itinerary, legs};
 }

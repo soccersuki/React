@@ -17,7 +17,7 @@ export const findPlace = async (google, map, query, location) => {
       }
     });
   });
-  return place;
+  return place[0];
 }
 
 export const findPlaces = async (google, map, query, location) => {
@@ -37,8 +37,6 @@ export const findPlaces = async (google, map, query, location) => {
     service.textSearch(request, (results, status) => {
       if (status == google.maps.places.PlacesServiceStatus.OK) {
         resolve(results);
-        console.log(results)
-        console.log(map.getBounds())
       }
     })
   })

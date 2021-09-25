@@ -22,12 +22,10 @@ import ListIcon from '@material-ui/icons/List';
 import CustomizedTimeline from './CustomizedTimeline'
 
 const useStyles = makeStyles({
-  list: {
-    width: 250,
-  },
-  fullList: {
+  root: {
     width: 'auto',
-  },
+    height: '70%'
+  }
 });
 
 export default function MyDrawer(props) {
@@ -43,9 +41,7 @@ export default function MyDrawer(props) {
 
   const content = (anchor) => (
     <div
-      className={clsx(classes.list, {
-        [classes.fullList]: anchor === 'top' || anchor === 'bottom',
-      })}
+      className={classes.root}
       role="presentation"
       onClick={handleClose}
       onKeyDown={handleClose}

@@ -74,7 +74,6 @@ export default function MediaCard(props) {
             {place.rating}
             <Rating name="read-only" value={place.rating} precision={0.5} readOnly size='small' />
           </Box>
-          {place.types.map((type) => <Chip label={type} color="primary"/>)}
 
           </Typography>
         </CardContent>

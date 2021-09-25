@@ -4,29 +4,19 @@ import { useGoogle } from './customHooks';
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, IconButton, Chip, Fab, Zoom, Typography, } from '@material-ui/core'
 
-import MediaCard from './MediaCard';
-import ArrowRightIcon from '@material-ui/icons/ArrowRight';
-import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import AddIcon from '@material-ui/icons/Add';
-import PropTypes from 'prop-types';
 
 
 import Carousel from './Carousel'
-import SwipeableTemporaryDrawer from './SwipeableTemporaryDrawer'
-import SwipeableTemporaryDrawerPlan from './SwipeableTemporaryDrawerPlan'
 import TextForm from './TextForm'
 
 import ButtonAppBar from './ButtonAppBar'
-
-import ListIcon from '@material-ui/icons/List';
 
 import LoyaltyIcon from '@material-ui/icons/Loyalty';
 
 import CustomizedTimeline from './CustomizedTimeline';
 import MySpeedDial from './MySpeedDial'
-import { usePlan, addMarkers } from './funcs'
-
+import { usePlan, } from './funcs'
+import { addMarkers, } from './markerFuncs';
 import MyDrawer from './MyDrawer'
 
 import ScrollDialog from './ScrollDialog'
@@ -101,33 +91,22 @@ function Action(props){
 
 function Bottom(props){
   const {plan} = useContext(AppContext)
-  const [markers, setMarkers] = useState(null);
+  // const [markers, setMarkers] = useState(null);
   const { google, map, } = useContext(AppContext)
   const { index, places, } = props;
-  const [display, setDisplay] = useState(false);
+  // const [display, setDisplay] = useState(false);
   useEffect(()=>{
-    setDisplay(false);
-    if(markers != null) {
-      markers.markers.map((marker) => marker.setMap(null));
-      if(markers.originMarker != null) markers.originMarker.setMap(null);
-      if(markers.destinationMarker != null) markers.destinationMarker.setMap(null);
-    }
-    if(places == null) return;
 
-    setTimeout(()=>{
-      setDisplay(true);
-      setMarkers(addMarkers(google, map, places, plan.origin, plan.destination));
-    }, 1000)
 
   }, [places])
 
   if(places == null) return null;
 
   return(
-    <Zoom in={display}>
+    <Zoom in={props.display}>
       <Box display='flex' justifyContent='center'height='100%'>
         <Box width='100%'>
-          <Carousel places={places} markers={markers} setMarkers={setMarkers}/>
+          <Carousel places={places} markers={props.markers} setMarkers={props.setMarkers}/>
         </Box>
       </Box>
     </Zoom>
@@ -145,25 +124,47 @@ export default function Home(){
   const [chipIndex, setChipIndex] = useState(0);
   const { google, map, plan } = useContext(AppContext)
   const [places, setPlaces] = useState(null);
+  const [text, setText] = useState(null);
+  const [markers, setMarkers] = useState(null);
+  const [display, setDisplay] = useState(false);
 
   useGoogle();
-  usePlan();
+  usePlan(setChipIndex);
+
   const handleClick = async (id) => {
     setChipIndex(id);
-    var places;
-    if(id == 0){
-      places = plan == null ? null : plan.places;
-    }
-    else{
-      places = await findPlaces(google, map, types[id].query);
-    }
-    setPlaces(places);
   }
   const handleSubmit = async (text) => {
+    setText(text)
     setChipIndex(-1);
-    const places = await findPlaces(google, map, text);
-    setPlaces(places);
   }
+
+  useEffect(async () => {
+    if(markers != null) {
+      markers.markers.map((marker) => marker.setMap(null));
+      if(markers.originMarker != null) markers.originMarker.setMap(null);
+      if(markers.destinationMarker != null) markers.destinationMarker.setMap(null);
+    }
+    setDisplay(false);
+    var places;
+    if(chipIndex == 0){
+      places = plan == null ? null : plan.places;
+    }
+    else if(chipIndex == -1){
+      places = await findPlaces(google, map, text);
+    }
+    else{
+      places = await findPlaces(google, map, types[chipIndex].query);
+    }
+    console.log(chipIndex);
+    console.log(places);
+    if(places == null) return;
+    if(chipIndex == 0) setMarkers(addMarkers(google, map, places, plan.origin, plan.destination));
+    else setMarkers(addMarkers(google, map, places))
+    map.panTo({lat: places[0].geometry.location.lat(), lng: places[0].geometry.location.lng()})
+    setPlaces(places);
+    setDisplay(true);
+  }, [chipIndex, plan])
 
   return(
     <Box className={classes.root}>
@@ -177,7 +178,7 @@ export default function Home(){
         <Action />
       </Box>
       <Box style={{position: 'absolute', width: '100%', bottom: 0}}>
-        <Bottom index={chipIndex} types={types} places={places}/>
+        <Bottom index={chipIndex} types={types} places={places} markers={markers} setMarkers={setMarkers} display={display}/>
       </Box>
     </Box>
   );
