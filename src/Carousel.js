@@ -66,15 +66,16 @@ function PlaceCard(props){
 }
 
 const Carousel = (props) => {
-  const { places, carouselIndex, markers, setMarkers} = props
+  const { places, chipIndex, markers, setMarkers} = props
   const [value, setValue] = useState(0);
   const { map } = useContext(AppContext)
   const handleChangeIndex = (index) => {
     setValue(index);
-    const place = places[index];
-    map.panTo({lat: place.geometry.location.lat(), lng: place.geometry.location.lng()})
-    console.log(index);
+    map.panTo({lat: places[index].geometry.location.lat(), lng: places[index].geometry.location.lng()})
   }
+  useEffect(() => {
+    setValue(0);
+  }, [chipIndex])
   useEffect(() => {
 
     if(markers == null) return;

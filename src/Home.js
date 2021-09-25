@@ -90,15 +90,8 @@ function Action(props){
 }
 
 function Bottom(props){
-  const {plan} = useContext(AppContext)
-  // const [markers, setMarkers] = useState(null);
-  const { google, map, } = useContext(AppContext)
-  const { index, places, } = props;
-  // const [display, setDisplay] = useState(false);
-  useEffect(()=>{
-
-
-  }, [places])
+  const { google, map, plan, } = useContext(AppContext)
+  const { chipIndex, places, } = props;
 
   if(places == null) return null;
 
@@ -106,7 +99,7 @@ function Bottom(props){
     <Zoom in={props.display}>
       <Box display='flex' justifyContent='center'height='100%'>
         <Box width='100%'>
-          <Carousel places={places} markers={props.markers} setMarkers={props.setMarkers}/>
+          <Carousel chipIndex={chipIndex} places={places} markers={props.markers} setMarkers={props.setMarkers}/>
         </Box>
       </Box>
     </Zoom>
@@ -139,32 +132,39 @@ export default function Home(){
     setChipIndex(-1);
   }
 
-  useEffect(async () => {
-    if(markers != null) {
-      markers.markers.map((marker) => marker.setMap(null));
-      if(markers.originMarker != null) markers.originMarker.setMap(null);
-      if(markers.destinationMarker != null) markers.destinationMarker.setMap(null);
+  useEffect(() => {
+    if(chipIndex < -1) return;
+    var markers;
+    (async() => {
+      var places;
+      if(chipIndex == 0){
+        places = plan == null ? null : plan.places;
+      }
+      else if(chipIndex == -1){
+        places = await findPlaces(google, map, text);
+      }
+      else{
+        places = await findPlaces(google, map, types[chipIndex].query);
+      }
+      if(places == null) return;
+      if(chipIndex == 0) markers = addMarkers(google, map, places, plan.origin, plan.destination)
+      else markers = addMarkers(google, map, places)
+      setMarkers(markers);
+      map.panTo({lat: places[0].geometry.location.lat(), lng: places[0].geometry.location.lng()})
+      setPlaces(places);
+      setDisplay(true);
+    })()
+
+    return () => {
+      setDisplay(false);
+      if(markers != null){
+        markers.markers.map((marker) => marker.setMap(null));
+        if(markers.originMarker != null) markers.originMarker.setMap(null);
+        if(markers.destinationMarker != null) markers.destinationMarker.setMap(null);
+      }
     }
-    setDisplay(false);
-    var places;
-    if(chipIndex == 0){
-      places = plan == null ? null : plan.places;
-    }
-    else if(chipIndex == -1){
-      places = await findPlaces(google, map, text);
-    }
-    else{
-      places = await findPlaces(google, map, types[chipIndex].query);
-    }
-    console.log(chipIndex);
-    console.log(places);
-    if(places == null) return;
-    if(chipIndex == 0) setMarkers(addMarkers(google, map, places, plan.origin, plan.destination));
-    else setMarkers(addMarkers(google, map, places))
-    map.panTo({lat: places[0].geometry.location.lat(), lng: places[0].geometry.location.lng()})
-    setPlaces(places);
-    setDisplay(true);
-  }, [chipIndex, plan])
+  }, [chipIndex])
+
 
   return(
     <Box className={classes.root}>
@@ -178,7 +178,7 @@ export default function Home(){
         <Action />
       </Box>
       <Box style={{position: 'absolute', width: '100%', bottom: 0}}>
-        <Bottom index={chipIndex} types={types} places={places} markers={markers} setMarkers={setMarkers} display={display}/>
+        <Bottom chipIndex={chipIndex} types={types} places={places} markers={markers} setMarkers={setMarkers} display={display}/>
       </Box>
     </Box>
   );

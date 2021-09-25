@@ -1,17 +1,33 @@
-import { Box, Typography, List, ListItem, ListItemIcon, ListItemText, Chip, } from '@material-ui/core'
+import { Box, Typography, List, ListItem, ListItemIcon, ListItemText, Chip, Fab, } from '@material-ui/core'
 import { Rating } from '@material-ui/lab'
+import { makeStyles } from '@material-ui/core/styles';
 
 import InboxIcon from '@material-ui/icons/MoveToInbox';
+import NavigationIcon from '@material-ui/icons/Navigation';
 
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+  },
+  img: {
+    width: '100%',
+    height: 200,
+    objectFit: 'cover',
+  }
+}));
 
 
 export default function PlaceDetail(props){
   const {place} = props;
+  const classes = useStyles();
+
+  const handleClick = () => {
+    console.log('click')
+  }
   if(place == null) return;
   return(
-    <>
-    <img src={place.photos == null ? null: place.photos[0].getUrl()} height='50%' width='100%'/>
+    <Box className={classes.root}>
+    <img src={place.photos == null ? null: place.photos[0].getUrl()} className={classes.img}/>
     <Typography gutterBottom variant="h5" component="h2">
       {place.name}
     </Typography>
@@ -29,6 +45,14 @@ export default function PlaceDetail(props){
         <ListItemText primary={place.formatted_address} />
       </ListItem>
     </List>
-    </>
+    <Box  width='100%'>
+    <Box display='flex' justifyContent='center'>
+    <Fab color='primary'variant="extended" type='submit' onClick={handleClick}>
+    <NavigationIcon />
+      Navigate
+    </Fab>
+    </Box>
+    </Box>
+    </Box>
   )
 }

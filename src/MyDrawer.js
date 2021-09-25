@@ -24,7 +24,6 @@ import CustomizedTimeline from './CustomizedTimeline'
 const useStyles = makeStyles({
   root: {
     width: 'auto',
-    height: '70%'
   }
 });
 

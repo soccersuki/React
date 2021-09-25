@@ -122,7 +122,6 @@ export default function SwitchListSecondary(props) {
         Navigate
       </Fab>
       </Box>
-
       </Box>
 
     </form>

@@ -32,13 +32,13 @@ export const usePlan = (setChipIndex) => {
     }
     else{
       places = plan.places;
-      // setPlan(null);
     }
 
     const newPlan = await makePlan(google, map, originName, destinationName, places);
     if(meal) await insertLunch(google, map, newPlan);
     // newPlan.newplaces = [...newPlan.places];
     setPlan({...newPlan});
+    setChipIndex(-2);
     setChipIndex(0)
 
     console.log(newPlan);
