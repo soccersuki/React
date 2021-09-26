@@ -1,26 +1,23 @@
 {
   "files": {
     "main.css": "/React/static/css/main.ab36007e.chunk.css",
-    "main.js": "/React/static/js/main.6a63d5a8.chunk.js",
-    "main.js.map": "/React/static/js/main.6a63d5a8.chunk.js.map",
-    "runtime-main.js": "/React/static/js/runtime-main.d9fef31e.js",
-    "runtime-main.js.map": "/React/static/js/runtime-main.d9fef31e.js.map",
-    "static/js/2.5a560188.chunk.js": "/React/static/js/2.5a560188.chunk.js",
-    "static/js/2.5a560188.chunk.js.map": "/React/static/js/2.5a560188.chunk.js.map",
-    "static/js/3.9bc9d980.chunk.js": "/React/static/js/3.9bc9d980.chunk.js",
-    "static/js/3.9bc9d980.chunk.js.map": "/React/static/js/3.9bc9d980.chunk.js.map",
+    "main.js": "/React/static/js/main.acd8ba23.chunk.js",
+    "main.js.map": "/React/static/js/main.acd8ba23.chunk.js.map",
+    "runtime-main.js": "/React/static/js/runtime-main.71f5bfa1.js",
+    "runtime-main.js.map": "/React/static/js/runtime-main.71f5bfa1.js.map",
+    "static/js/2.7c16cd81.chunk.js": "/React/static/js/2.7c16cd81.chunk.js",
+    "static/js/2.7c16cd81.chunk.js.map": "/React/static/js/2.7c16cd81.chunk.js.map",
+    "static/js/3.8e6348c9.chunk.js": "/React/static/js/3.8e6348c9.chunk.js",
+    "static/js/3.8e6348c9.chunk.js.map": "/React/static/js/3.8e6348c9.chunk.js.map",
     "index.html": "/React/index.html",
     "static/css/main.ab36007e.chunk.css.map": "/React/static/css/main.ab36007e.chunk.css.map",
-    "static/js/2.5a560188.chunk.js.LICENSE.txt": "/React/static/js/2.5a560188.chunk.js.LICENSE.txt",
-    "static/media/img_hokkaido.bd87e191.jpg": "/React/static/media/img_hokkaido.bd87e191.jpg",
-    "static/media/img_osaka.c9ba6993.jpg": "/React/static/media/img_osaka.c9ba6993.jpg",
-    "static/media/img_tokyo.ebbf7b3f.jpg": "/React/static/media/img_tokyo.ebbf7b3f.jpg",
-    "static/media/img_travel.b5321376.jpg": "/React/static/media/img_travel.b5321376.jpg"
+    "static/js/2.7c16cd81.chunk.js.LICENSE.txt": "/React/static/js/2.7c16cd81.chunk.js.LICENSE.txt",
+    "static/media/img_osaka.c9ba6993.jpg": "/React/static/media/img_osaka.c9ba6993.jpg"
   },
   "entrypoints": [
-    "static/js/runtime-main.d9fef31e.js",
-    "static/js/2.5a560188.chunk.js",
+    "static/js/runtime-main.71f5bfa1.js",
+    "static/js/2.7c16cd81.chunk.js",
     "static/css/main.ab36007e.chunk.css",
-    "static/js/main.6a63d5a8.chunk.js"
+    "static/js/main.acd8ba23.chunk.js"
   ]
 }
