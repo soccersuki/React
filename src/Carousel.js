@@ -5,18 +5,7 @@ import MediaCard from './MediaCard';
 
 import { Box} from '@material-ui/core';
 
-import Button from '@material-ui/core/Button';
-import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
-
 import { useState, useContext, useEffect} from 'react'
-
-import SwipeableTemporaryDrawerPlan from './SwipeableTemporaryDrawerPlan'
 
 import MyDrawer from './MyDrawer'
 import PlaceDetail from './PlaceDetail'
@@ -24,19 +13,13 @@ import PlaceDetail from './PlaceDetail'
 import { AppContext, } from './App'
 
 const styles = {
+  slideContainer: {
+    padding: 15,
+  },
   slide: {
     padding: 15,
     minHeight: 100,
     color: '#fff',
-  },
-  slide1: {
-    background: '#FEA900',
-  },
-  slide2: {
-    background: '#B3DC4A',
-  },
-  slide3: {
-    background: '#6AC0FF',
   },
 };
 
@@ -59,7 +42,7 @@ function PlaceCard(props){
   }
   return(
     <Box>
-      <Box onClick={handleClick}><MediaCard place={place} /></Box>
+      <Box><MediaCard place={place} onClick={handleClick} onClickDelete={props.onClickDelete}/></Box>
       <MyDrawer drawer={<PlaceDetail place={place}/>} toggleDrawer={toggleDrawer} state={openDrawer} anchor={'bottom'}/>
     </Box>
   )
@@ -68,16 +51,20 @@ function PlaceCard(props){
 const Carousel = (props) => {
   const { places, chipIndex, markers, setMarkers} = props
   const [value, setValue] = useState(0);
-  const { map } = useContext(AppContext)
+  const { map, plan, setPlan, } = useContext(AppContext)
   const handleChangeIndex = (index) => {
     setValue(index);
     map.panTo({lat: places[index].geometry.location.lat(), lng: places[index].geometry.location.lng()})
   }
+  const handleClickDelete = (id) => {
+    plan.places.splice(id, 1);
+    setPlan({...plan});
+  }
   useEffect(() => {
     setValue(0);
   }, [chipIndex])
-  useEffect(() => {
 
+  useEffect(() => {
     if(markers == null) return;
     markers.markers.map((marker, id) => {
       marker.addListener('click', ()=>{
@@ -86,21 +73,14 @@ const Carousel = (props) => {
     })
     setMarkers(markers)
   }, [markers])
+
+  if(places == null) return;
   return(
-    <>
-    <SwipeableViews enableMouseEvents index={value} onChangeIndex={(index) => handleChangeIndex(index)}>
-      {
-        places == null ?
-          [0, 1, 2].map(() => (
-            <PlaceCard />
-          ))
-        :
-          places.map((place) => (
-            <PlaceCard place={place}/>
-          ))
-      }
+    <SwipeableViews enableMouseEvents index={value} onChangeIndex={(index) => handleChangeIndex(index)} style={{padding: '0 30px'}}>
+      {places.map((place, id) => (
+        <Box px={1}><PlaceCard place={place} onClickDelete={() => handleClickDelete(id)}/></Box>
+      ))}
     </SwipeableViews>
-    </>
   )
 };
 

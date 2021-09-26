@@ -2,7 +2,6 @@ import { useState, useRef, useEffect, useContext } from 'react'
 
 import { AppContext } from './App'
 
-
 import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,8 +21,13 @@ export default function Map(props){
       disableDefaultUI: true,
     }
     const map = new google.maps.Map(mapContainerRef.current, initialConfig);
+    map.addListener("click", handleClick);
     setMap(map);
   }, [google, mapContainerRef]);
+
+  const handleClick = (event) => {
+    console.log(event)
+  }
 
   return(
     <>

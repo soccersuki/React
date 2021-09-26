@@ -9,8 +9,6 @@ import { Box, IconButton, Chip, Fab, Zoom, Typography, } from '@material-ui/core
 import Carousel from './Carousel'
 import TextForm from './TextForm'
 
-import ButtonAppBar from './ButtonAppBar'
-
 import LoyaltyIcon from '@material-ui/icons/Loyalty';
 
 import CustomizedTimeline from './CustomizedTimeline';
@@ -29,6 +27,7 @@ import { findPlaces } from './googleMapAPI';
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    width: '100%',
     position: 'relative',
   },
 }));
@@ -57,7 +56,6 @@ function Top(props){
       <Box style={{overflowX: 'auto', whiteSpace: 'nowrap'}}>
         {chips}
       </Box>
-
     </Box>
   )
 }
@@ -83,7 +81,7 @@ function Action(props){
   return(
     <>
       <MyDrawer drawer={<CustomizedTimeline />} toggleDrawer={toggleDrawer} state={openDrawer} anchor={'right'}/>
-      <ScrollDialog handleOpen={handleOpen} handleClose={handleClose} open={openDialog} content={<SwitchListSecondary condition={{regionName: 'Osaka'}}/>}/>
+      <ScrollDialog handleOpen={handleOpen} handleClose={handleClose} open={openDialog} content={<SwitchListSecondary condition={{regionName: '大阪', originName: '大阪駅'}}/>}/>
       <MySpeedDial toggleDrawer={toggleDrawer} handleOpen={handleOpen}/>
     </>
   )
@@ -99,7 +97,7 @@ function Bottom(props){
     <Zoom in={props.display}>
       <Box display='flex' justifyContent='center'height='100%'>
         <Box width='100%'>
-          <Carousel chipIndex={chipIndex} places={places} markers={props.markers} setMarkers={props.setMarkers}/>
+          <Carousel chipIndex={chipIndex} setChipIndex={props.setChipIndex} places={places} markers={props.markers} setMarkers={props.setMarkers}/>
         </Box>
       </Box>
     </Zoom>
@@ -133,7 +131,6 @@ export default function Home(){
   }
 
   useEffect(() => {
-    if(chipIndex < -1) return;
     var markers;
     (async() => {
       var places;
@@ -163,7 +160,7 @@ export default function Home(){
         if(markers.destinationMarker != null) markers.destinationMarker.setMap(null);
       }
     }
-  }, [chipIndex])
+  }, [chipIndex, plan])
 
 
   return(
@@ -174,11 +171,11 @@ export default function Home(){
       <Box style={{position: 'absolute', width: '100%', top: 20}}>
         <Top onClick={handleClick} chipIndex={chipIndex} types={types} onSubmit={handleSubmit}/>
       </Box>
-      <Box style={{position: 'absolute', top: 100, left: 20}}>
-        <Action />
+      <Box style={{position: 'absolute', width: '100%', bottom: 20}}>
+        <Bottom chipIndex={chipIndex} setChipIndex={setChipIndex} types={types} places={places} markers={markers} setMarkers={setMarkers} display={display}/>
       </Box>
-      <Box style={{position: 'absolute', width: '100%', bottom: 0}}>
-        <Bottom chipIndex={chipIndex} types={types} places={places} markers={markers} setMarkers={setMarkers} display={display}/>
+      <Box style={{position: 'absolute', bottom: 220, right: 70}}>
+        <Action />
       </Box>
     </Box>
   );

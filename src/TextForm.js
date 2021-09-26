@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import {
   Box,
   TextField,
@@ -7,6 +7,7 @@ import {
 export default function TextForm(props){
   const [text, setText] = useState(props.initialValue);
   const handleSubmit = (e) => {
+    e.target.firstChild.firstChild.firstChild.blur()
     e.preventDefault();
     props.onSubmit(text);
   }

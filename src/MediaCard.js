@@ -19,6 +19,7 @@ import imgOsaka from './images/img_osaka.jpg';
 const useStyles = makeStyles((theme) => ({
   root: {
     height: '100%',
+    width: '100%',
   },
   media: {
     height: 100,
@@ -50,8 +51,11 @@ export default function MediaCard(props) {
         </CardContent>
       </CardActionArea>
       <CardActions disableSpacing>
-        <Button size="small" color="primary" onClick={props.onClick}>
+        <Button size="small" color="primary">
           ADD
+        </Button>
+        <Button size="small" color="primary" onClick={props.onClickDelete}>
+          DELETE
         </Button>
       </CardActions>
     </Card>
@@ -59,28 +63,24 @@ export default function MediaCard(props) {
 
   return (
     <Card className={classes.root}>
-      <CardActionArea>
+      <CardActionArea onClick={props.onClick}>
         <CardMedia
           className={classes.media}
           image={place.photos == null ? null : place.photos[0].getUrl()}
           title="Contemplative Reptile"
         />
         <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">
+          <Typography variant="h5" component="h5" noWrap>
             {place.name}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-          <Box display="flex" alignItems="center">
-            {place.rating}
-            <Rating name="read-only" value={place.rating} precision={0.5} readOnly size='small' />
-          </Box>
-
           </Typography>
         </CardContent>
       </CardActionArea>
       <CardActions disableSpacing>
         <Button size="small" color="primary" onClick={props.onClick}>
           ADD
+        </Button>
+        <Button size="small" color="primary" onClick={props.onClickDelete}>
+          DELETE
         </Button>
       </CardActions>
     </Card>

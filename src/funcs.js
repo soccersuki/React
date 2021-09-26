@@ -38,8 +38,8 @@ export const usePlan = (setChipIndex) => {
     if(meal) await insertLunch(google, map, newPlan);
     // newPlan.newplaces = [...newPlan.places];
     setPlan({...newPlan});
-    setChipIndex(-2);
-    setChipIndex(0)
+    // setChipIndex(-2);
+    // setChipIndex(0)
 
     console.log(newPlan);
   }, [google, map, condition])

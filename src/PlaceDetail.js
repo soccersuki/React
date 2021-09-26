@@ -5,6 +5,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import NavigationIcon from '@material-ui/icons/Navigation';
 
+import { useContext, } from 'react';
+import { AppContext } from './App'
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,9 +23,12 @@ const useStyles = makeStyles((theme) => ({
 export default function PlaceDetail(props){
   const {place} = props;
   const classes = useStyles();
+  const { plan, setPlan, } = useContext(AppContext);
 
   const handleClick = () => {
     console.log('click')
+    plan.places.push(place);
+    setPlan(plan);
   }
   if(place == null) return;
   return(
@@ -45,14 +51,17 @@ export default function PlaceDetail(props){
         <ListItemText primary={place.formatted_address} />
       </ListItem>
     </List>
-    <Box  width='100%'>
-    <Box display='flex' justifyContent='center'>
-    <Fab color='primary'variant="extended" type='submit' onClick={handleClick}>
-    <NavigationIcon />
-      Navigate
-    </Fab>
-    </Box>
-    </Box>
+    {plan != null && (
+      <Box  width='100%'>
+      <Box display='flex' justifyContent='center'>
+      <Fab color='primary'variant="extended" type='submit' onClick={handleClick}>
+      <NavigationIcon />
+        Navigate
+      </Fab>
+      </Box>
+      </Box>
+
+    )}
     </Box>
   )
 }

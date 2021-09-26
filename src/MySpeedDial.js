@@ -21,19 +21,10 @@ const useStyles = makeStyles((theme) => ({
   },
   exampleWrapper: {
     position: 'relative',
-    marginTop: theme.spacing(3),
     height: 380,
   },
   speedDial: {
     position: 'absolute',
-    '&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft': {
-      bottom: theme.spacing(2),
-      right: theme.spacing(2),
-    },
-    '&.MuiSpeedDial-directionDown, &.MuiSpeedDial-directionRight': {
-      top: theme.spacing(2),
-      left: theme.spacing(2),
-    },
   },
 }));
 
@@ -48,17 +39,14 @@ const actions = [
 export default function MySpeedDial(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
-
   const handleClose = () => {
     setOpen(false);
   };
-
   const handleClick = (id) => () => {
     handleClose();
     if(id == 0) props.toggleDrawer('right', true)
     else props.handleOpen();
   }
-
   const handleOpen = () => {
     setOpen(true);
   };
@@ -73,7 +61,7 @@ export default function MySpeedDial(props) {
           onClose={handleClose}
           onOpen={handleOpen}
           open={open}
-          direction={'down'}
+          direction={'up'}
         >
           {actions.map((action, id) => (
             <SpeedDialAction
