@@ -7,9 +7,7 @@ import { Box, IconButton, Chip, Fab, Zoom, Typography, } from '@material-ui/core
 
 
 import Carousel from './Carousel'
-import TextForm from './TextForm'
 
-import LoyaltyIcon from '@material-ui/icons/Loyalty';
 
 import CustomizedTimeline from './CustomizedTimeline';
 import MySpeedDial from './MySpeedDial'
@@ -25,6 +23,8 @@ import SwitchListSecondary from './SwitchListSecondary'
 
 import { findPlaces } from './googleMapAPI';
 
+import Top from './Top';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
@@ -34,31 +34,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-function Top(props){
-  const handleClick = (id) => () => {
-    props.onClick(id);
-  }
-  const chips = props.types.map((type, id) => (
-    <Chip label={type.jpName} variant='outlined' onClick={handleClick(id)} style={{margin: 5}} color={props.chipIndex == id ? 'primary': 'default'}/>
-  ))
-  return(
-    <Box mx={5}>
-      <Box sx={{ display: 'flex' }} mb={2}>
-        <Box style={{flexGrow: 1}}>
-          <Box sx={{display: 'flex', justifyContent: 'center', height: '100%', alignItems: 'center'}}>
-            <LoyaltyIcon color='secondary'fontSize="large"/>
-          </Box>
-        </Box>
-        <Box style={{flexGrow: 1}}>
-          <TextForm fullWidth={true} onSubmit={props.onSubmit}/>
-        </Box>
-      </Box>
-      <Box style={{overflowX: 'auto', whiteSpace: 'nowrap'}}>
-        {chips}
-      </Box>
-    </Box>
-  )
-}
+
 
 function Action(props){
   const [openDrawer, setOpenDrawer] = useState({
