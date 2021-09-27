@@ -45,7 +45,8 @@ export default function MySpeedDial(props) {
   const handleClick = (id) => () => {
     handleClose();
     if(id == 0) props.toggleDrawer('right', true)
-    else props.handleOpen();
+    else if(id == 1) props.handleOpen('new');
+    else if(id == 2) props.handleOpen('re');
   }
   const handleOpen = () => {
     setOpen(true);

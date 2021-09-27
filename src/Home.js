@@ -44,10 +44,13 @@ function Action(props){
     right: false,
   });
   const [openDialog, setOpenDialog] = useState(false);
+  const [condition, setCondition] = useState({regionName: '大阪', originName: '大阪駅'});
   const toggleDrawer = (anchor, open) => {
     setOpenDrawer({ ...openDrawer, [anchor]: open });
   };
-  const handleOpen = () => {
+  const handleOpen = (status) => {
+    condition.status = status;
+    setCondition({...condition});
     setOpenDialog(true);
   };
   const handleClose = () => {
@@ -57,7 +60,7 @@ function Action(props){
   return(
     <>
       <MyDrawer drawer={<CustomizedTimeline />} toggleDrawer={toggleDrawer} state={openDrawer} anchor={'right'}/>
-      <ScrollDialog handleOpen={handleOpen} handleClose={handleClose} open={openDialog} content={<SwitchListSecondary condition={{regionName: '大阪', originName: '大阪駅'}}/>}/>
+      <ScrollDialog handleOpen={handleOpen} handleClose={handleClose} open={openDialog} content={<SwitchListSecondary condition={condition}/>}/>
       <MySpeedDial toggleDrawer={toggleDrawer} handleOpen={handleOpen}/>
     </>
   )
@@ -71,7 +74,7 @@ function Bottom(props){
 
   return(
     <Zoom in={props.display}>
-      <Box display='flex' justifyContent='center'height='100%'>
+      <Box display='flex' justifyContent='center'>
         <Box width='100%'>
           <Carousel chipIndex={chipIndex} setChipIndex={props.setChipIndex} places={places} markers={props.markers} setMarkers={props.setMarkers}/>
         </Box>
@@ -119,12 +122,13 @@ export default function Home(){
       else{
         places = await findPlaces(google, map, types[chipIndex].query);
       }
+      setPlaces(places);
       if(places == null) return;
       if(chipIndex == 0) markers = addMarkers(google, map, places, plan.origin, plan.destination)
       else markers = addMarkers(google, map, places)
       setMarkers(markers);
       map.panTo({lat: places[0].geometry.location.lat(), lng: places[0].geometry.location.lng()})
-      setPlaces(places);
+
       setDisplay(true);
     })()
 
@@ -138,7 +142,6 @@ export default function Home(){
     }
   }, [chipIndex, plan])
 
-
   return(
     <Box className={classes.root}>
       <div style={{height: window.innerHeight}}>
@@ -148,7 +151,7 @@ export default function Home(){
         <Top onClick={handleClick} chipIndex={chipIndex} types={types} onSubmit={handleSubmit}/>
       </Box>
       <Box style={{position: 'absolute', width: '100%', bottom: 20}}>
-        <Bottom chipIndex={chipIndex} setChipIndex={setChipIndex} types={types} places={places} markers={markers} setMarkers={setMarkers} display={display}/>
+          <Bottom chipIndex={chipIndex} setChipIndex={setChipIndex} types={types} places={places} markers={markers} setMarkers={setMarkers} display={display}/>
       </Box>
       <Box style={{position: 'absolute', bottom: 220, right: 70}}>
         <Action />

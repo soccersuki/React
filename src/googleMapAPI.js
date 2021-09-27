@@ -43,6 +43,22 @@ export const findPlaces = async (google, map, query, location) => {
   return places;
 }
 
+export const getDetail = async (google, map, placeId) => {
+  var request = {
+    placeId,
+  };
+
+  const service = new google.maps.places.PlacesService(map);
+  const place = await new Promise(resolve => {
+    service.getDetails(request, (results, status) => {
+      if (status == google.maps.places.PlacesServiceStatus.OK) {
+        resolve(results);
+      }
+    });
+  })
+  return place;
+}
+
 export const drivingDirection = async (google, origin, destination, waypoints) => {
   const directionsService = new google.maps.DirectionsService();
   // const directionsRenderer = new google.maps.DirectionsRenderer({suppressPolylines: true});

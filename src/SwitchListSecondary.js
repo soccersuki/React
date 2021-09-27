@@ -61,7 +61,7 @@ export default function SwitchListSecondary(props) {
       originName,
       destinationName,
       meal,
-      status: 'new',
+      status: props.condition.status,
     };
     if(checked.indexOf('checkBox') != -1) condition.destinationName = originName;
     setCondition({...condition})
@@ -69,13 +69,12 @@ export default function SwitchListSecondary(props) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <List subheader={<ListSubheader>Settings</ListSubheader>}>
+      <List>
         <ListItem>
           <ListItemIcon>
             <LocationOnIcon />
           </ListItemIcon>
           <TextField label="エリア"required variant="filled" onChange={handleChangeRegionName} value={regionName}/>
-
         </ListItem>
         <ListItem>
           <ListItemIcon>
@@ -96,8 +95,7 @@ export default function SwitchListSecondary(props) {
             <ListItemIcon>
               <HouseIcon />
             </ListItemIcon>
-            <ListItemText primary="到着"/>
-            <TextField variant="filled" onChange={handleChangeDestinationName} value={destinationName}/>
+            <TextField label='到着'variant="filled" onChange={handleChangeDestinationName} value={destinationName}/>
           </ListItem>
         </Collapse>
         <ListItem>

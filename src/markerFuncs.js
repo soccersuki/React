@@ -7,17 +7,24 @@ export function addMarkers(google, map, places, origin, destination){
   return {markers, originMarker, destinationMarker}
 }
 
-export function addMarker(google, map, infoWindow, place, label){
+export function addMarker(google, map, infoWindow, place, labelText){
+  const label = {
+    text: labelText,
+    color: 'white',
+  }
+  const label2 = {
+    text: "\ue56c", // codepoint from https://fonts.google.com/icons
+    fontFamily: "Material Icons",
+    color: "#ffffff",
+    fontSize: "18px"
+  }
   const option = {
     position: {
       lat: place.geometry.location.lat(),
       lng: place.geometry.location.lng(),
     },
     map: map,
-    label: {
-      text: label,
-      color: 'white',
-    },
+    label: label2,
     title: place.name,
     optimized: false,
     animation: google.maps.Animation.DROP,
