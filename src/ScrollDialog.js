@@ -32,7 +32,7 @@ export default function ScrollDialog(props) {
         aria-labelledby="scroll-dialog-title"
         aria-describedby="scroll-dialog-description"
       >
-        <DialogTitle id="scroll-dialog-title">Subscribe</DialogTitle>
+        <DialogTitle id="scroll-dialog-title">{props.title}</DialogTitle>
         <DialogContent dividers={'paper' === 'paper'}>
           <DialogContentText
             id="scroll-dialog-description"
@@ -42,14 +42,6 @@ export default function ScrollDialog(props) {
           {props.content}
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleClose} color="primary">
-            Subscribe
-          </Button>
-        </DialogActions>
       </Dialog>
     </div>
   );

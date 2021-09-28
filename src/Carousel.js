@@ -42,7 +42,7 @@ function PlaceCard(props){
   }
   return(
     <Box>
-      <Box><MediaCard place={place} onClick={handleClick} onClickDelete={props.onClickDelete}/></Box>
+      <Box><MediaCard place={place} onClick={handleClick} onClickAdd={props.onClickAdd} onClickDelete={props.onClickDelete}/></Box>
       <MyDrawer drawer={<PlaceDetail place={place}/>} toggleDrawer={toggleDrawer} state={openDrawer} anchor={'bottom'}/>
     </Box>
   )
@@ -59,6 +59,10 @@ const Carousel = (props) => {
   const handleClickDelete = (id) => {
     plan.places.splice(id, 1);
     setPlan({...plan});
+  }
+  const handleClickAdd = (id) => {
+    plan.places.push(places[id]);
+    setPlan(plan);
   }
   useEffect(() => {
     setValue(0);
@@ -78,7 +82,7 @@ const Carousel = (props) => {
   return(
     <SwipeableViews enableMouseEvents index={value} onChangeIndex={(index) => handleChangeIndex(index)} style={{padding: '0 30px'}}>
       {places.map((place, id) => (
-        <Box px={1}><PlaceCard place={place} onClickDelete={() => handleClickDelete(id)}/></Box>
+        <Box px={1}><PlaceCard place={place} onClickDelete={() => handleClickDelete(id)} onClickAdd={() => handleClickAdd(id)}/></Box>
       ))}
     </SwipeableViews>
   )

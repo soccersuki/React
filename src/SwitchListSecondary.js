@@ -74,13 +74,13 @@ export default function SwitchListSecondary(props) {
           <ListItemIcon>
             <LocationOnIcon />
           </ListItemIcon>
-          <TextField label="エリア"required variant="filled" onChange={handleChangeRegionName} value={regionName}/>
+          <TextField label="エリア"required  onChange={handleChangeRegionName} value={regionName}/>
         </ListItem>
         <ListItem>
           <ListItemIcon>
             <HouseIcon />
           </ListItemIcon>
-          <TextField label='出発'required variant="filled" onChange={handleChangeOriginName} value={originName}/>
+          <TextField label='出発'required onChange={handleChangeOriginName} value={originName}/>
         </ListItem>
         <ListItem>
           <Checkbox
@@ -102,7 +102,35 @@ export default function SwitchListSecondary(props) {
           <ListItemIcon>
             <FastfoodIcon />
           </ListItemIcon>
+          <ListItemText id="switch-list-label-bluetooth" primary="スポットを自動で追加" />
+          <ListItemSecondaryAction>
+            <Switch
+              edge="end"
+              onChange={handleToggle('meal')}
+              checked={checked.indexOf('meal') !== -1}
+              inputProps={{ 'aria-labelledby': 'switch-list-label-bluetooth' }}
+            />
+          </ListItemSecondaryAction>
+        </ListItem>
+        <ListItem>
+          <ListItemIcon>
+            <FastfoodIcon />
+          </ListItemIcon>
           <ListItemText id="switch-list-label-bluetooth" primary="昼食を自動で追加" />
+          <ListItemSecondaryAction>
+            <Switch
+              edge="end"
+              onChange={handleToggle('meal')}
+              checked={checked.indexOf('meal') !== -1}
+              inputProps={{ 'aria-labelledby': 'switch-list-label-bluetooth' }}
+            />
+          </ListItemSecondaryAction>
+        </ListItem>
+        <ListItem>
+          <ListItemIcon>
+            <FastfoodIcon />
+          </ListItemIcon>
+          <ListItemText id="switch-list-label-bluetooth" primary="夕食を自動で追加" />
           <ListItemSecondaryAction>
             <Switch
               edge="end"

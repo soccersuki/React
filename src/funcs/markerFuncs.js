@@ -1,30 +1,29 @@
-export function addMarkers(google, map, places, origin, destination){
-  const labels = 'abcdefghijklmnopqrstuvwxyz';
+export function addMarkers(google, map, places, type, origin, destination){
+  const alphabet = 'abcdefghijklmnopqrstuvwxyz';
   const infoWindow = new google.maps.InfoWindow();
-  const originMarker = origin == null ? null : addMarker(google, map, infoWindow, origin, labels[25])
-  const destinationMarker = destination == null ? null : addMarker(google, map, infoWindow, destination, labels[25])
-  const markers = places.map((place, id) => addMarker(google, map, infoWindow, place, labels[id]))
+  const originMarker = origin == null ? null : addMarker(google, map, infoWindow, origin, alphabet[25])
+  const destinationMarker = destination == null ? null : addMarker(google, map, infoWindow, destination, alphabet[25])
+  const markers = places.map((place, id) => {
+    const labelText = type.name == 'plan' ? alphabet[id] : type.iconCode;
+    return addMarker(google, map, infoWindow, place, labelText, type.name == 'plan' ? null : 'Material Icons')
+  })
   return {markers, originMarker, destinationMarker}
 }
 
-export function addMarker(google, map, infoWindow, place, labelText){
+export function addMarker(google, map, infoWindow, place, labelText, fontFamily){
   const label = {
-    text: labelText,
-    color: 'white',
-  }
-  const label2 = {
-    text: "\ue56c", // codepoint from https://fonts.google.com/icons
-    fontFamily: "Material Icons",
+    text: labelText, // codepoint from https://fonts.google.com/icons
     color: "#ffffff",
     fontSize: "18px"
   }
+  if(fontFamily != null) label.fontFamily = fontFamily
   const option = {
     position: {
       lat: place.geometry.location.lat(),
       lng: place.geometry.location.lng(),
     },
     map: map,
-    label: label2,
+    label: label,
     title: place.name,
     optimized: false,
     animation: google.maps.Animation.DROP,

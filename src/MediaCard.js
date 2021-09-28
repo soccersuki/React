@@ -76,12 +76,15 @@ export default function MediaCard(props) {
         </CardContent>
       </CardActionArea>
       <CardActions disableSpacing>
-        <Button size="small" color="primary" onClick={props.onClick}>
-          ADD
-        </Button>
-        <Button size="small" color="primary" onClick={props.onClickDelete}>
-          DELETE
-        </Button>
+        {place.type == null ?
+          <Button size="small" color="primary" onClick={props.onClickAdd}>
+            ADD
+          </Button>
+          :
+          <Button size="small" color="primary" onClick={props.onClickDelete}>
+            DELETE
+          </Button>
+        }
       </CardActions>
     </Card>
   );

@@ -14,6 +14,10 @@ import PrintIcon from '@material-ui/icons/Print';
 import ShareIcon from '@material-ui/icons/Share';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 
+import ScheduleIcon from '@material-ui/icons/Schedule';
+import UpdateIcon from '@material-ui/icons/Update';
+import NewReleasesIcon from '@material-ui/icons/NewReleases';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     transform: 'translateZ(0px)',
@@ -29,11 +33,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const actions = [
-  { icon: <FileCopyIcon />, name: 'Copy' },
-  { icon: <SaveIcon />, name: 'Save' },
-  { icon: <PrintIcon />, name: 'Print' },
-  { icon: <ShareIcon />, name: 'Share' },
-  { icon: <FavoriteIcon />, name: 'Like' },
+  { icon: <ScheduleIcon />, name: 'Timeline' },
+  { icon: <NewReleasesIcon />, name: 'New' },
+  { icon: <UpdateIcon />, name: 'Update' },
 ];
 
 export default function MySpeedDial(props) {

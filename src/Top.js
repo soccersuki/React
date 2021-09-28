@@ -1,14 +1,13 @@
 import TextForm from './TextForm'
 import LoyaltyIcon from '@material-ui/icons/Loyalty';
 import { Box, Chip, InputAdornment, } from '@material-ui/core'
-import FaceIcon from '@material-ui/icons/Face';
 
 export default function Top(props){
   const handleClick = (id) => () => {
     props.onClick(id);
   }
   const chips = props.types.map((type, id) => (
-    <Chip label={type.jpName} size="small" icon={<FaceIcon />}variant='outlined' onClick={handleClick(id)} style={{margin: 5}} color={props.chipIndex == id ? 'primary': 'default'}/>
+    <Chip label={type.japanese} size="small" icon={type.icon}variant='outlined' onClick={handleClick(id)} style={{margin: 5}} color={props.chipIndex == id ? 'primary': 'default'}/>
   ))
   return(
     <Box mx={2}>

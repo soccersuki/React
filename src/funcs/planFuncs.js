@@ -1,49 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
-import { AppContext } from './App';
-
 import { findPlace, findPlaces, drivingDirection, } from './googleMapAPI'
-
-export const usePlan = (setChipIndex) => {
-  const {google, map, plan, setPlan, condition, } = useContext(AppContext);
-
-  useEffect(async () => {
-    if(google == null || map == null || condition == null) return;
-
-    // if(markers != null){
-    //   markers.originMarker.setMap(null);
-    //   markers.destinationMarker.setMap(null);
-    //   markers.placeMarkers.map(marker => {marker.setMap(null)});
-    // }
-
-    // const condition = {
-    //   regionName: '大阪',
-    //   originName: '大阪駅',
-    //   destinationName: '萱嶋駅',
-    //   meal: false,
-    //   status: 'first',
-    // }
-    const {regionName, originName, destinationName, meal, status} = condition;
-    const origin = await findPlace(google, map, originName);
-    const destination = await findPlace(google, map, destinationName);
-    var places;
-    if(status == 'new'){
-      places = await findPlaces(google, map, regionName + ' 観光');
-      places = places.slice(0, 5);
-    }
-    else{
-      places = plan.places;
-    }
-
-    const newPlan = await makePlan(google, map, originName, destinationName, places);
-    if(meal) await insertLunch(google, map, newPlan);
-    // newPlan.newplaces = [...newPlan.places];
-    setPlan({...newPlan});
-    // setChipIndex(-2);
-    // setChipIndex(0)
-
-    console.log(newPlan);
-  }, [google, map, condition])
-}
 
 export async function makePlan(google, map, originName, destinationName, places){
   var waypts = places.map(place => {
@@ -127,7 +82,7 @@ const getItinerary = (places, origin, destination, legs, direction) => {
   return itinerary;
 }
 
-const insertLunch = async (google, map, plan) => {
+export const insertLunch = async (google, map, plan) => {
   const {itinerary, legs, places} = plan;
   for(var i = 0; i < itinerary.length - 1; i++){
     if(itinerary[i].departureTime.value >= 12 * 3600){
