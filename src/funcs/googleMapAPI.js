@@ -17,7 +17,7 @@ export const findPlace = async (google, map, query, location) => {
       }
     });
   });
-  return place[0];
+  return place;
 }
 
 export const findPlaces = async (google, map, query, location) => {

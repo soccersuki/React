@@ -25,22 +25,8 @@ export const usePlan = (setChipIndex) => {
   useEffect(async () => {
     if(google == null || map == null || condition == null) return;
 
-    const {regionName, originName, destinationName, meal, status} = condition;
-    const origin = await findPlace(google, map, originName);
-    const destination = await findPlace(google, map, destinationName);
-    var places;
-    if(status == 'new'){
-      places = await findPlaces(google, map, regionName + ' 観光');
-      places = places.slice(0, 5);
-    }
-    else{
-      places = plan.places;
-    }
-
-    const newPlan = await makePlan(google, map, originName, destinationName, places);
-    if(meal) await insertLunch(google, map, newPlan);
+    const newPlan = await makePlan(google, map, plan, condition);
     setPlan({...newPlan});
-
     console.log(newPlan);
   }, [google, map, condition])
 }

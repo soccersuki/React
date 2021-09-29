@@ -29,7 +29,7 @@ function SpotTimelineItem(props){
   const classes = useStyles();
   const {spot, i} = props
   return(
-    <TimelineItem onClick={props.onClick}>
+    <TimelineItem>
       <TimelineOppositeContent style={{ flex: 0.1 }}>
         <Typography variant="body2" color="textSecondary">
           {spot.arrivalTime.text}
@@ -59,7 +59,7 @@ function SpotTimelineItem(props){
                 <Box display="flex" alignItems="center">
                   {spot.rating}
                   <Rating name="read-only" value={spot.rating} precision={0.5} readOnly size='small' />
-                  
+
                 </Box>
                 滞在時間: {spot.stayTime.text}
               </>
@@ -83,7 +83,7 @@ function PointTimelineItem(props){
   const classes = useStyles();
   const {spot} = props
   return(
-    <TimelineItem onClick={props.onClick}>
+    <TimelineItem>
       <TimelineOppositeContent style={{ flex: 0.1 }}>
         <Typography variant="body2" color="textSecondary">
           {spot.arrivalTime.text}

@@ -1,23 +1,41 @@
 import { findPlace, findPlaces, drivingDirection, } from './googleMapAPI'
 
-export async function makePlan(google, map, originName, destinationName, places){
+export async function makePlan(google, map, plan, condition){
+  var {regionName, originName, destinationName, lunch, dinner, departureTime, arrivalTime, status} = condition;
+  if(arrivalTime == null) arrivalTime = 21 * 3600
+  var [origin] = await findPlace(google, map, originName);
+  var [destination] = await findPlace(google, map, destinationName);
+  var places = await getPlaces(google, map, plan, departureTime, arrivalTime, lunch, dinner, status, regionName);
   var waypts = places.map(place => {
-    return {
+    return{
       location: place.formatted_address,
       stopover: true,
     }
   });
-  const origin = await findPlace(google, map, originName);
-  const destination = await findPlace(google, map, destinationName);
   var direction = await drivingDirection(google, originName, destinationName, waypts);
-  var legs = direction.routes[0].legs;
-  legs.map(leg => {
+  direction.routes[0].legs.map(leg => {
     leg.duration.value *= 2;
     leg.duration.newText = getDurationStr(leg.duration.value);
-  })
+  });
   places = updatePlaces(direction, places, origin, destination);
-  var itinerary = getItinerary(places, origin, destination, legs, direction);
-  return {places, origin, destination, itinerary, legs};
+  var itinerary = getItinerary(places, origin, destination, direction.routes[0].legs, departureTime);
+  if(lunch) await insertPlace(google, map, itinerary, direction.routes[0].legs, places, 12 * 3600, '昼食');
+  if(dinner) await insertPlace(google, map, itinerary, direction.routes[0].legs, places, 18 * 3600, '夕食');
+  places.map(place => {place.type = 'plan'})
+  return {places, origin, destination, itinerary, legs: direction.routes[0].legs};
+}
+
+async function getPlaces(google, map, plan, departureTime, arrivalTime, lunch, dinner, status, regionName){
+  var duration = (arrivalTime - departureTime);
+  if(lunch) duration -= 3600;
+  if(dinner) duration -= 3600;
+  var num = duration / (75 * 60)
+
+  var places = []
+  if(status != 'new') places = plan.places;
+  const allPlaces = await findPlaces(google, map, regionName + ' 観光');
+  places = places.concat(allPlaces.slice(0, num - places.length))
+  return places;
 }
 
 const updatePlaces = (direction, places, origin, destination) => {
@@ -39,32 +57,12 @@ const updatePlaces = (direction, places, origin, destination) => {
   });
 }
 
-const getItinerary = (places, origin, destination, legs, direction) => {
+const getItinerary = (places, origin, destination, legs, departureTime) => {
   var itinerary = places.slice();
-  // var origin = {
-  //   name: direction.request.origin.query,
-  //   geometry: {
-  //     location: direction.routes[0].legs[0].start_location,
-  //   },
-  //   stayTime: {
-  //     value: 0,
-  //     text: getDurationStr(0),
-  //   }
-  // };
-  // var destination = {
-  //   name: direction.request.destination.query,
-  //   geometry: {
-  //     location: direction.routes[0].legs.slice(-1)[0].end_location,
-  //   },
-  //   stayTime: {
-  //     value: 0,
-  //     text: getDurationStr(0),
-  //   }
-  // };
   itinerary.unshift(origin);
   itinerary.push(destination);
 
-  var time = 9 * 3600;
+  var time = departureTime;
   for(var i = 0; i < itinerary.length; i++){
     itinerary[i].arrivalTime = {
       text: getTimeStr(time),
@@ -82,11 +80,10 @@ const getItinerary = (places, origin, destination, legs, direction) => {
   return itinerary;
 }
 
-export const insertLunch = async (google, map, plan) => {
-  const {itinerary, legs, places} = plan;
+export const insertPlace = async (google, map, itinerary, legs, places, time, query) => {
   for(var i = 0; i < itinerary.length - 1; i++){
-    if(itinerary[i].departureTime.value >= 12 * 3600){
-      var [lunch] = await findPlace(google, map, '昼食', itinerary[i].geometry.location);
+    if(itinerary[i].departureTime.value >= time){
+      var [lunch] = await findPlace(google, map, query, itinerary[i].geometry.location);
       lunch.stayTime = {
         value: 3600,
         text: getDurationStr(3600),

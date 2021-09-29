@@ -13,6 +13,14 @@ import { TextField, Button, Box, Checkbox, Collapse, Fab } from '@material-ui/co
 import NavigationIcon from '@material-ui/icons/Navigation';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 
+import 'date-fns'
+import DateFnsUtils from '@date-io/date-fns';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
+
 import {AppContext} from './App'
 
 const useStyles = makeStyles((theme) => ({
@@ -24,6 +32,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function MaterialUIPickers(props) {
+  return (
+    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+      <KeyboardTimePicker
+        margin="normal"
+        id="time-picker"
+        label="Time picker"
+        value={props.selectedDate}
+        onChange={props.handleDateChange}
+        KeyboardButtonProps={{
+          'aria-label': 'change time',
+        }}
+      />
+    </MuiPickersUtilsProvider>
+  );
+}
+
 
 export default function SwitchListSecondary(props) {
   const classes = useStyles();
@@ -31,6 +56,10 @@ export default function SwitchListSecondary(props) {
   const [regionName, setRegionName] = useState(props.condition.regionName);
   const [originName, setOriginName] = useState(props.condition.originName);
   const [destinationName, setDestinationName] = useState('');
+  const date = new Date();
+  date.setHours(9)
+  date.setMinutes(0)
+  const [departureTime, setdepartureTime] = useState(date);
 
   const { condition, setCondition, } = useContext(AppContext);
 
@@ -53,14 +82,19 @@ export default function SwitchListSecondary(props) {
   const handleChangeDestinationName = (e) => {
     setDestinationName(e.target.value);
   }
+  const handleDateChange = (date) => {
+    setdepartureTime(date);
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
-    var meal = checked.indexOf('meal') != -1;
     const condition = {
       regionName,
       originName,
       destinationName,
-      meal,
+      place: checked.indexOf('place') != -1,
+      lunch: checked.indexOf('lunch') != -1,
+      dinner: checked.indexOf('dinner') != -1,
+      departureTime: departureTime.getHours() * 3600 + departureTime.getMinutes() * 60,
       status: props.condition.status,
     };
     if(checked.indexOf('checkBox') != -1) condition.destinationName = originName;
@@ -106,8 +140,8 @@ export default function SwitchListSecondary(props) {
           <ListItemSecondaryAction>
             <Switch
               edge="end"
-              onChange={handleToggle('meal')}
-              checked={checked.indexOf('meal') !== -1}
+              onChange={handleToggle('place')}
+              checked={checked.indexOf('place') !== -1}
               inputProps={{ 'aria-labelledby': 'switch-list-label-bluetooth' }}
             />
           </ListItemSecondaryAction>
@@ -120,8 +154,8 @@ export default function SwitchListSecondary(props) {
           <ListItemSecondaryAction>
             <Switch
               edge="end"
-              onChange={handleToggle('meal')}
-              checked={checked.indexOf('meal') !== -1}
+              onChange={handleToggle('lunch')}
+              checked={checked.indexOf('lunch') !== -1}
               inputProps={{ 'aria-labelledby': 'switch-list-label-bluetooth' }}
             />
           </ListItemSecondaryAction>
@@ -134,20 +168,23 @@ export default function SwitchListSecondary(props) {
           <ListItemSecondaryAction>
             <Switch
               edge="end"
-              onChange={handleToggle('meal')}
-              checked={checked.indexOf('meal') !== -1}
+              onChange={handleToggle('dinner')}
+              checked={checked.indexOf('dinner') !== -1}
               inputProps={{ 'aria-labelledby': 'switch-list-label-bluetooth' }}
             />
           </ListItemSecondaryAction>
         </ListItem>
+        <ListItem>
+          <MaterialUIPickers selectedDate={departureTime} handleDateChange={handleDateChange}/>
+        </ListItem>
       </List>
       <Box  width='100%'>
-      <Box display='flex' justifyContent='center'>
-      <Fab color='primary'variant="extended" type='submit'>
-      <NavigationIcon />
-        Navigate
-      </Fab>
-      </Box>
+        <Box display='flex' justifyContent='center'>
+          <Fab color='primary'variant="extended" type='submit'>
+          <NavigationIcon />
+            Navigate
+          </Fab>
+        </Box>
       </Box>
 
     </form>
