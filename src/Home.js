@@ -104,7 +104,7 @@ export default function Home(){
       <Box style={{position: 'absolute', width: '100%', bottom: 20}}>
         <Bottom chipIndex={chipIndex} setChipIndex={setChipIndex} types={types} places={places} markers={markers} setMarkers={setMarkers} display={display}/>
       </Box>
-      <Box style={{position: 'absolute', bottom: 220, right: 70}}>
+      <Box style={{position: 'absolute', bottom: 20, right: 70}}>
         <Action />
       </Box>
     </Box>

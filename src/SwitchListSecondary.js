@@ -9,9 +9,11 @@ import Switch from '@material-ui/core/Switch';
 import FastfoodIcon from '@material-ui/icons/Fastfood';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import HouseIcon from '@material-ui/icons/House';
-import { TextField, Button, Box, Checkbox, Collapse, Fab } from '@material-ui/core';
+import { TextField, Button, Box, Checkbox, Collapse, Fab, FormControlLabel, Typography, } from '@material-ui/core';
 import NavigationIcon from '@material-ui/icons/Navigation';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+
+import MultipleSelect from './MultipleSelect'
 
 import 'date-fns'
 import DateFnsUtils from '@date-io/date-fns';
@@ -25,10 +27,6 @@ import {AppContext} from './App'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-  },
-  fab: {
-    position: 'fixed',
-    bottom: theme.spacing(10),
   },
 }));
 
@@ -44,6 +42,7 @@ function MaterialUIPickers(props) {
         KeyboardButtonProps={{
           'aria-label': 'change time',
         }}
+        style={{width: '100%',}}
       />
     </MuiPickersUtilsProvider>
   );
@@ -105,37 +104,23 @@ export default function SwitchListSecondary(props) {
     <form onSubmit={handleSubmit}>
       <List>
         <ListItem>
-          <ListItemIcon>
-            <LocationOnIcon />
-          </ListItemIcon>
-          <TextField label="エリア"required  onChange={handleChangeRegionName} value={regionName}/>
+          <TextField label="エリア" fullWidth required  onChange={handleChangeRegionName} value={regionName}/>
         </ListItem>
         <ListItem>
-          <ListItemIcon>
-            <HouseIcon />
-          </ListItemIcon>
-          <TextField label='出発'required onChange={handleChangeOriginName} value={originName}/>
+          <TextField label='出発' fullWidth required onChange={handleChangeOriginName} value={originName}/>
         </ListItem>
         <ListItem>
-          <Checkbox
-            checked={checked.indexOf('checkBox') !== -1}
-            onChange={handleToggle('checkBox')}
-            inputProps={{ 'aria-label': 'primary checkbox' }}
-          />
-          <ListItemText primary={'出発地点と到着地点が同じ'} />
+        <FormControlLabel
+          control={<Checkbox checked={checked.indexOf('checkBox') !== -1} onChange={handleToggle('checkBox')} name="checkedA" />}
+          label={<Typography variant='body2'>"出発地点と到着地点が同じ"</Typography>}
+        />
         </ListItem>
         <Collapse in={checked.indexOf('checkBox') == -1}>
           <ListItem>
-            <ListItemIcon>
-              <HouseIcon />
-            </ListItemIcon>
-            <TextField label='到着'variant="filled" onChange={handleChangeDestinationName} value={destinationName}/>
+            <TextField label='到着'onChange={handleChangeDestinationName} value={destinationName}/>
           </ListItem>
         </Collapse>
         <ListItem>
-          <ListItemIcon>
-            <FastfoodIcon />
-          </ListItemIcon>
           <ListItemText id="switch-list-label-bluetooth" primary="スポットを自動で追加" />
           <ListItemSecondaryAction>
             <Switch
@@ -147,9 +132,6 @@ export default function SwitchListSecondary(props) {
           </ListItemSecondaryAction>
         </ListItem>
         <ListItem>
-          <ListItemIcon>
-            <FastfoodIcon />
-          </ListItemIcon>
           <ListItemText id="switch-list-label-bluetooth" primary="昼食を自動で追加" />
           <ListItemSecondaryAction>
             <Switch
@@ -161,9 +143,6 @@ export default function SwitchListSecondary(props) {
           </ListItemSecondaryAction>
         </ListItem>
         <ListItem>
-          <ListItemIcon>
-            <FastfoodIcon />
-          </ListItemIcon>
           <ListItemText id="switch-list-label-bluetooth" primary="夕食を自動で追加" />
           <ListItemSecondaryAction>
             <Switch
@@ -176,6 +155,9 @@ export default function SwitchListSecondary(props) {
         </ListItem>
         <ListItem>
           <MaterialUIPickers selectedDate={departureTime} handleDateChange={handleDateChange}/>
+        </ListItem>
+        <ListItem>
+          <MultipleSelect />
         </ListItem>
       </List>
       <Box  width='100%'>

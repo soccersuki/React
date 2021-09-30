@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   },
   exampleWrapper: {
     position: 'relative',
-    height: 380,
+    height: 240,
   },
   speedDial: {
     position: 'absolute',
