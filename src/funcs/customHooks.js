@@ -19,7 +19,7 @@ export const useGoogle = () => {
   }, [])
 }
 
-export const usePlan = (setChipIndex) => {
+export const usePlan = (cnt, setCnt) => {
   const {google, map, plan, setPlan, condition, } = useContext(AppContext);
 
   useEffect(async () => {
@@ -28,5 +28,6 @@ export const usePlan = (setChipIndex) => {
     const newPlan = await makePlan(google, map, plan, condition);
     setPlan({...newPlan});
     console.log(newPlan);
+    setCnt(cnt + 1)
   }, [google, map, condition])
 }

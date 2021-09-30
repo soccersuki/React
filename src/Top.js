@@ -12,9 +12,7 @@ export default function Top(props){
   return(
     <Box mx={2}>
       <Box mb={2}>
-        <Box>
-          <TextForm fullWidth={true} onSubmit={props.onSubmit}/>
-        </Box>
+        <TextForm onSubmit={props.onSubmit}/>
       </Box>
       <Box style={{overflowX: 'auto', whiteSpace: 'nowrap'}}>
         {chips}

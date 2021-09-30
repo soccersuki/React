@@ -42,16 +42,19 @@ export default function Home(){
   const [text, setText] = useState(null);
   const [markers, setMarkers] = useState(null);
   const [display, setDisplay] = useState(false);
+  const [cnt, setCnt] = useState(0);
 
   useGoogle();
-  usePlan(setChipIndex);
+  usePlan(cnt, setCnt);
 
   const handleClick = async (id) => {
     setChipIndex(id);
+    setCnt(cnt + 1)
   }
   const handleSubmit = async (text) => {
     setText(text)
     setChipIndex(-1);
+    setCnt(cnt + 1)
   }
 
   useEffect(() => {
@@ -75,13 +78,13 @@ export default function Home(){
     return () => {
       setDisplay(false);
     }
-  }, [chipIndex, plan])
+  }, [cnt])
 
   useEffect(() => {
     if(places == null) return;
     var markers;
     if(chipIndex == 0) markers = addMarkers(google, map, places, types[chipIndex], plan.origin, plan.destination)
-    else markers = addMarkers(google, map, places, types[chipIndex])
+    else markers = addMarkers(google, map, places, chipIndex == -1 ? types[1] : types[chipIndex])
     setMarkers(markers);
     map.panTo({lat: places[0].geometry.location.lat(), lng: places[0].geometry.location.lng()})
     return () => {
