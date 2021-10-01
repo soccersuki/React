@@ -2,11 +2,11 @@ import React from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
-import { Box, Fab, } from '@material-ui/core'
 
 const useStyles = makeStyles({
   root: {
     width: '100%',
+    height: '80vh',
   }
 });
 
@@ -17,7 +17,6 @@ export default function MyDrawer(props) {
     props.toggleDrawer(props.anchor, true)
   }
   const handleClose = () => {
-    console.log('open')
     props.toggleDrawer(props.anchor, false);
   }
 
@@ -25,7 +24,6 @@ export default function MyDrawer(props) {
     <div
       className={classes.root}
       role="presentation"
-      onClick={handleClose}
       onKeyDown={handleClose}
     >
       {props.drawer}

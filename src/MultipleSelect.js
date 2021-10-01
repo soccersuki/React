@@ -9,6 +9,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Select from '@material-ui/core/Select';
 import Checkbox from '@material-ui/core/Checkbox';
 import Chip from '@material-ui/core/Chip';
+import OutlinedInput from '@material-ui/core/OutlinedInput'
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -40,16 +41,12 @@ const MenuProps = {
 };
 
 const names = [
-  'Oliver Hansen',
-  'Van Henry',
-  'April Tucker',
-  'Ralph Hubbard',
-  'Omar Alexander',
-  'Carlos Abbott',
-  'Miriam Wagner',
-  'Bradley Wilkerson',
-  'Virginia Andrews',
-  'Kelly Snyder',
+  '一人',
+  '友人',
+  'カップル',
+  '家族',
+  'せっかち',
+  'ゆっくり',
 ];
 
 function getStyles(name, personName, theme) {
@@ -61,13 +58,13 @@ function getStyles(name, personName, theme) {
   };
 }
 
-export default function MultipleSelect() {
+export default function MultipleSelect(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [personName, setPersonName] = React.useState([]);
 
   const handleChange = (event) => {
-    setPersonName(event.target.value);
+    props.setState(event.target.value);
   };
 
   const handleChangeMultiple = (event) => {
@@ -78,31 +75,31 @@ export default function MultipleSelect() {
         value.push(options[i].value);
       }
     }
-    setPersonName(value);
+    props.setState(value);
   };
 
   return (
     <>
-      <FormControl className={classes.formControl}>
-        <InputLabel id="demo-mutiple-chip-label">Chip</InputLabel>
+      <FormControl variant='outlined' className={classes.formControl}>
+        <InputLabel id="demo-mutiple-chip-label">{props.label}</InputLabel>
         <Select
           labelId="demo-mutiple-chip-label"
           id="demo-mutiple-chip"
           multiple
-          value={personName}
+          value={props.state}
           onChange={handleChange}
-          input={<Input id="select-multiple-chip" />}
+          input={<OutlinedInput id="select-multiple-chip" />}
           renderValue={(selected) => (
             <div className={classes.chips}>
               {selected.map((value) => (
-                <Chip key={value} label={value} className={classes.chip} />
+                <Chip size='small' key={value} label={value} className={classes.chip} />
               ))}
             </div>
           )}
           MenuProps={MenuProps}
         >
           {names.map((name) => (
-            <MenuItem key={name} value={name} style={getStyles(name, personName, theme)}>
+            <MenuItem dense key={name} value={name} style={getStyles(name, personName, theme)}>
               {name}
             </MenuItem>
           ))}

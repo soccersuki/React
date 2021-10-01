@@ -13,7 +13,6 @@ import { AppContext } from './App'
 
 import { getDetail } from './funcs/googleMapAPI';
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%'
@@ -24,7 +23,6 @@ const useStyles = makeStyles((theme) => ({
     objectFit: 'cover',
   }
 }));
-
 
 export default function PlaceDetail(props){
   const {place} = props;

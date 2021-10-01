@@ -29,37 +29,7 @@ const useStyles = makeStyles((theme) => ({
 export default function MediaCard(props) {
   const classes = useStyles();
   const {place} = props;
-  if(place == null) return(
-    <Card className={classes.root}>
-      <CardActionArea>
-        <CardMedia
-          className={classes.media}
-          image={imgOsaka}
-          title="Contemplative Reptile"
-        />
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">
-            Title{props.index}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-          <Box display="flex" alignItems="center">
-            Rating
-            <Rating name="read-only" value={5} precision={0.5} readOnly size='small' />
-          </Box>
-          {['観光', '大阪', '人気'].map((type) => <Chip label={type} color="primary"/>)}
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-      <CardActions disableSpacing>
-        <Button size="small" color="primary">
-          ADD
-        </Button>
-        <Button size="small" color="primary" onClick={props.onClickDelete}>
-          DELETE
-        </Button>
-      </CardActions>
-    </Card>
-  );
+  if(place == null) return null;
 
   return (
     <Card className={classes.root}>

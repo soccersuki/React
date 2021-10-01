@@ -14,15 +14,15 @@ export default function Action(props){
   });
   const [openDialog, setOpenDialog] = useState(false);
   const [condition, setCondition] = useState({regionName: '大阪', originName: '大阪駅'});
-  const [dialogTitle, setDialogTitle] = useState(null);
+  const [title, setTitle] = useState(null);
   const toggleDrawer = (anchor, open) => {
     setOpenDrawer({ ...openDrawer, [anchor]: open });
   };
   const handleOpen = (status) => {
     condition.status = status;
     setCondition({...condition});
-    if(condition.status == 'new') setDialogTitle('NEW')
-    else setDialogTitle('UPDATE')
+    if(condition.status == 'new') setTitle('New Plan')
+    else setTitle('Update Plan')
     setOpenDialog(true);
   };
   const handleClose = () => {
@@ -31,8 +31,8 @@ export default function Action(props){
 
   return(
     <>
-      <MyDrawer drawer={<CustomizedTimeline />} toggleDrawer={toggleDrawer} state={openDrawer} anchor={'right'}/>
-      <ScrollDialog title={dialogTitle} handleOpen={handleOpen} handleClose={handleClose} open={openDialog} content={<SwitchListSecondary condition={condition}/>}/>
+      <MyDrawer drawer={<CustomizedTimeline />} toggleDrawer={toggleDrawer} state={openDrawer} anchor={'bottom'}/>
+      <ScrollDialog  handleOpen={handleOpen} handleClose={handleClose} open={openDialog} content={<SwitchListSecondary title={title} condition={condition}/>}/>
       <MySpeedDial toggleDrawer={toggleDrawer} handleOpen={handleOpen}/>
     </>
   )

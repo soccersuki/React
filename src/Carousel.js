@@ -13,17 +13,7 @@ import PlaceDetail from './PlaceDetail'
 import { AppContext, } from './App'
 
 const styles = {
-  slideContainer: {
-    padding: 15,
-  },
-  slide: {
-    padding: 15,
-    minHeight: 100,
-    color: '#fff',
-  },
 };
-
-
 
 function PlaceCard(props){
   const {place} = props;

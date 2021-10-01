@@ -32,15 +32,8 @@ export default function ScrollDialog(props) {
         aria-labelledby="scroll-dialog-title"
         aria-describedby="scroll-dialog-description"
       >
-        <DialogTitle id="scroll-dialog-title">{props.title}</DialogTitle>
         <DialogContent dividers={'paper' === 'paper'}>
-          <DialogContentText
-            id="scroll-dialog-description"
-            ref={descriptionElementRef}
-            tabIndex={-1}
-          >
           {props.content}
-          </DialogContentText>
         </DialogContent>
       </Dialog>
     </div>

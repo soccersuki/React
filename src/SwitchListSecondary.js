@@ -9,19 +9,12 @@ import Switch from '@material-ui/core/Switch';
 import FastfoodIcon from '@material-ui/icons/Fastfood';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import HouseIcon from '@material-ui/icons/House';
-import { TextField, Button, Box, Checkbox, Collapse, Fab, FormControlLabel, Typography, } from '@material-ui/core';
+import { TextField, Button, Box, Checkbox, Collapse, Fab, FormControlLabel, Typography, Avatar, } from '@material-ui/core';
 import NavigationIcon from '@material-ui/icons/Navigation';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 
 import MultipleSelect from './MultipleSelect'
-
-import 'date-fns'
-import DateFnsUtils from '@date-io/date-fns';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
+import MaterialUIPickers from './MaterialUIPickers'
 
 import {AppContext} from './App'
 
@@ -30,35 +23,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function MaterialUIPickers(props) {
-  return (
-    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      <KeyboardTimePicker
-        margin="normal"
-        id="time-picker"
-        label="Time picker"
-        value={props.selectedDate}
-        onChange={props.handleDateChange}
-        KeyboardButtonProps={{
-          'aria-label': 'change time',
-        }}
-        style={{width: '100%',}}
-      />
-    </MuiPickersUtilsProvider>
-  );
-}
-
-
 export default function SwitchListSecondary(props) {
   const classes = useStyles();
   const [checked, setChecked] = useState(['checkBox']);
   const [regionName, setRegionName] = useState(props.condition.regionName);
   const [originName, setOriginName] = useState(props.condition.originName);
   const [destinationName, setDestinationName] = useState('');
-  const date = new Date();
-  date.setHours(9)
-  date.setMinutes(0)
-  const [departureTime, setdepartureTime] = useState(date);
+  const departureDate = new Date();
+  const arrivalDate = new Date();
+  departureDate.setHours(9)
+  departureDate.setMinutes(0)
+  arrivalDate.setHours(21)
+  arrivalDate.setMinutes(0)
+  const [departureTime, setDepartureTime] = useState(departureDate);
+  const [arrivalTime, setArrivalTime] = useState(arrivalDate);
+  const [querys, setQuerys] = useState([])
 
   const { condition, setCondition, } = useContext(AppContext);
 
@@ -81,8 +60,11 @@ export default function SwitchListSecondary(props) {
   const handleChangeDestinationName = (e) => {
     setDestinationName(e.target.value);
   }
-  const handleDateChange = (date) => {
-    setdepartureTime(date);
+  const handleDepartureDateChange = (date) => {
+    setDepartureTime(date);
+  };
+  const handleArrivalDateChange = (date) => {
+    setArrivalTime(date);
   };
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -94,6 +76,8 @@ export default function SwitchListSecondary(props) {
       lunch: checked.indexOf('lunch') != -1,
       dinner: checked.indexOf('dinner') != -1,
       departureTime: departureTime.getHours() * 3600 + departureTime.getMinutes() * 60,
+      arrivalTime: arrivalTime.getHours() * 3600 + arrivalTime.getMinutes() * 60,
+      querys,
       status: props.condition.status,
     };
     if(checked.indexOf('checkBox') != -1) condition.destinationName = originName;
@@ -101,27 +85,45 @@ export default function SwitchListSecondary(props) {
   }
 
   return (
+    <>
+    <Box width='100%'>
+      <Box display="flex" justifyContent="center" my={1}>
+        <Avatar>
+          <NavigationIcon />
+        </Avatar>
+      </Box>
+      <Box display="flex" justifyContent="center">
+        <Typography variant='h5'>{props.title}</Typography>
+      </Box>
+    </Box>
+    <Box  color='text.secondary'>
     <form onSubmit={handleSubmit}>
       <List>
-        <ListItem>
-          <TextField label="エリア" fullWidth required  onChange={handleChangeRegionName} value={regionName}/>
+        <ListItem disableGutters>
+          <TextField label="エリア" fullWidth variant='outlined' required  onChange={handleChangeRegionName} value={regionName}/>
         </ListItem>
-        <ListItem>
-          <TextField label='出発' fullWidth required onChange={handleChangeOriginName} value={originName}/>
+        <ListItem disableGutters>
+          <TextField label='出発' fullWidth variant='outlined' required onChange={handleChangeOriginName} value={originName}/>
         </ListItem>
-        <ListItem>
-        <FormControlLabel
-          control={<Checkbox checked={checked.indexOf('checkBox') !== -1} onChange={handleToggle('checkBox')} name="checkedA" />}
-          label={<Typography variant='body2'>"出発地点と到着地点が同じ"</Typography>}
-        />
+        <ListItem disableGutters>
+          <FormControlLabel
+            control={<Checkbox checked={checked.indexOf('checkBox') !== -1} onChange={handleToggle('checkBox')} name="checkedA" />}
+            label={<Typography variant='body2'>出発地点と到着地点が同じ</Typography>}
+          />
         </ListItem>
         <Collapse in={checked.indexOf('checkBox') == -1}>
-          <ListItem>
-            <TextField label='到着'onChange={handleChangeDestinationName} value={destinationName}/>
+          <ListItem disableGutters>
+            <TextField label='到着' fullWidth variant='outlined'onChange={handleChangeDestinationName} value={destinationName}/>
           </ListItem>
         </Collapse>
-        <ListItem>
-          <ListItemText id="switch-list-label-bluetooth" primary="スポットを自動で追加" />
+        <ListItem disableGutters>
+          <MaterialUIPickers label='出発時間' selectedDate={departureTime} handleDateChange={handleDepartureDateChange}/>
+        </ListItem>
+        <ListItem disableGutters>
+          <MaterialUIPickers label='到着時間' selectedDate={arrivalTime} handleDateChange={handleArrivalDateChange}/>
+        </ListItem>
+        <ListItem disableGutters>
+          <ListItemText id="switch-list-label-bluetooth" primary={<Typography variant='body2'>スポットを自動で追加</Typography>} />
           <ListItemSecondaryAction>
             <Switch
               edge="end"
@@ -131,8 +133,8 @@ export default function SwitchListSecondary(props) {
             />
           </ListItemSecondaryAction>
         </ListItem>
-        <ListItem>
-          <ListItemText id="switch-list-label-bluetooth" primary="昼食を自動で追加" />
+        <ListItem disableGutters>
+          <ListItemText id="switch-list-label-bluetooth" primary={<Typography variant='body2'>昼食を自動で追加</Typography>} />
           <ListItemSecondaryAction>
             <Switch
               edge="end"
@@ -142,8 +144,8 @@ export default function SwitchListSecondary(props) {
             />
           </ListItemSecondaryAction>
         </ListItem>
-        <ListItem>
-          <ListItemText id="switch-list-label-bluetooth" primary="夕食を自動で追加" />
+        <ListItem disableGutters>
+          <ListItemText id="switch-list-label-bluetooth" primary={<Typography variant='body2'>夕食を自動で追加</Typography>} />
           <ListItemSecondaryAction>
             <Switch
               edge="end"
@@ -153,22 +155,24 @@ export default function SwitchListSecondary(props) {
             />
           </ListItemSecondaryAction>
         </ListItem>
-        <ListItem>
-          <MaterialUIPickers selectedDate={departureTime} handleDateChange={handleDateChange}/>
+        <ListItem disableGutters>
+          <MultipleSelect label='その他' state={querys} setState={setQuerys}/>
         </ListItem>
-        <ListItem>
-          <MultipleSelect />
+        <ListItem disableGutters>
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            className={classes.button}
+            startIcon={<NavigationIcon />}
+            type='submit'
+          >
+            Plan
+          </Button>
         </ListItem>
       </List>
-      <Box  width='100%'>
-        <Box display='flex' justifyContent='center'>
-          <Fab color='primary'variant="extended" type='submit'>
-          <NavigationIcon />
-            Navigate
-          </Fab>
-        </Box>
-      </Box>
-
     </form>
+    </Box>
+    </>
   );
 }
