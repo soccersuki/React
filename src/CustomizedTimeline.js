@@ -30,8 +30,9 @@ const label = 'abcdefghijklmnopqrstuvwxyz';
 function SpotTimelineItem(props){
   const classes = useStyles();
   const {spot, i} = props
-  const handleChange = () => {
-
+  // console.log(spot)
+  const handleChange = (event) => {
+    // setAge(event.target.value);
   }
   return(
     <TimelineItem>
@@ -77,16 +78,16 @@ function SpotTimelineItem(props){
                   <Select
                     labelId="demo-simple-select-outlined-label"
                     id="demo-simple-select-outlined"
-                    value={10}
+                    value={spot.stayTime.value}
                     onChange={handleChange}
                     label="Age"
                   >
-                    <MenuItem value="">
-                      <em>None</em>
-                    </MenuItem>
-                    <MenuItem value={10}>0</MenuItem>
-                    <MenuItem value={20}>1</MenuItem>
-                    <MenuItem value={30}>2</MenuItem>
+                    <MenuItem dense value={spot.stayTime.value}>{spot.stayTime.value}</MenuItem>
+                    <MenuItem dense value={0}>0</MenuItem>
+                    <MenuItem dense value={30}>30</MenuItem>
+                    <MenuItem dense value={60}>60</MenuItem>
+                    <MenuItem dense value={120}>120</MenuItem>
+                    <MenuItem dense value={180}>180</MenuItem>
                   </Select>
                 </FormControl>
                 <Box>分</Box>
@@ -129,6 +130,8 @@ function LegTimelineItem(props){
 export default function CustomizedTimeline(props) {
   const classes = useStyles();
   const {plan, condition} = useContext(AppContext);
+  const {itinerary, legs} = plan;
+
   console.log(condition)
   if(plan == null){
     return(
@@ -158,7 +161,6 @@ export default function CustomizedTimeline(props) {
       </Timeline>
     )
   }
-  const {itinerary, legs} = plan;
 
   return(
     <Box height='100%' style={{overflow: 'scroll'}}>
