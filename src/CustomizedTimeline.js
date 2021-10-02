@@ -20,6 +20,8 @@ import NavigationIcon from '@material-ui/icons/Navigation';
 import { useContext } from 'react';
 import { AppContext } from './App'
 
+import { setTime, } from './funcs/planFuncs'
+
 const useStyles = makeStyles((theme) => ({
   paper: {
     padding: '6px 16px',
@@ -27,139 +29,78 @@ const useStyles = makeStyles((theme) => ({
 }));
 const label = 'abcdefghijklmnopqrstuvwxyz';
 
-function SpotTimelineItem(props){
-  const classes = useStyles();
-  const {spot, i} = props
-  // console.log(spot)
-  const handleChange = (event) => {
-    // setAge(event.target.value);
-  }
+function MyTimelineItem(props){
   return(
     <TimelineItem>
-      <TimelineOppositeContent style={{ flex: 0.1 }}>
+      <TimelineOppositeContent style={{ flexGrow: 0.1 }}>
         <Typography variant="body2" color="textSecondary">
-          {spot.arrivalTime.text}
+          {props.time}
         </Typography>
+        {props.oppositeContent}
       </TimelineOppositeContent>
       <TimelineSeparator style={{ flexGrow: 0.3 }}>
+        <TimelineConnector />
         <Box display='flex' justifyContent='center'>
           <Box mx={1} my={1}>
-            <Badge anchorOrigin={{ vertical: 'bottom', horizontal: 'right',}} badgeContent={ label[i-1] } color="secondary">
-              <Avatar alt="Remy Sharp" src={spot.photos == null ? null: spot.photos[0].getUrl()} />
-            </Badge>
+            {props.separator}
           </Box>
         </Box>
         <TimelineConnector />
       </TimelineSeparator>
-      <TimelineContent style={{ flexGrow: 1}}>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <Box>
-              <Typography variant="h6" component="h1">{spot.name}</Typography>
-              <Typography variant='caption'>
-              <>
-                <Box display="flex" alignItems="center">
-                  {spot.rating}
-                  <Rating name="read-only" value={spot.rating} precision={0.5} readOnly size='small' />
-                </Box>
-              </>
-              </Typography>
-            </Box>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography variant='body2'>
-              <Box display="flex" alignItems="center">
-                <Box>滞在時間:</Box>
-                <FormControl  className={classes.formControl}>
-                  <Select
-                    labelId="demo-simple-select-outlined-label"
-                    id="demo-simple-select-outlined"
-                    value={spot.stayTime.value}
-                    onChange={handleChange}
-                    label="Age"
-                  >
-                    <MenuItem dense value={spot.stayTime.value}>{spot.stayTime.value}</MenuItem>
-                    <MenuItem dense value={0}>0</MenuItem>
-                    <MenuItem dense value={30}>30</MenuItem>
-                    <MenuItem dense value={60}>60</MenuItem>
-                    <MenuItem dense value={120}>120</MenuItem>
-                    <MenuItem dense value={180}>180</MenuItem>
-                  </Select>
-                </FormControl>
-                <Box>分</Box>
-              </Box>
-            </Typography>
-          </AccordionDetails>
-        </Accordion>
+      <TimelineContent>
+        {props.content}
       </TimelineContent>
     </TimelineItem>
   )
 }
 
-function LegTimelineItem(props){
-  const {spot, leg} = props;
+function DurationSelect(props){
   return(
-    <TimelineItem>
-      <TimelineOppositeContent style={{ flexGrow: 0.1 }}>
-        <Typography variant="body2" color="textSecondary">
-          {spot.departureTime.text}
-        </Typography>
-      </TimelineOppositeContent>
-      <TimelineSeparator style={{ flexGrow: 0.3 }}>
-        <TimelineConnector />
-          <Box display='flex' justifyContent='center'>
-            <Box mx={1} my={1}>
-              <TrainIcon />
-            </Box>
-          </Box>
-        <TimelineConnector />
-      </TimelineSeparator>
-      <TimelineContent>
-        <Box display="flex" alignItems='center' height='100%'>
-          {leg.duration.newText} by transit
-        </Box>
-      </TimelineContent>
-    </TimelineItem>
+    <FormControl>
+      <Select
+        labelId="demo-simple-select-outlined-label"
+        id="demo-simple-select-outlined"
+        value={props.initialValue}
+        onChange={(e) => props.onChange(e.target.value)}
+        label="Age"
+      >
+        <MenuItem dense value={props.initialValue}>{props.initialValue}</MenuItem>
+        <MenuItem dense value={0}>0</MenuItem>
+        <MenuItem dense value={30}>30</MenuItem>
+        <MenuItem dense value={60}>60</MenuItem>
+        <MenuItem dense value={120}>120</MenuItem>
+        <MenuItem dense value={180}>180</MenuItem>
+      </Select>
+    </FormControl>
   )
 }
 
 export default function CustomizedTimeline(props) {
   const classes = useStyles();
-  const {plan, condition} = useContext(AppContext);
-  const {itinerary, legs} = plan;
+  const {plan, setPlan, condition} = useContext(AppContext);
 
-  console.log(condition)
   if(plan == null){
     return(
       <Timeline>
         {[0, 1, 2, 3, 4].map(() => {
           return(
-            <TimelineItem>
-              <TimelineOppositeContent style={{ flex: 0.1 }}>
-                <Typography variant="body2" color="textSecondary">
-                  <Skeleton />
-                </Typography>
-              </TimelineOppositeContent>
-              <TimelineSeparator style={{ flexGrow: 0.3 }}>
-                <Box mx={1} my={1}>
-                  <Skeleton variant="circle">
-                    <Avatar />
-                  </Skeleton>
-                </Box>
-                <TimelineConnector />
-              </TimelineSeparator>
-              <TimelineContent>
-                <Typography variant="h1"><Skeleton /></Typography>
-              </TimelineContent>
-            </TimelineItem>
+            <MyTimelineItem
+              time={<Skeleton />}
+              content={<Typography variant="h1"><Skeleton /></Typography>}
+              separator={<Skeleton variant="circle"><Avatar /></Skeleton>}
+            />
           )
         })}
       </Timeline>
     )
+  }
+
+  const {itinerary, legs} = plan;
+
+  const handleChange = (spot, value) => {
+    spot.duration.value = value * 60;
+    setTime(itinerary, legs, condition.departureTime)
+    setPlan({...plan})
   }
 
   return(
@@ -178,9 +119,47 @@ export default function CustomizedTimeline(props) {
         {itinerary.map((spot, i) => {
           return(
             <Box>
-              <SpotTimelineItem spot={spot} i={i} onClick={() => props.onClick(spot)}/>
+              <MyTimelineItem spot={spot} i={i} onChange={handleChange} time={spot.arrivalTime.text}
+                content={
+                  <Accordion>
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                      <Box>
+                        <Typography variant="h6" component="h1">{spot.name}</Typography>
+                        <Typography variant='caption'>
+                          <Box display="flex" alignItems="center">
+                            {spot.rating}
+                            <Rating name="read-only" value={spot.rating} precision={0.5} readOnly size='small' />
+                          </Box>
+                        </Typography>
+                      </Box>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Typography variant='body2'>
+                        <Box display="flex" alignItems="center">
+                          <Box>滞在時間:</Box>
+                          <DurationSelect initialValue={spot.duration.value / 60} onChange={(value) => handleChange(spot, value)}/>
+                          <Box>分</Box>
+                        </Box>
+                      </Typography>
+                    </AccordionDetails>
+                  </Accordion>
+                }
+                separator={
+                  <Badge anchorOrigin={{ vertical: 'bottom', horizontal: 'right',}} badgeContent={ label[i-1] } color="secondary">
+                    <Avatar alt="Remy Sharp" src={spot.photos == null ? null: spot.photos[0].getUrl()} />
+                  </Badge>
+                }
+              />
               {i < legs.length ?
-                <LegTimelineItem spot={spot} leg={legs[i]}/>
+                <MyTimelineItem spot={spot} leg={legs[i]} time={spot.departureTime.text}
+                  content={
+                    <Box display="flex" alignItems='center' height='100%'>
+                      電車で
+                      <DurationSelect initialValue={Math.floor(legs[i].duration.value / 60)} onChange={(value) => handleChange(legs[i], value)}/>
+                      分
+                    </Box>}
+                  separator={<TrainIcon />}
+                />
                 :
                 null
               }

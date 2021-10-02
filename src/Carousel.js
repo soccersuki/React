@@ -39,23 +39,36 @@ function PlaceCard(props){
 }
 
 const Carousel = (props) => {
-  const { places, chipIndex, markers, setMarkers} = props
+  const { chipIndex, markers, setMarkers} = props
+  const [places, setPlaces] = useState(props.places);
   const [value, setValue] = useState(0);
   const { map, plan, setPlan, } = useContext(AppContext)
   const handleChangeIndex = (index) => {
     setValue(index);
     map.panTo({lat: places[index].geometry.location.lat(), lng: places[index].geometry.location.lng()})
   }
+  const deletePlace = (id) => {
+    markers.markers[id].setMap(null);
+    markers.markers.splice(id, 1);
+    setMarkers(markers)
+
+    if(id < places.length) map.panTo({lat: places[id].geometry.location.lat(), lng: places[id].geometry.location.lng()})
+  }
   const handleClickDelete = (id) => {
-    plan.places.splice(id, 1);
+    places.splice(id, 1);
     setPlan({...plan});
+    deletePlace(id)
   }
   const handleClickAdd = (id) => {
     plan.places.push(places[id]);
     setPlan(plan);
+    places.splice(id, 1);
+    setPlaces([...places])
+    deletePlace(id);
   }
   useEffect(() => {
     setValue(0);
+
   }, [chipIndex])
 
   useEffect(() => {
@@ -66,6 +79,7 @@ const Carousel = (props) => {
       })
     })
     setMarkers(markers)
+    setPlaces(props.places);
   }, [markers])
 
   if(places == null) return;

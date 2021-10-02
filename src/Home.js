@@ -105,7 +105,7 @@ export default function Home(){
         <Top onClick={handleClick} chipIndex={chipIndex} types={types} onSubmit={handleSubmit}/>
       </Box>
       <Box style={{position: 'absolute', width: '100%', bottom: 20}}>
-        <Bottom chipIndex={chipIndex} setChipIndex={setChipIndex} types={types} places={places} markers={markers} setMarkers={setMarkers} display={display}/>
+        <Bottom chipIndex={chipIndex} setChipIndex={setChipIndex} types={types} places={places} setPlaces={setPlaces} markers={markers} setMarkers={setMarkers} display={display}/>
       </Box>
       <Box style={{position: 'absolute', bottom: 20, right: 70}}>
         <Action />
