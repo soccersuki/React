@@ -43,6 +43,7 @@ const Carousel = (props) => {
   const [places, setPlaces] = useState(props.places);
   const [value, setValue] = useState(0);
   const { map, plan, setPlan, } = useContext(AppContext)
+
   const handleChangeIndex = (index) => {
     setValue(index);
     map.panTo({lat: places[index].geometry.location.lat(), lng: places[index].geometry.location.lng()})
@@ -51,21 +52,21 @@ const Carousel = (props) => {
     markers.markers[id].setMap(null);
     markers.markers.splice(id, 1);
     setMarkers(markers)
-
+    places.splice(id, 1);
+    setPlaces([...places]);
     if(id < places.length) map.panTo({lat: places[id].geometry.location.lat(), lng: places[id].geometry.location.lng()})
   }
   const handleClickDelete = (id) => {
-    places.splice(id, 1);
-    setPlan({...plan});
     deletePlace(id)
+    setPlan(plan);
+
   }
   const handleClickAdd = (id) => {
     plan.places.push(places[id]);
-    setPlan(plan);
-    places.splice(id, 1);
-    setPlaces([...places])
     deletePlace(id);
+    setPlan(plan);
   }
+
   useEffect(() => {
     setValue(0);
 
@@ -75,12 +76,19 @@ const Carousel = (props) => {
     if(markers == null) return;
     markers.markers.map((marker, id) => {
       marker.addListener('click', ()=>{
-        setValue(id);
+        // setValue(id);
+        for(var i = 0; i < places.length; i++){
+          if(places[i].name == marker.title){
+            setValue(i)
+            break;
+          }
+        }
       })
     })
     setMarkers(markers)
     setPlaces(props.places);
   }, [markers])
+
 
   if(places == null) return;
   return(
