@@ -47,6 +47,11 @@ const names = [
   '家族',
   'せっかち',
   'ゆっくり',
+  '男性におすすめ',
+  '女性におすすめ',
+  '定番',
+  '安さ重視',
+  '学生',
 ];
 
 function getStyles(name, personName, theme) {

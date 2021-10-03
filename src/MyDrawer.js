@@ -20,6 +20,10 @@ export default function MyDrawer(props) {
     props.toggleDrawer(props.anchor, false);
   }
 
+  React.useEffect(() => {
+    console.log('drawer')
+  }, [])
+
   const content = (anchor) => (
     <div
       className={classes.root}

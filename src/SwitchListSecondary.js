@@ -26,8 +26,8 @@ const useStyles = makeStyles((theme) => ({
 export default function SwitchListSecondary(props) {
   const classes = useStyles();
   const [checked, setChecked] = useState(['checkBox']);
-  const [regionName, setRegionName] = useState(props.condition.regionName);
-  const [originName, setOriginName] = useState(props.condition.originName);
+  const [regionName, setRegionName] = useState('大阪');
+  const [originName, setOriginName] = useState('大阪駅');
   const [destinationName, setDestinationName] = useState('');
   const departureDate = new Date();
   const arrivalDate = new Date();
@@ -78,9 +78,10 @@ export default function SwitchListSecondary(props) {
       departureTime: departureTime.getHours() * 3600 + departureTime.getMinutes() * 60,
       arrivalTime: arrivalTime.getHours() * 3600 + arrivalTime.getMinutes() * 60,
       querys,
-      status: props.condition.status,
+      status: props.status,
     };
     if(checked.indexOf('checkBox') != -1) condition.destinationName = originName;
+    console.log(condition)
     setCondition({...condition})
   }
 

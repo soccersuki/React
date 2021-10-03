@@ -15,6 +15,9 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import NavigationIcon from '@material-ui/icons/Navigation';
+import Alert from '@material-ui/lab/Alert';
+
+import imgOsaka from './images/img_osaka.jpg'
 
 
 import { useContext } from 'react';
@@ -106,14 +109,17 @@ export default function CustomizedTimeline(props) {
   return(
     <Box height='100%' style={{overflow: 'scroll'}}>
       <Box width='100%'>
-        <Box display="flex" justifyContent="center" my={2}>
-          <Avatar>
-            <NavigationIcon />
-          </Avatar>
+        <Box style={{position: 'relative'}}>
+          <img src={plan.itinerary[1].photos[0].getUrl()} style={{height: 200, width: '100%'}}/>
+          <Box display="flex"p={2} style={{position: 'absolute', bottom: 0}}>
+            <Avatar>
+              <NavigationIcon />
+            </Avatar>
+            <Typography variant='h5' style={{color: 'white'}}>{condition.regionName}一日旅行</Typography>
+          </Box>
         </Box>
-        <Box display="flex" justifyContent="center">
-          <Typography variant='h5'>{condition.regionName}旅行</Typography>
-        </Box>
+
+        <Box p={1}><Alert severity="warning"><div>時間は目安です</div><div>閉店しているかも</div></Alert></Box>
       </Box>
       <Timeline>
         {itinerary.map((spot, i) => {

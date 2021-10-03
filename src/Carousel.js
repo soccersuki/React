@@ -59,12 +59,13 @@ const Carousel = (props) => {
   const handleClickDelete = (id) => {
     deletePlace(id)
     setPlan(plan);
-
+    props.handleOpenS('削除しました')
   }
   const handleClickAdd = (id) => {
     plan.places.push(places[id]);
     deletePlace(id);
     setPlan(plan);
+    props.handleOpenS('追加しました')
   }
 
   useEffect(() => {

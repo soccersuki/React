@@ -19,6 +19,11 @@ import PetsIcon from '@material-ui/icons/Pets';
 import EmojiPeopleIcon from '@material-ui/icons/EmojiPeople';
 import RestaurantIcon from '@material-ui/icons/Restaurant';
 
+import Alert from '@material-ui/lab/Alert';
+import Snackbar from '@material-ui/core/Snackbar';
+import ScrollDialog from './ScrollDialog'
+import SwitchListSecondary from './SwitchListSecondary'
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
@@ -43,6 +48,23 @@ export default function Home(){
   const [markers, setMarkers] = useState(null);
   const [display, setDisplay] = useState(false);
   const [cnt, setCnt] = useState(0);
+
+  const [openD, setOpenD] = useState(true);
+
+  const handleOpenS = (text) => {
+    setSnackbarState({...snackbarState, open: true, text})
+  }
+  const handleCloseS = () => {
+    setSnackbarState({...snackbarState, open: false})
+  }
+  const [snackbarState, setSnackbarState] = useState({open: false, text: 'first', handleClose: handleCloseS});
+  const handleOpenD = (status) => {
+    setDialogState({...dialogState, open: true, status});
+  }
+  const handleCloseD = () => {
+    setDialogState({...dialogState, open: false})
+  }
+  const [dialogState, setDialogState] = useState({open: true, status: 'new', handleClose: handleCloseD})
 
   useGoogle();
   usePlan(cnt, setCnt);
@@ -87,6 +109,9 @@ export default function Home(){
     else markers = addMarkers(google, map, places, chipIndex == -1 ? types[1] : types[chipIndex])
     setMarkers(markers);
     map.panTo({lat: places[0].geometry.location.lat(), lng: places[0].geometry.location.lng()})
+
+    handleOpenS('plan!')
+
     return () => {
       if(markers != null){
         markers.markers.map((marker) => marker.setMap(null));
@@ -105,11 +130,23 @@ export default function Home(){
         <Top onClick={handleClick} chipIndex={chipIndex} types={types} onSubmit={handleSubmit}/>
       </Box>
       <Box style={{position: 'absolute', width: '100%', bottom: 20}}>
-        <Bottom chipIndex={chipIndex} setChipIndex={setChipIndex} types={types} places={places} setPlaces={setPlaces} markers={markers} setMarkers={setMarkers} display={display}/>
+        <Bottom chipIndex={chipIndex} setChipIndex={setChipIndex} types={types} places={places} setPlaces={setPlaces} markers={markers} setMarkers={setMarkers} display={display} handleOpenS={handleOpenS}/>
       </Box>
       <Box style={{position: 'absolute', bottom: 20, right: 70}}>
-        <Action />
+        <Action handleOpenD={handleOpenD}/>
       </Box>
+      <MySnackbar {...snackbarState}/>
+      <ScrollDialog {...dialogState} content={<SwitchListSecondary status={dialogState.status}/>}/>
     </Box>
   );
+}
+
+function MySnackbar(props){
+  return(
+    <Snackbar open={props.open} autoHideDuration={6000} onClose={props.handleClose}>
+      <Alert elevation={6} variant="filled" onClose={props.handleClose} severity="success">
+        {props.text}
+      </Alert>
+    </Snackbar>
+  )
 }
