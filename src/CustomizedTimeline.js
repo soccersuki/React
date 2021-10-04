@@ -9,7 +9,7 @@ import TimelineDot from '@material-ui/lab/TimelineDot';
 import TrainIcon from '@material-ui/icons/Train';
 import Rating from '@material-ui/lab/Rating';
 import Skeleton from '@material-ui/lab/Skeleton';
-import { Box, Avatar, Zoom, Badge, Typography, Paper, FormControl, MenuItem, InputLabel, Select, } from '@material-ui/core'
+import { Box, Avatar, Zoom, Badge, Typography, Paper, FormControl, MenuItem, InputLabel, Select, Button} from '@material-ui/core'
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
@@ -21,7 +21,7 @@ import imgOsaka from './images/img_osaka.jpg'
 
 
 import { useContext } from 'react';
-import { AppContext } from './App'
+import { AppContext } from './MyContext'
 
 import { setTime, } from './funcs/planFuncs'
 
@@ -106,6 +106,12 @@ export default function CustomizedTimeline(props) {
     setPlan({...plan})
   }
 
+  const handleClick = () => {
+    console.log('click')
+    props.toggleDrawer('bottom', false)
+    props.handleOpenD('update')
+  }
+
   return(
     <Box height='100%' style={{overflow: 'scroll'}}>
       <Box width='100%'>
@@ -119,7 +125,16 @@ export default function CustomizedTimeline(props) {
           </Box>
         </Box>
 
-        <Box p={1}><Alert severity="warning"><div>時間は目安です</div><div>閉店しているかも</div></Alert></Box>
+        <Box p={1}>
+          <Alert severity="warning">
+            <Box>時間は目安です</Box>
+            <Box>閉店しているかも</Box>
+            <Box>
+            スポットが変わりました
+            <Button color="primary" onClick={handleClick}>更新</Button>
+            </Box>
+          </Alert>
+        </Box>
       </Box>
       <Timeline>
         {itinerary.map((spot, i) => {

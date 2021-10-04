@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useContext } from 'react'
 
-import { AppContext } from './App'
+import { AppContext } from './MyContext'
 
 import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({

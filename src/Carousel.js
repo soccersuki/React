@@ -10,7 +10,7 @@ import { useState, useContext, useEffect} from 'react'
 import MyDrawer from './MyDrawer'
 import PlaceDetail from './PlaceDetail'
 
-import { AppContext, } from './App'
+import { AppContext, } from './MyContext'
 
 const styles = {
 };
@@ -26,7 +26,6 @@ function PlaceCard(props){
   const toggleDrawer = (anchor, open) => {
     setOpenDrawer({ ...openDrawer, [anchor]: open });
   };
-
   const handleClick = () => {
     toggleDrawer('bottom', true)
   }
@@ -40,9 +39,10 @@ function PlaceCard(props){
 
 const Carousel = (props) => {
   const { chipIndex, markers, setMarkers} = props
-  const [places, setPlaces] = useState(props.places);
+  // const [places, setPlaces] = useState(props.places);
+  const { places, setPlaces, } = props
   const [value, setValue] = useState(0);
-  const { map, plan, setPlan, } = useContext(AppContext)
+  const { map, plan, setPlan, snackbarState, } = useContext(AppContext)
 
   const handleChangeIndex = (index) => {
     setValue(index);
@@ -53,19 +53,20 @@ const Carousel = (props) => {
     markers.markers.splice(id, 1);
     setMarkers(markers)
     places.splice(id, 1);
-    setPlaces([...places]);
+    setPlaces(places);
     if(id < places.length) map.panTo({lat: places[id].geometry.location.lat(), lng: places[id].geometry.location.lng()})
   }
   const handleClickDelete = (id) => {
     deletePlace(id)
-    setPlan(plan);
-    props.handleOpenS('削除しました')
+    setPlan({...plan});
+    snackbarState.handleOpen('削除しました')
   }
   const handleClickAdd = (id) => {
+    places[id].type = 'plan'
     plan.places.push(places[id]);
     deletePlace(id);
-    setPlan(plan);
-    props.handleOpenS('追加しました')
+    setPlan({...plan});
+    snackbarState.handleOpen('追加しました')
   }
 
   useEffect(() => {
@@ -78,8 +79,8 @@ const Carousel = (props) => {
     markers.markers.map((marker, id) => {
       marker.addListener('click', ()=>{
         // setValue(id);
-        for(var i = 0; i < places.length; i++){
-          if(places[i].name == marker.title){
+        for(var i = 0; i < props.places.length; i++){
+          if(props.places[i].name == marker.title){
             setValue(i)
             break;
           }
@@ -87,7 +88,7 @@ const Carousel = (props) => {
       })
     })
     setMarkers(markers)
-    setPlaces(props.places);
+    // setPlaces(props.places);
   }, [markers])
 
 

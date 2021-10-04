@@ -16,6 +16,10 @@ import { Skelton, } from '@material-ui/core'
 
 import imgOsaka from './images/img_osaka.jpg';
 
+import { useContext, } from 'react'
+
+import {AppContext, } from './MyContext'
+
 const useStyles = makeStyles((theme) => ({
   root: {
     height: '100%',
@@ -29,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
 export default function MediaCard(props) {
   const classes = useStyles();
   const {place} = props;
+  const { plan, } = useContext(AppContext)
   if(place == null) return null;
 
   return (
@@ -40,13 +45,13 @@ export default function MediaCard(props) {
           title="Contemplative Reptile"
         />
         <CardContent>
-          <Typography variant="h5" component="h5" noWrap>
+          <Typography variant="h6" component="h6" noWrap>
             {place.name}
           </Typography>
         </CardContent>
       </CardActionArea>
       <CardActions disableSpacing>
-        {place.type == null ?
+        {plan != null && place.type == null ?
           <Button size="small" color="primary" onClick={props.onClickAdd}>
             ADD
           </Button>

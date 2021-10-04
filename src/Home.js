@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect ,} from 'react'
 import Map from './Map';
-import {AppContext} from './App'
+import {AppContext} from './MyContext'
 import Top from './Top';
 import Bottom from './Bottom';
 import Action from './Action'
@@ -31,43 +31,43 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const types = [
+  {name: 'plan', japanese: 'プラン', query: '', icon: <FaceIcon />, iconCode: '\ue87c'},
+  {name: 'touristAttractions', japanese: '観光スポット', query: '観光スポット', icon: <EmojiPeopleIcon />, iconCode: '\uea1d'},
+  {name: 'restrant', japanese: 'レストラン', query: 'レストラン', icon: <RestaurantIcon />, iconCode: '\ue56c'},
+  {name: 'park', japanese: '公園', query: '公園', icon: <NatureIcon />,iconCode: '\ue406'},
+  {name: 'cafe', japanese: 'カフェ', query: 'カフェ', icon: <LocalCafeIcon />,iconCode: '\ue541'},
+  {name: 'amusementPark', japanese: '遊園地', query: '遊園地', icon: <PetsIcon />,iconCode: '\ue91d'},
+]
+
 export default function Home(){
   const classes = useStyles();
-  const types = [
-    {name: 'plan', japanese: 'プラン', query: '', icon: <FaceIcon />, iconCode: '\ue87c'},
-    {name: 'touristAttractions', japanese: '観光スポット', query: '観光スポット', icon: <EmojiPeopleIcon />, iconCode: '\uea1d'},
-    {name: 'restrant', japanese: 'レストラン', query: 'レストラン', icon: <RestaurantIcon />, iconCode: '\ue56c'},
-    {name: 'park', japanese: '公園', query: '公園', icon: <NatureIcon />,iconCode: '\ue406'},
-    {name: 'cafe', japanese: 'カフェ', query: 'カフェ', icon: <LocalCafeIcon />,iconCode: '\ue541'},
-    {name: 'amusementPark', japanese: '遊園地', query: '遊園地', icon: <PetsIcon />,iconCode: '\ue91d'},
-  ]
+
   const [chipIndex, setChipIndex] = useState(0);
-  const { google, map, plan } = useContext(AppContext)
+  const { google, map, plan, snackbarState, dialogState, } = useContext(AppContext)
   const [places, setPlaces] = useState(null);
   const [text, setText] = useState(null);
   const [markers, setMarkers] = useState(null);
   const [display, setDisplay] = useState(false);
   const [cnt, setCnt] = useState(0);
 
-  const [openD, setOpenD] = useState(true);
-
-  const handleOpenS = (text) => {
-    setSnackbarState({...snackbarState, open: true, text})
-  }
-  const handleCloseS = () => {
-    setSnackbarState({...snackbarState, open: false})
-  }
-  const [snackbarState, setSnackbarState] = useState({open: false, text: 'first', handleClose: handleCloseS});
-  const handleOpenD = (status) => {
-    setDialogState({...dialogState, open: true, status});
-  }
-  const handleCloseD = () => {
-    setDialogState({...dialogState, open: false})
-  }
-  const [dialogState, setDialogState] = useState({open: true, status: 'new', handleClose: handleCloseD})
+  // const handleOpenS = (text) => {
+  //   setSnackbarState({...snackbarState, open: true, text})
+  // }
+  // const handleCloseS = () => {
+  //   setSnackbarState({...snackbarState, open: false})
+  // }
+  // const [snackbarState, setSnackbarState] = useState({open: false, handleClose: handleCloseS});
+  // const handleOpenD = (status) => {
+  //   setDialogState({...dialogState, open: true, status});
+  // }
+  // const handleCloseD = () => {
+  //   setDialogState({...dialogState, open: false})
+  // }
+  // const [dialogState, setDialogState] = useState({open: false, handleClose: handleCloseD})
 
   useGoogle();
-  usePlan(cnt, setCnt);
+  // usePlan(cnt, setCnt, handleOpenS);
 
   const handleClick = async (id) => {
     setChipIndex(id);
@@ -78,6 +78,11 @@ export default function Home(){
     setChipIndex(-1);
     setCnt(cnt + 1)
   }
+
+  useEffect(() => {
+    snackbarState.handleOpen('プランを新規作成しましょう')
+    dialogState.handleOpen('new')
+  }, [])
 
   useEffect(() => {
     (async() => {
@@ -107,10 +112,8 @@ export default function Home(){
     var markers;
     if(chipIndex == 0) markers = addMarkers(google, map, places, types[chipIndex], plan.origin, plan.destination)
     else markers = addMarkers(google, map, places, chipIndex == -1 ? types[1] : types[chipIndex])
-    setMarkers(markers);
+    setMarkers({...markers});
     map.panTo({lat: places[0].geometry.location.lat(), lng: places[0].geometry.location.lng()})
-
-    handleOpenS('plan!')
 
     return () => {
       if(markers != null){
@@ -130,20 +133,20 @@ export default function Home(){
         <Top onClick={handleClick} chipIndex={chipIndex} types={types} onSubmit={handleSubmit}/>
       </Box>
       <Box style={{position: 'absolute', width: '100%', bottom: 20}}>
-        <Bottom chipIndex={chipIndex} setChipIndex={setChipIndex} types={types} places={places} setPlaces={setPlaces} markers={markers} setMarkers={setMarkers} display={display} handleOpenS={handleOpenS}/>
+        <Bottom chipIndex={chipIndex} setChipIndex={setChipIndex} types={types} places={places} setPlaces={setPlaces} markers={markers} setMarkers={setMarkers} display={display} handleOpenS={snackbarState.handleOpen}/>
       </Box>
       <Box style={{position: 'absolute', bottom: 20, right: 70}}>
-        <Action handleOpenD={handleOpenD}/>
+        <Action handleOpenD={dialogState.handleOpen}/>
       </Box>
       <MySnackbar {...snackbarState}/>
-      <ScrollDialog {...dialogState} content={<SwitchListSecondary status={dialogState.status}/>}/>
+      <ScrollDialog {...dialogState} content={<SwitchListSecondary cnt={cnt} setCnt={setCnt}/>}/>
     </Box>
   );
 }
 
 function MySnackbar(props){
   return(
-    <Snackbar open={props.open} autoHideDuration={6000} onClose={props.handleClose}>
+    <Snackbar open={props.open} autoHideDuration={3000} onClose={props.handleClose}>
       <Alert elevation={6} variant="filled" onClose={props.handleClose} severity="success">
         {props.text}
       </Alert>

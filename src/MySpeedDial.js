@@ -25,7 +25,6 @@ const useStyles = makeStyles((theme) => ({
 const actions = [
   { icon: <ScheduleIcon />, name: 'Timeline' },
   { icon: <NewReleasesIcon />, name: 'New' },
-  { icon: <UpdateIcon />, name: 'Update' },
 ];
 
 export default function MySpeedDial(props) {
@@ -38,7 +37,6 @@ export default function MySpeedDial(props) {
     handleClose();
     if(id == 0) props.toggleDrawer('bottom', true)
     else if(id == 1) props.handleOpenD('new');
-    else if(id == 2) props.handleOpenD('update');
   }
   const handleOpen = () => {
     setOpen(true);

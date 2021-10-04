@@ -29,7 +29,7 @@ export default function Action(props){
 
   return(
     <>
-      <MyDrawer drawer={<CustomizedTimeline />} toggleDrawer={toggleDrawer} state={openDrawer} anchor={'bottom'}/>
+      <MyDrawer drawer={<CustomizedTimeline handleOpenD={props.handleOpenD} toggleDrawer={toggleDrawer}/>} toggleDrawer={toggleDrawer} state={openDrawer} anchor={'bottom'}/>
       <MySpeedDial toggleDrawer={toggleDrawer} handleOpenD={props.handleOpenD}/>
     </>
   )

@@ -1,4 +1,4 @@
-import { AppContext } from '../App'
+import { AppContext } from '../MyContext'
 import { useEffect, useContext, } from 'react'
 import { Loader } from "@googlemaps/js-api-loader"
 import { findPlace, findPlaces, } from './googleMapAPI';
@@ -19,7 +19,7 @@ export const useGoogle = () => {
   }, [])
 }
 
-export const usePlan = (cnt, setCnt) => {
+export const usePlan = (cnt, setCnt, handleOpenS) => {
   const {google, map, plan, setPlan, condition, } = useContext(AppContext);
 
   useEffect(async () => {
@@ -29,5 +29,6 @@ export const usePlan = (cnt, setCnt) => {
     setPlan({...newPlan});
     console.log(newPlan);
     setCnt(cnt + 1)
+    handleOpenS('プランが完成しました')
   }, [google, map, condition])
 }

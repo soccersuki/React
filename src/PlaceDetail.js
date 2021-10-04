@@ -9,7 +9,7 @@ import PublicIcon from '@material-ui/icons/Public';
 import SearchIcon from '@material-ui/icons/Search';
 
 import { useContext, useEffect, useState, } from 'react';
-import { AppContext } from './App'
+import { AppContext } from './MyContext'
 
 import { getDetail } from './funcs/googleMapAPI';
 

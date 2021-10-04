@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react'
+import { useState, useContext, useEffect } from 'react'
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -16,7 +16,9 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import MultipleSelect from './MultipleSelect'
 import MaterialUIPickers from './MaterialUIPickers'
 
-import {AppContext} from './App'
+import {AppContext} from './MyContext'
+
+import {makePlan} from './funcs/planFuncs'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SwitchListSecondary(props) {
   const classes = useStyles();
-  const [checked, setChecked] = useState(['checkBox']);
+  const [checked, setChecked] = useState(['checkBox', 'new']);
   const [regionName, setRegionName] = useState('大阪');
   const [originName, setOriginName] = useState('大阪駅');
   const [destinationName, setDestinationName] = useState('');
@@ -39,7 +41,9 @@ export default function SwitchListSecondary(props) {
   const [arrivalTime, setArrivalTime] = useState(arrivalDate);
   const [querys, setQuerys] = useState([])
 
-  const { condition, setCondition, } = useContext(AppContext);
+  const { google, map, plan, setPlan, condition, setCondition, snackbarState, dialogState} = useContext(AppContext);
+
+
 
   const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);
@@ -51,6 +55,11 @@ export default function SwitchListSecondary(props) {
     }
     setChecked(newChecked);
   };
+  useEffect(() => {
+    if(dialogState.status == 'update'){
+      handleToggle('new')()
+    }
+  }, [])
   const handleChangeRegionName = (e) => {
     setRegionName(e.target.value);
   }
@@ -66,7 +75,7 @@ export default function SwitchListSecondary(props) {
   const handleArrivalDateChange = (date) => {
     setArrivalTime(date);
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const condition = {
       regionName,
@@ -78,11 +87,17 @@ export default function SwitchListSecondary(props) {
       departureTime: departureTime.getHours() * 3600 + departureTime.getMinutes() * 60,
       arrivalTime: arrivalTime.getHours() * 3600 + arrivalTime.getMinutes() * 60,
       querys,
-      status: props.status,
+      status: checked.indexOf('new') != -1 ? 'new' : 'update',
     };
     if(checked.indexOf('checkBox') != -1) condition.destinationName = originName;
     console.log(condition)
     setCondition({...condition})
+    dialogState.handleClose()
+    const newPlan = await makePlan(google, map, plan, condition);
+    setPlan({...newPlan});
+    console.log(newPlan);
+    props.setCnt(props.cnt + 1)
+    snackbarState.handleOpen('プランが完成しました')
   }
 
   return (
@@ -104,7 +119,7 @@ export default function SwitchListSecondary(props) {
           <TextField label="エリア" fullWidth variant='outlined' required  onChange={handleChangeRegionName} value={regionName}/>
         </ListItem>
         <ListItem disableGutters>
-          <TextField label='出発' fullWidth variant='outlined' required onChange={handleChangeOriginName} value={originName}/>
+          <TextField label='出発' fullWidth variant='outlined' required onChange={handleChangeOriginName} value={originName} helperText="Some important text"/>
         </ListItem>
         <ListItem disableGutters>
           <FormControlLabel
@@ -124,16 +139,31 @@ export default function SwitchListSecondary(props) {
           <MaterialUIPickers label='到着時間' selectedDate={arrivalTime} handleDateChange={handleArrivalDateChange}/>
         </ListItem>
         <ListItem disableGutters>
-          <ListItemText id="switch-list-label-bluetooth" primary={<Typography variant='body2'>スポットを自動で追加</Typography>} />
+          <ListItemText id="switch-list-label-bluetooth" primary={<Typography variant='body2'>新規作成</Typography>} />
           <ListItemSecondaryAction>
             <Switch
               edge="end"
-              onChange={handleToggle('place')}
-              checked={checked.indexOf('place') !== -1}
+              onChange={handleToggle('new')}
+              checked={checked.indexOf('new') !== -1}
               inputProps={{ 'aria-labelledby': 'switch-list-label-bluetooth' }}
             />
           </ListItemSecondaryAction>
         </ListItem>
+        <Collapse in={checked.indexOf('new') == -1}>
+          <ListItem disableGutters>
+            <ListItemText id="switch-list-label-bluetooth" primary={<Typography variant='body2'>スポットを自動で追加</Typography>} />
+            <ListItemSecondaryAction>
+              <Switch
+                edge="end"
+                onChange={handleToggle('place')}
+                checked={checked.indexOf('place') !== -1}
+                inputProps={{ 'aria-labelledby': 'switch-list-label-bluetooth' }}
+              />
+            </ListItemSecondaryAction>
+          </ListItem>
+        </Collapse>
+
+
         <ListItem disableGutters>
           <ListItemText id="switch-list-label-bluetooth" primary={<Typography variant='body2'>昼食を自動で追加</Typography>} />
           <ListItemSecondaryAction>
