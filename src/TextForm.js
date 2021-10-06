@@ -3,6 +3,7 @@ import {
   Box,
   TextField,
   InputAdornment,
+  InputBase,
 } from '@material-ui/core';
 import LoyaltyIcon from '@material-ui/icons/Loyalty';
 import SearchIcon from '@material-ui/icons/Search';
@@ -21,18 +22,22 @@ export default function TextForm(props){
   }
   return(
     <form onSubmit={handleSubmit}>
-      <TextField required size="small" fullWidth label={'SEARCH'} variant="outlined" onChange={handleChange} value={text}  InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">
-            <LoyaltyIcon color='secondary'fontSize="large"/>
-          </InputAdornment>
-        ),
-        endAdornment: (
-          <InputAdornment position="end">
-            <SearchIcon color='action'/>
-          </InputAdornment>
-        )
-      }}/>
+    <Box display='flex'>
+    <LoyaltyIcon color="action" style={{margin: 10}}/>
+    <InputBase required placeholder="Search Google Maps" size="small" fullWidth label={'SEARCH'} onChange={handleChange} value={text}  InputProps={{
+      startAdornment: (
+        <InputAdornment position="start">
+          <LoyaltyIcon color='secondary'fontSize="large"/>
+        </InputAdornment>
+      ),
+      endAdornment: (
+        <InputAdornment position="end">
+          <SearchIcon color='action'/>
+        </InputAdornment>
+      )
+    }}/>
+    <SearchIcon color='action' style={{margin: 10}}/>
+    </Box>
     </form>
   )
 }

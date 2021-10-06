@@ -9,7 +9,7 @@ import Switch from '@material-ui/core/Switch';
 import FastfoodIcon from '@material-ui/icons/Fastfood';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import HouseIcon from '@material-ui/icons/House';
-import { TextField, Button, Box, Checkbox, Collapse, Fab, FormControlLabel, Typography, Avatar, } from '@material-ui/core';
+import { TextField, Button, Box, Checkbox, Collapse, Fab, FormControlLabel, Typography, Avatar, Grid, } from '@material-ui/core';
 import NavigationIcon from '@material-ui/icons/Navigation';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 
@@ -30,7 +30,7 @@ export default function SwitchListSecondary(props) {
   const [checked, setChecked] = useState(['checkBox', 'new']);
   const [regionName, setRegionName] = useState('大阪');
   const [originName, setOriginName] = useState('大阪駅');
-  const [destinationName, setDestinationName] = useState('');
+  const [destinationName, setDestinationName] = useState('大阪駅');
   const departureDate = new Date();
   const arrivalDate = new Date();
   departureDate.setHours(9)
@@ -103,40 +103,39 @@ export default function SwitchListSecondary(props) {
   return (
     <>
     <Box width='100%'>
-      <Box display="flex" justifyContent="center" my={1}>
-        <Avatar>
-          <NavigationIcon />
-        </Avatar>
-      </Box>
       <Box display="flex" justifyContent="center">
-        <Typography variant='h5'>{props.title}</Typography>
+        <Typography variant='h5'></Typography>
       </Box>
     </Box>
-    <Box  color='text.secondary'>
+    <Box color='text.secondary'>
     <form onSubmit={handleSubmit}>
-      <List>
+      <List dense={false}>
         <ListItem disableGutters>
-          <TextField label="エリア" fullWidth variant='outlined' required  onChange={handleChangeRegionName} value={regionName}/>
+          <TextField label="エリア" fullWidth margin='dense' required  onChange={handleChangeRegionName} value={regionName}/>
         </ListItem>
         <ListItem disableGutters>
-          <TextField label='出発' fullWidth variant='outlined' required onChange={handleChangeOriginName} value={originName} helperText="Some important text"/>
-        </ListItem>
-        <ListItem disableGutters>
-          <FormControlLabel
-            control={<Checkbox checked={checked.indexOf('checkBox') !== -1} onChange={handleToggle('checkBox')} name="checkedA" />}
-            label={<Typography variant='body2'>出発地点と到着地点が同じ</Typography>}
-          />
+          <Grid container spacing={2}>
+          <Grid item xs={6}>
+          <TextField label='出発' fullWidth margin='dense' required onChange={handleChangeOriginName} value={originName} />
+          </Grid>
+          <Grid item xs={6}>
+          <TextField label='到着' fullWidth margin='dense'onChange={handleChangeDestinationName} value={destinationName} />
+          </Grid>
+          </Grid>
         </ListItem>
         <Collapse in={checked.indexOf('checkBox') == -1}>
           <ListItem disableGutters>
-            <TextField label='到着' fullWidth variant='outlined'onChange={handleChangeDestinationName} value={destinationName}/>
           </ListItem>
         </Collapse>
         <ListItem disableGutters>
-          <MaterialUIPickers label='出発時間' selectedDate={departureTime} handleDateChange={handleDepartureDateChange}/>
-        </ListItem>
-        <ListItem disableGutters>
-          <MaterialUIPickers label='到着時間' selectedDate={arrivalTime} handleDateChange={handleArrivalDateChange}/>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <MaterialUIPickers label='出発時間' selectedDate={departureTime} handleDateChange={handleDepartureDateChange}/>
+            </Grid>
+            <Grid item xs={6}>
+              <MaterialUIPickers label='到着時間' selectedDate={arrivalTime} handleDateChange={handleArrivalDateChange}/>
+            </Grid>
+          </Grid>
         </ListItem>
         <ListItem disableGutters>
           <ListItemText id="switch-list-label-bluetooth" primary={<Typography variant='body2'>新規作成</Typography>} />
@@ -146,6 +145,7 @@ export default function SwitchListSecondary(props) {
               onChange={handleToggle('new')}
               checked={checked.indexOf('new') !== -1}
               inputProps={{ 'aria-labelledby': 'switch-list-label-bluetooth' }}
+              color="primary"
             />
           </ListItemSecondaryAction>
         </ListItem>
@@ -189,19 +189,18 @@ export default function SwitchListSecondary(props) {
         <ListItem disableGutters>
           <MultipleSelect label='その他' state={querys} setState={setQuerys}/>
         </ListItem>
-        <ListItem disableGutters>
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            className={classes.button}
-            startIcon={<NavigationIcon />}
-            type='submit'
-          >
-            Plan
-          </Button>
-        </ListItem>
       </List>
+      <Button
+        variant="contained"
+        color="primary"
+        fullWidth
+        className={classes.button}
+        startIcon={<NavigationIcon />}
+        type='submit'
+        style={{marginTop: 20}}
+      >
+        Plan
+      </Button>
     </form>
     </Box>
     </>

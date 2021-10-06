@@ -85,7 +85,7 @@ export default function MultipleSelect(props) {
 
   return (
     <>
-      <FormControl variant='outlined' className={classes.formControl}>
+      <FormControl className={classes.formControl}>
         <InputLabel id="demo-mutiple-chip-label">{props.label}</InputLabel>
         <Select
           labelId="demo-mutiple-chip-label"
@@ -93,7 +93,7 @@ export default function MultipleSelect(props) {
           multiple
           value={props.state}
           onChange={handleChange}
-          input={<OutlinedInput id="select-multiple-chip" />}
+          input={<Input id="select-multiple-chip" margin='dense'/>}
           renderValue={(selected) => (
             <div className={classes.chips}>
               {selected.map((value) => (

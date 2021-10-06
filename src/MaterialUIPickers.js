@@ -4,13 +4,14 @@ import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
   KeyboardDatePicker,
+  TimePicker,
 } from '@material-ui/pickers';
 
 export default function MaterialUIPickers(props) {
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      <KeyboardTimePicker
-        margin="normal"
+      <TimePicker
+        margin="dense"
         id="time-picker"
         label={props.label}
         value={props.selectedDate}
@@ -19,7 +20,7 @@ export default function MaterialUIPickers(props) {
           'aria-label': 'change time',
         }}
         style={{width: '100%',}}
-        inputVariant="outlined"
+        size='small'
       />
     </MuiPickersUtilsProvider>
   );

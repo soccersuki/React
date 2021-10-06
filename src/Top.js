@@ -1,6 +1,6 @@
 import TextForm from './TextForm'
 import LoyaltyIcon from '@material-ui/icons/Loyalty';
-import { Box, Chip, InputAdornment, } from '@material-ui/core'
+import { Box, Chip, InputAdornment, Paper} from '@material-ui/core'
 
 export default function Top(props){
   const handleClick = (id) => () => {
@@ -11,10 +11,10 @@ export default function Top(props){
   ))
   return(
     <Box mx={2}>
-      <Box mb={2}>
+      <Paper mb={2}>
         <TextForm onSubmit={props.onSubmit}/>
-      </Box>
-      <Box style={{overflowX: 'auto', whiteSpace: 'nowrap'}}>
+      </Paper>
+      <Box my={2}style={{overflowX: 'auto', whiteSpace: 'nowrap'}}>
         {chips}
       </Box>
     </Box>
