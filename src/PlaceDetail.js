@@ -13,6 +13,9 @@ import { AppContext } from './MyContext'
 
 import { getDetail } from './funcs/googleMapAPI';
 
+import { Card, CardHeader, CardContent, Avatar, ListSubheader} from '@material-ui/core'
+
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%'
@@ -34,7 +37,8 @@ export default function PlaceDetail(props){
     console.log(place)
     if(place == null) return;
     (async() => {
-      const detail = await getDetail(google, map, place.place_id)
+      const fields = ['opening_hours', 'formatted_phone_number', 'website', 'url', 'reviews']
+      const detail = await getDetail(google, map, place.place_id, fields)
       setDetail(detail)
       console.log(detail)
     })()
@@ -45,7 +49,8 @@ export default function PlaceDetail(props){
   return(
     <Box className={classes.root}>
       <img src={place.photos == null ? null: place.photos[0].getUrl()} className={classes.img}/>
-      <Box px={2}>
+      <Box>
+        <Box mx={2}>
         <Typography gutterBottom variant="h5" component="h2">
           {place.name}
         </Typography>
@@ -56,37 +61,56 @@ export default function PlaceDetail(props){
             ({place.user_ratings_total})
           </Box>
         </Typography>
-        <Typography>
-          {place.types.map((type) => <Chip size='small' label={type} color="primary" style={{margin: 1}}/>)}
-        </Typography>
+        </Box>
         <List>
-          <ListItem button>
-            <ListItemIcon>{<RoomIcon />}</ListItemIcon>
-            <ListItemText primary={place.formatted_address} />
+          <ListItem button divider>
+            <ListItemIcon>{<RoomIcon/>}</ListItemIcon>
+            <ListItemText primary={<Typography variant='body2' style={{padding: '5px 0'}}>{place.formatted_address}</Typography>} />
           </ListItem>
-          <ListItem button>
+          <ListItem button divider>
             <ListItemIcon>{<AccessTimeIcon />}</ListItemIcon>
-            <ListItemText primary={'営業中'} />
+            <ListItemText primary={<Typography variant='body2' style={{padding: '5px 0'}}>{'営業中'}</Typography>} />
           </ListItem>
           {detail != null && detail.formatted_phone_number != null && (
-            <ListItem button>
+            <ListItem button divider>
               <ListItemIcon>{<PhoneIcon />}</ListItemIcon>
-              <ListItemText primary={detail.formatted_phone_number} />
+              <ListItemText primary={<Typography variant='body2' style={{padding: '5px 0'}}>{detail.formatted_phone_number}</Typography>} />
             </ListItem>
           )}
           {detail != null && detail.website != null && (
-            <ListItem>
+            <ListItem divider>
               <ListItemIcon>{<PublicIcon />}</ListItemIcon>
-              <ListItemText primary={detail.website} />
+              <ListItemText primary={<Typography variant='body2' noWrap style={{padding: '5px 0'}}>{detail.website}</Typography>} />
             </ListItem>
           )}
-          <ListItem button>
+          <ListItem button divider>
             <ListItemIcon>{<SearchIcon />}</ListItemIcon>
-            <ListItemText primary={'googleで検索'} />
+            <ListItemText primary={<Typography variant='body2' style={{padding: '5px 0'}}>{'googleで検索'}</Typography>} />
           </ListItem>
         </List>
+        <Box my={2}>
+        <List subheader={<ListSubheader disableSticky><Typography variant='h6'>クチコミ</Typography></ListSubheader>}>
+          {detail?.reviews?.map?.(review => (
+            <ListItem divider ><MyCard review={review}/></ListItem>
+          ))}
+        </List>
+        </Box>
       </Box>
+    </Box>
+  )
+}
 
+
+function MyCard(props){
+  const {review} = props
+  return(
+    <Box>
+    <Box display='flex'alignItems="center">
+      <Avatar aria-label="recipe" src={review.profile_photo_url}/>
+      <Typography style={{marginLeft: 10}}>{review.author_name}</Typography>
+    </Box>
+    {<Rating name="read-only" value={review.rating} precision={0.5} readOnly size='small' />}
+    <Typography variant='body2'>{review.text}</Typography>
     </Box>
   )
 }

@@ -19,11 +19,6 @@ export default function MyDrawer(props) {
   const handleClose = () => {
     props.toggleDrawer(props.anchor, false);
   }
-
-  React.useEffect(() => {
-    console.log('drawer')
-  }, [])
-
   const content = (anchor) => (
     <div
       className={classes.root}

@@ -48,19 +48,29 @@ export default function MediaCard(props) {
           <Typography variant="h6" component="h6" noWrap>
             {place.name}
           </Typography>
+          <Typography gutterBottom variant="body2" color="textSecondary" component="p">
+            <Box display="flex" alignItems="center">
+              {place.rating}
+              <Rating name="read-only" value={place.rating} precision={0.5} readOnly size='small' />
+              ({place.user_ratings_total})
+            </Box>
+          </Typography>
         </CardContent>
       </CardActionArea>
-      <CardActions disableSpacing>
-        {plan != null && place.type == null ?
-          <Button size="small" color="primary" onClick={props.onClickAdd}>
-            ADD
-          </Button>
-          :
-          <Button size="small" color="primary" onClick={props.onClickDelete}>
-            DELETE
-          </Button>
-        }
-      </CardActions>
+      {plan != null && (
+        <CardActions disableSpacing>
+          {place.type == null ?
+            <Button size="small" color="primary" onClick={props.onClickAdd}>
+              ADD
+            </Button>
+            :
+            <Button size="small" color="primary" onClick={props.onClickDelete}>
+              DELETE
+            </Button>
+          }
+        </CardActions>
+      )}
+
     </Card>
   );
 }

@@ -11,10 +11,10 @@ export default function Top(props){
   ))
   return(
     <Box mx={2}>
-      <Paper mb={2}>
+      <Paper>
         <TextForm onSubmit={props.onSubmit}/>
       </Paper>
-      <Box my={2}style={{overflowX: 'auto', whiteSpace: 'nowrap'}}>
+      <Box mt={2}style={{overflowX: 'auto', whiteSpace: 'nowrap'}}>
         {chips}
       </Box>
     </Box>

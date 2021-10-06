@@ -41,62 +41,42 @@ const Carousel = (props) => {
   const { chipIndex, markers, setMarkers} = props
   // const [places, setPlaces] = useState(props.places);
   const { places, setPlaces, } = props
-  const [value, setValue] = useState(0);
+  // const [value, setValue] = useState(0);
   const { map, plan, setPlan, snackbarState, } = useContext(AppContext)
 
   const handleChangeIndex = (index) => {
-    setValue(index);
+    props.setCarouselIndex(index);
     map.panTo({lat: places[index].geometry.location.lat(), lng: places[index].geometry.location.lng()})
   }
-  const deletePlace = (id) => {
-    markers.markers[id].setMap(null);
-    markers.markers.splice(id, 1);
-    setMarkers(markers)
-    places.splice(id, 1);
-    setPlaces(places);
-    if(id < places.length) map.panTo({lat: places[id].geometry.location.lat(), lng: places[id].geometry.location.lng()})
-  }
-  const handleClickDelete = (id) => {
-    deletePlace(id)
-    setPlan({...plan});
-    snackbarState.handleOpen('削除しました')
-  }
-  const handleClickAdd = (id) => {
-    places[id].type = 'plan'
-    plan.places.push(places[id]);
-    deletePlace(id);
-    setPlan({...plan});
-    snackbarState.handleOpen('追加しました')
-  }
 
-  useEffect(() => {
-    setValue(0);
 
-  }, [chipIndex])
-
-  useEffect(() => {
-    if(markers == null) return;
-    markers.markers.map((marker, id) => {
-      marker.addListener('click', ()=>{
-        // setValue(id);
-        for(var i = 0; i < props.places.length; i++){
-          if(props.places[i].name == marker.title){
-            setValue(i)
-            break;
-          }
-        }
-      })
-    })
-    setMarkers(markers)
-    // setPlaces(props.places);
-  }, [markers])
+  // useEffect(() => {
+  //   setValue(0);
+  // }, [chipIndex])
+  //
+  // useEffect(() => {
+  //   if(markers == null) return;
+  //   markers.markers.map((marker, id) => {
+  //     marker.addListener('click', ()=>{
+  //       // setValue(id);
+  //       for(var i = 0; i < props.places.length; i++){
+  //         if(props.places[i].name == marker.title){
+  //           setValue(i)
+  //           break;
+  //         }
+  //       }
+  //     })
+  //   })
+  //   setMarkers(markers)
+  //   // setPlaces(props.places);
+  // }, [markers])
 
 
   if(places == null) return;
   return(
-    <SwipeableViews enableMouseEvents index={value} onChangeIndex={(index) => handleChangeIndex(index)} style={{padding: '0 30px'}}>
+    <SwipeableViews enableMouseEvents index={props.carouselIndex} onChangeIndex={(index) => handleChangeIndex(index)} style={{padding: '0 30px'}}>
       {places.map((place, id) => (
-        <Box px={1}><PlaceCard place={place} onClickDelete={() => handleClickDelete(id)} onClickAdd={() => handleClickAdd(id)}/></Box>
+        <Box px={1}><PlaceCard place={place} onClickDelete={() => props.handleClickDelete(id)} onClickAdd={() => props.handleClickAdd(id)}/></Box>
       ))}
     </SwipeableViews>
   )

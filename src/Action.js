@@ -2,8 +2,6 @@ import { useState, } from 'react'
 import CustomizedTimeline from './CustomizedTimeline';
 import MySpeedDial from './MySpeedDial'
 import MyDrawer from './MyDrawer'
-import ScrollDialog from './ScrollDialog'
-import SwitchListSecondary from './SwitchListSecondary'
 
 export default function Action(props){
   const [openDrawer, setOpenDrawer] = useState({
@@ -12,25 +10,14 @@ export default function Action(props){
     bottom: false,
     right: false,
   });
-  const [openDialog, setOpenDialog] = useState(false);
-  const [condition, setCondition] = useState({regionName: '大阪', originName: '大阪駅'});
-  const [title, setTitle] = useState(null);
   const toggleDrawer = (anchor, open) => {
     setOpenDrawer({ ...openDrawer, [anchor]: open });
-  };
-  const handleOpen = (status) => {
-    condition.status = status;
-    setCondition({...condition});
-    setOpenDialog(true);
-  };
-  const handleClose = () => {
-    setOpenDialog(false);
   };
 
   return(
     <>
-      <MyDrawer drawer={<CustomizedTimeline handleOpenD={props.handleOpenD} toggleDrawer={toggleDrawer}/>} toggleDrawer={toggleDrawer} state={openDrawer} anchor={'bottom'}/>
-      <MySpeedDial toggleDrawer={toggleDrawer} handleOpenD={props.handleOpenD}/>
+      <MyDrawer drawer={<CustomizedTimeline toggleDrawer={toggleDrawer}/>} toggleDrawer={toggleDrawer} state={openDrawer} anchor={'bottom'}/>
+      <MySpeedDial toggleDrawer={toggleDrawer}/>
     </>
   )
 }

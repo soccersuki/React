@@ -6,12 +6,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import SwitchListSecondary from './SwitchListSecondary'
-
 import { Box, Avatar, Typography, } from '@material-ui/core'
 import NavigationIcon from '@material-ui/icons/Navigation';
 
-import pink from '@material-ui/core/colors/pink';
 import indigo from '@material-ui/core/colors/indigo';
 
 export default function ScrollDialog(props) {
@@ -37,15 +34,14 @@ export default function ScrollDialog(props) {
         scroll={'paper'}
         aria-labelledby="scroll-dialog-title"
         aria-describedby="scroll-dialog-description"
-
       >
         <DialogTitle style={{backgroundColor: indigo[500]}}>
-        <Box display="flex">
-          <Avatar>
-            <NavigationIcon />
-          </Avatar>
-          <Typography variant='h4' style={{color: 'white', marginLeft: 10}}>Plan</Typography>
-        </Box>
+          <Box display="flex">
+            <Avatar>
+              <NavigationIcon />
+            </Avatar>
+            <Typography variant='h4' style={{color: 'white', marginLeft: 10}}>Plan</Typography>
+          </Box>
         </DialogTitle>
         <DialogContent dividers={'paper' === 'paper'} >
           {props.content}

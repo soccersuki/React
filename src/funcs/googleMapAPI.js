@@ -43,9 +43,10 @@ export const findPlaces = async (google, map, query, location) => {
   return places;
 }
 
-export const getDetail = async (google, map, placeId) => {
+export const getDetail = async (google, map, placeId, fields) => {
   var request = {
     placeId,
+    fields
   };
 
   const service = new google.maps.places.PlacesService(map);

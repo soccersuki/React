@@ -6,12 +6,12 @@ import Bottom from './Bottom';
 import Action from './Action'
 
 import { useGoogle } from './funcs/customHooks';
-import { usePlan, } from './funcs/customHooks'
 import { addMarkers, } from './funcs/markerFuncs';
 import { findPlaces } from './funcs/googleMapAPI';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, } from '@material-ui/core'
+
 import FaceIcon from '@material-ui/icons/Face';
 import LocalCafeIcon from '@material-ui/icons/LocalCafe';
 import NatureIcon from '@material-ui/icons/Nature';
@@ -19,10 +19,9 @@ import PetsIcon from '@material-ui/icons/Pets';
 import EmojiPeopleIcon from '@material-ui/icons/EmojiPeople';
 import RestaurantIcon from '@material-ui/icons/Restaurant';
 
-import Alert from '@material-ui/lab/Alert';
-import Snackbar from '@material-ui/core/Snackbar';
-import ScrollDialog from './ScrollDialog'
-import SwitchListSecondary from './SwitchListSecondary'
+import MySnackbar from './MySnackbar';
+import MyDialog from './MyDialog'
+import ConditionPage from './ConditionPage'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,30 +43,15 @@ export default function Home(){
   const classes = useStyles();
 
   const [chipIndex, setChipIndex] = useState(0);
-  const { google, map, plan, snackbarState, dialogState, } = useContext(AppContext)
+  const { google, map, plan, setPlan, snackbarState, dialogState, } = useContext(AppContext)
   const [places, setPlaces] = useState(null);
   const [text, setText] = useState(null);
   const [markers, setMarkers] = useState(null);
   const [display, setDisplay] = useState(false);
+  const [carouselIndex, setCarouselIndex] = useState(0);
   const [cnt, setCnt] = useState(0);
 
-  // const handleOpenS = (text) => {
-  //   setSnackbarState({...snackbarState, open: true, text})
-  // }
-  // const handleCloseS = () => {
-  //   setSnackbarState({...snackbarState, open: false})
-  // }
-  // const [snackbarState, setSnackbarState] = useState({open: false, handleClose: handleCloseS});
-  // const handleOpenD = (status) => {
-  //   setDialogState({...dialogState, open: true, status});
-  // }
-  // const handleCloseD = () => {
-  //   setDialogState({...dialogState, open: false})
-  // }
-  // const [dialogState, setDialogState] = useState({open: false, handleClose: handleCloseD})
-
   useGoogle();
-  // usePlan(cnt, setCnt, handleOpenS);
 
   const handleClick = async (id) => {
     setChipIndex(id);
@@ -85,6 +69,7 @@ export default function Home(){
   }, [])
 
   useEffect(() => {
+    setCarouselIndex(0);
     (async() => {
       var places;
       if(chipIndex == 0){
@@ -112,8 +97,20 @@ export default function Home(){
     var markers;
     if(chipIndex == 0) markers = addMarkers(google, map, places, types[chipIndex], plan.origin, plan.destination)
     else markers = addMarkers(google, map, places, chipIndex == -1 ? types[1] : types[chipIndex])
-    setMarkers({...markers});
+    // setMarkers({...markers});
     map.panTo({lat: places[0].geometry.location.lat(), lng: places[0].geometry.location.lng()})
+
+    markers.markers.map((marker, id) => {
+      marker.addListener('click', ()=>{
+        for(var i = 0; i < places.length; i++){
+          if(places[i].name == marker.title){
+            setCarouselIndex(i)
+            break;
+          }
+        }
+      })
+    })
+    setMarkers(markers)
 
     return () => {
       if(markers != null){
@@ -124,6 +121,27 @@ export default function Home(){
     }
   }, [places])
 
+  const deletePlace = (id) => {
+    markers.markers[id].setMap(null);
+    markers.markers.splice(id, 1);
+    setMarkers(markers)
+    places.splice(id, 1);
+    setPlaces(places);
+    if(id < places.length) map.panTo({lat: places[id].geometry.location.lat(), lng: places[id].geometry.location.lng()})
+  }
+  const handleClickDelete = (id) => {
+    deletePlace(id)
+    setPlan({...plan});
+    snackbarState.handleOpen('削除しました')
+  }
+  const handleClickAdd = (id) => {
+    places[id].type = 'plan'
+    plan.places.push(places[id]);
+    deletePlace(id);
+    setPlan({...plan});
+    snackbarState.handleOpen('追加しました')
+  }
+
   return(
     <Box className={classes.root}>
       <div style={{height: window.innerHeight}}>
@@ -133,23 +151,13 @@ export default function Home(){
         <Top onClick={handleClick} chipIndex={chipIndex} types={types} onSubmit={handleSubmit}/>
       </Box>
       <Box style={{position: 'absolute', width: '100%', bottom: 20}}>
-        <Bottom chipIndex={chipIndex} setChipIndex={setChipIndex} types={types} places={places} setPlaces={setPlaces} markers={markers} setMarkers={setMarkers} display={display} handleOpenS={snackbarState.handleOpen}/>
+        <Bottom carouselIndex={carouselIndex} setCarouselIndex={setCarouselIndex} handleClickAdd={handleClickAdd} handleClickDelete={handleClickDelete} chipIndex={chipIndex} places={places} setPlaces={setPlaces} markers={markers} setMarkers={setMarkers} display={display}/>
       </Box>
       <Box style={{position: 'absolute', bottom: 20, right: 70}}>
         <Action handleOpenD={dialogState.handleOpen}/>
       </Box>
       <MySnackbar {...snackbarState}/>
-      <ScrollDialog {...dialogState} content={<SwitchListSecondary cnt={cnt} setCnt={setCnt}/>}/>
+      <MyDialog {...dialogState} content={<ConditionPage cnt={cnt} setCnt={setCnt}/>}/>
     </Box>
   );
-}
-
-function MySnackbar(props){
-  return(
-    <Snackbar open={props.open} autoHideDuration={3000} onClose={props.handleClose}>
-      <Alert elevation={6} variant="filled" onClose={props.handleClose} severity="success">
-        {props.text}
-      </Alert>
-    </Snackbar>
-  )
 }

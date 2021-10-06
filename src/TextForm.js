@@ -22,22 +22,11 @@ export default function TextForm(props){
   }
   return(
     <form onSubmit={handleSubmit}>
-    <Box display='flex'>
-    <LoyaltyIcon color="action" style={{margin: 10}}/>
-    <InputBase required placeholder="Search Google Maps" size="small" fullWidth label={'SEARCH'} onChange={handleChange} value={text}  InputProps={{
-      startAdornment: (
-        <InputAdornment position="start">
-          <LoyaltyIcon color='secondary'fontSize="large"/>
-        </InputAdornment>
-      ),
-      endAdornment: (
-        <InputAdornment position="end">
-          <SearchIcon color='action'/>
-        </InputAdornment>
-      )
-    }}/>
-    <SearchIcon color='action' style={{margin: 10}}/>
-    </Box>
+      <Box display='flex'>
+        <LoyaltyIcon color="action" style={{margin: 10}}/>
+        <InputBase required placeholder="Search Google Maps" size="small" fullWidth label={'SEARCH'} onChange={handleChange} value={text}/>
+        <SearchIcon color='action' style={{margin: 10}}/>
+      </Box>
     </form>
   )
 }

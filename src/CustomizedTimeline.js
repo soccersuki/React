@@ -80,7 +80,7 @@ function DurationSelect(props){
 
 export default function CustomizedTimeline(props) {
   const classes = useStyles();
-  const {plan, setPlan, condition} = useContext(AppContext);
+  const {plan, setPlan, condition, dialogState, } = useContext(AppContext);
 
   if(plan == null){
     return(
@@ -109,7 +109,7 @@ export default function CustomizedTimeline(props) {
   const handleClick = () => {
     console.log('click')
     props.toggleDrawer('bottom', false)
-    props.handleOpenD('update')
+    dialogState.handleOpen('update')
   }
 
   return(
