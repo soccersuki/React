@@ -7,7 +7,7 @@ export default function Top(props){
     props.onClick(id);
   }
   const chips = props.types.map((type, id) => (
-    <Chip label={type.japanese} size="small" icon={type.icon}variant='outlined' onClick={handleClick(id)} style={{margin: 5}} color={props.chipIndex == id ? 'primary': 'default'}/>
+    <Chip label={type.japanese} size="small" icon={type.icon} onClick={handleClick(id)} style={{margin: 5, backgroundColor: props.chipIndex == id ? 'blue': 'white'}} color={props.chipIndex == id ? 'primary': 'default'}/>
   ))
   return(
     <Box mx={2}>
