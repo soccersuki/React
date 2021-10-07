@@ -1,10 +1,9 @@
 export function addMarkers(google, map, places, type, origin, destination){
-  const alphabet = 'abcdefghijklmnopqrstuvwxyz';
   const infoWindow = new google.maps.InfoWindow();
-  const originMarker = origin == null ? null : addMarker(google, map, infoWindow, origin, alphabet[25])
-  const destinationMarker = destination == null ? null : addMarker(google, map, infoWindow, destination, alphabet[25])
+  const originMarker = origin == null ? null : addMarker(google, map, infoWindow, origin, null)
+  const destinationMarker = destination == null ? null : addMarker(google, map, infoWindow, destination, null)
   const markers = places.map((place, id) => {
-    const labelText = type.name == 'plan' ? alphabet[id] : type.iconCode;
+    const labelText = type.name == 'plan' ? place.label : type.iconCode;
     return addMarker(google, map, infoWindow, place, labelText, type.name == 'plan' ? null : 'Material Icons')
   })
   return {markers, originMarker, destinationMarker}
@@ -14,7 +13,7 @@ export function addMarker(google, map, infoWindow, place, labelText, fontFamily)
   const label = {
     text: labelText, // codepoint from https://fonts.google.com/icons
     color: "#ffffff",
-    fontSize: "18px"
+    fontSize: "14px"
   }
   if(fontFamily != null) label.fontFamily = fontFamily
   const option = {
@@ -36,40 +35,4 @@ export function addMarker(google, map, infoWindow, place, labelText, fontFamily)
   });
   marker.setMap(map)
   return marker;
-}
-
-export function showMarker(google, map, itinerary){
-  const label = 'abcdefghijklmnopqrstuvwxyz';
-  const originOption = {
-    position: {
-      lat: itinerary[0].geometry.location.lat(),
-      lng: itinerary[0].geometry.location.lng(),
-    },
-    map: map,
-    icon: {
-      url: "http://maps.google.com/mapfiles/ms/icons/flag.png",
-    },
-  }
-  const originMarker = new google.maps.Marker(originOption);
-  originMarker.setMap(map)
-  const destinationOption = {
-    position: {
-      lat: itinerary.slice(-1)[0].geometry.location.lat(),
-      lng: itinerary.slice(-1)[0].geometry.location.lng(),
-    },
-    map: map,
-    icon: {
-      url: "http://maps.google.com/mapfiles/ms/icons/flag.png",
-    },
-  }
-  const destinationMarker = new google.maps.Marker(destinationOption);
-  destinationMarker.setMap(map);
-  const spotMarkers = [];
-  const infoWindow = new google.maps.InfoWindow();
-  for(var i = 1; i < itinerary.length-1; i++){
-    const marker = addMarker(google, map, itinerary[i], label[(i-1) % label.length]);
-    spotMarkers.push(marker);
-  }
-  map.setCenter({lat: itinerary[0].geometry.location.lat(), lng: itinerary[0].geometry.location.lng()});
-  return {originMarker, destinationMarker, spotMarkers};
 }

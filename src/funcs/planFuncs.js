@@ -21,16 +21,17 @@ export async function makePlan(google, map, plan, condition){
   setDuration(destination, 0);
   places.map(place => setDuration(place, 3600));
 
-  // places = updatePlaces(direction, places, origin, destination);
-  // console.log(places)
-
   var itinerary = [origin, ...places, destination];
   setTime(itinerary, direction.routes[0].legs, departureTime)
 
   if(lunch) await insertPlace(google, map, itinerary, direction.routes[0].legs, places, 12 * 3600, '昼食', departureTime);
   if(dinner) await insertPlace(google, map, itinerary, direction.routes[0].legs, places, 18 * 3600, '夕食', departureTime);
 
-  places.map(place => {place.type = 'plan'})
+  const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+  places.map((place, i) => {
+    place.type = 'plan';
+    place.label = alphabet[i];
+  })
   return {places, origin, destination, itinerary, legs: direction.routes[0].legs};
 }
 
@@ -95,24 +96,6 @@ export const insertPlace = async (google, map, itinerary, legs, places, time, qu
       goLeg.duration.newText = getDurationStr(goLeg.duration.value);
       backLeg.duration.value *= 2;
       backLeg.duration.newText = getDurationStr(backLeg.duration.value);
-      // var time = itinerary[i].departureTime.value + goLeg.duration.value;
-      // var duration = goLeg.duration.value + lunch.duration.value + backLeg.duration.value;
-      // lunch.arrivalTime = {
-      //   value: time,
-      //   text: getTimeStr(time),
-      // }
-      // time += lunch.duration.value;
-      // lunch.departureTime = {
-      //   value: time,
-      //   text: getTimeStr(time),
-      // }
-      // time += backLeg.duration.value;
-      // for(var j = i + 1; j < itinerary.length; j++){
-      //   itinerary[j].arrivalTime.value += duration - legs[i].duration.value;
-      //   itinerary[j].arrivalTime.text = getTimeStr(itinerary[j].arrivalTime.value)
-      //   itinerary[j].departureTime.value += duration - legs[i].duration.value;
-      //   itinerary[j].departureTime.text = getTimeStr(itinerary[j].departureTime.value);
-      // }
       itinerary.splice(i+1, 0, lunch);
       legs.splice(i, 1, goLeg, backLeg);
       places.splice(i+1, 0, lunch);

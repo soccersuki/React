@@ -21,7 +21,9 @@ import RestaurantIcon from '@material-ui/icons/Restaurant';
 
 import MySnackbar from './MySnackbar';
 import MyDialog from './MyDialog'
+import MyDrawer from './MyDrawer'
 import ConditionPage from './ConditionPage'
+import PlaceDetail from './PlaceDetail'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,24 +45,25 @@ export default function Home(){
   const classes = useStyles();
 
   const [chipIndex, setChipIndex] = useState(0);
-  const { google, map, plan, setPlan, snackbarState, dialogState, } = useContext(AppContext)
+  const { google, map, plan, setPlan, snackbarState, dialogState, drawerState} = useContext(AppContext)
   const [places, setPlaces] = useState(null);
-  const [text, setText] = useState(null);
   const [markers, setMarkers] = useState(null);
   const [display, setDisplay] = useState(false);
   const [carouselIndex, setCarouselIndex] = useState(0);
-  const [cnt, setCnt] = useState(0);
 
   useGoogle();
 
   const handleClick = async (id) => {
     setChipIndex(id);
-    setCnt(cnt + 1)
+    var places;
+    if(id == 0) places = plan?.places;
+    else places = await findPlaces(google, map, types[id].query);
+    setPlaces(places);
   }
   const handleSubmit = async (text) => {
-    setText(text)
     setChipIndex(-1);
-    setCnt(cnt + 1)
+    var places = await findPlaces(google, map, text);
+    setPlaces(places);
   }
 
   useEffect(() => {
@@ -69,37 +72,22 @@ export default function Home(){
   }, [])
 
   useEffect(() => {
-    setCarouselIndex(0);
-    (async() => {
-      var places;
-      if(chipIndex == 0){
-        places = plan == null ? null : plan.places;
-      }
-      else if(chipIndex == -1){
-        places = await findPlaces(google, map, text);
-      }
-      else{
-        places = await findPlaces(google, map, types[chipIndex].query);
-      }
-      setPlaces(places);
-      if(places == null) return;
-
-      setDisplay(true);
-    })()
-
-    return () => {
-      setDisplay(false);
-    }
-  }, [cnt])
+    if(plan == null) return;
+    var places
+    if(chipIndex == 0) places = plan?.places;
+    setPlaces(places)
+    dialogState.handleClose()
+    snackbarState.handleOpen('プランが完成しました')
+  }, [plan])
 
   useEffect(() => {
     if(places == null) return;
+    setCarouselIndex(0);
+    setDisplay(true);
+
     var markers;
     if(chipIndex == 0) markers = addMarkers(google, map, places, types[chipIndex], plan.origin, plan.destination)
     else markers = addMarkers(google, map, places, chipIndex == -1 ? types[1] : types[chipIndex])
-    // setMarkers({...markers});
-    map.panTo({lat: places[0].geometry.location.lat(), lng: places[0].geometry.location.lng()})
-
     markers.markers.map((marker, id) => {
       marker.addListener('click', ()=>{
         for(var i = 0; i < places.length; i++){
@@ -111,8 +99,10 @@ export default function Home(){
       })
     })
     setMarkers(markers)
+    map.panTo({lat: places[0].geometry.location.lat(), lng: places[0].geometry.location.lng()})
 
     return () => {
+      setDisplay(false);
       if(markers != null){
         markers.markers.map((marker) => marker.setMap(null));
         if(markers.originMarker != null) markers.originMarker.setMap(null);
@@ -131,33 +121,42 @@ export default function Home(){
   }
   const handleClickDelete = (id) => {
     deletePlace(id)
-    setPlan({...plan});
+    setPlan(plan);
+    plan.changed = true;
     snackbarState.handleOpen('削除しました')
   }
   const handleClickAdd = (id) => {
     places[id].type = 'plan'
+    places[id].label = 'new';
     plan.places.push(places[id]);
+    plan.changed = true;
     deletePlace(id);
-    setPlan({...plan});
+    setPlan(plan);
     snackbarState.handleOpen('追加しました')
+  }
+  const handleClickPOI = (event) => {
+    if(event.placeId){
+      drawerState.toggle('bottom', true, <PlaceDetail place={{place_id: event.placeId}}/>);
+    }
   }
 
   return(
     <Box className={classes.root}>
       <div style={{height: window.innerHeight}}>
-        <Map />
+        <Map handleClickPOI={handleClickPOI}/>
       </div>
       <Box style={{position: 'absolute', width: '100%', top: 20}}>
         <Top onClick={handleClick} chipIndex={chipIndex} types={types} onSubmit={handleSubmit}/>
       </Box>
       <Box style={{position: 'absolute', width: '100%', bottom: 20}}>
-        <Bottom carouselIndex={carouselIndex} setCarouselIndex={setCarouselIndex} handleClickAdd={handleClickAdd} handleClickDelete={handleClickDelete} chipIndex={chipIndex} places={places} setPlaces={setPlaces} markers={markers} setMarkers={setMarkers} display={display}/>
+        <Bottom carouselIndex={carouselIndex} setCarouselIndex={setCarouselIndex} places={places} display={display} handleClickAdd={handleClickAdd} handleClickDelete={handleClickDelete}/>
       </Box>
       <Box style={{position: 'absolute', bottom: 20, right: 70}}>
         <Action handleOpenD={dialogState.handleOpen}/>
       </Box>
       <MySnackbar {...snackbarState}/>
-      <MyDialog {...dialogState} content={<ConditionPage cnt={cnt} setCnt={setCnt}/>}/>
+      <MyDialog {...dialogState} content={<ConditionPage/>}/>
+      <MyDrawer {...drawerState}/>
     </Box>
   );
 }

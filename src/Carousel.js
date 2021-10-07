@@ -12,11 +12,9 @@ import PlaceDetail from './PlaceDetail'
 
 import { AppContext, } from './MyContext'
 
-const styles = {
-};
-
 function PlaceCard(props){
   const {place} = props;
+  const { drawerState, } = useContext(AppContext)
   const [openDrawer, setOpenDrawer] = useState({
     top: false,
     left: false,
@@ -27,8 +25,14 @@ function PlaceCard(props){
     setOpenDrawer({ ...openDrawer, [anchor]: open });
   };
   const handleClick = () => {
-    toggleDrawer('bottom', true)
+    // toggleDrawer('bottom', true)
+    drawerState.toggle('bottom', true, <PlaceDetail place={place}/>)
   }
+  return(
+    <Box>
+      <Box><MediaCard place={place} onClick={handleClick} onClickAdd={props.onClickAdd} onClickDelete={props.onClickDelete}/></Box>
+    </Box>
+  )
   return(
     <Box>
       <Box><MediaCard place={place} onClick={handleClick} onClickAdd={props.onClickAdd} onClickDelete={props.onClickDelete}/></Box>
@@ -48,29 +52,6 @@ const Carousel = (props) => {
     props.setCarouselIndex(index);
     map.panTo({lat: places[index].geometry.location.lat(), lng: places[index].geometry.location.lng()})
   }
-
-
-  // useEffect(() => {
-  //   setValue(0);
-  // }, [chipIndex])
-  //
-  // useEffect(() => {
-  //   if(markers == null) return;
-  //   markers.markers.map((marker, id) => {
-  //     marker.addListener('click', ()=>{
-  //       // setValue(id);
-  //       for(var i = 0; i < props.places.length; i++){
-  //         if(props.places[i].name == marker.title){
-  //           setValue(i)
-  //           break;
-  //         }
-  //       }
-  //     })
-  //   })
-  //   setMarkers(markers)
-  //   // setPlaces(props.places);
-  // }, [markers])
-
 
   if(places == null) return;
   return(

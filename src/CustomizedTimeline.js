@@ -1,4 +1,3 @@
-import { makeStyles } from '@material-ui/core/styles';
 import Timeline from '@material-ui/lab/Timeline';
 import TimelineItem from '@material-ui/lab/TimelineItem';
 import TimelineSeparator from '@material-ui/lab/TimelineSeparator';
@@ -9,7 +8,7 @@ import TimelineDot from '@material-ui/lab/TimelineDot';
 import TrainIcon from '@material-ui/icons/Train';
 import Rating from '@material-ui/lab/Rating';
 import Skeleton from '@material-ui/lab/Skeleton';
-import { Box, Avatar, Zoom, Badge, Typography, Paper, FormControl, MenuItem, InputLabel, Select, Button} from '@material-ui/core'
+import { Box, Avatar, Badge, Typography, FormControl, MenuItem, InputLabel, Select, Button} from '@material-ui/core'
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
@@ -17,19 +16,11 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import NavigationIcon from '@material-ui/icons/Navigation';
 import Alert from '@material-ui/lab/Alert';
 
-import imgOsaka from './images/img_osaka.jpg'
-
-
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { AppContext } from './MyContext'
 
 import { setTime, } from './funcs/planFuncs'
 
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    padding: '6px 16px',
-  },
-}));
 const label = 'abcdefghijklmnopqrstuvwxyz';
 
 function MyTimelineItem(props){
@@ -79,8 +70,8 @@ function DurationSelect(props){
 }
 
 export default function CustomizedTimeline(props) {
-  const classes = useStyles();
   const {plan, setPlan, condition, dialogState, } = useContext(AppContext);
+  const [itinerary, setItinerary] = useState(plan?.itinerary);
 
   if(plan == null){
     return(
@@ -98,16 +89,15 @@ export default function CustomizedTimeline(props) {
     )
   }
 
-  const {itinerary, legs} = plan;
+  const {legs} = plan;
 
-  const handleChange = (spot, value) => {
-    spot.duration.value = value * 60;
+  const handleChange = (place, value) => {
+    place.duration.value = value * 60;
     setTime(itinerary, legs, condition.departureTime)
-    setPlan({...plan})
+    setItinerary([...itinerary]);
+    setPlan(plan)
   }
-
   const handleClick = () => {
-    console.log('click')
     props.toggleDrawer('bottom', false)
     dialogState.handleOpen('update')
   }
@@ -121,7 +111,7 @@ export default function CustomizedTimeline(props) {
             <Avatar>
               <NavigationIcon />
             </Avatar>
-            <Typography variant='h5' style={{color: 'white'}}>{condition.regionName}一日旅行</Typography>
+            <Typography variant='h5' style={{color: 'white'}}>{condition.regionName}旅行</Typography>
           </Box>
         </Box>
 
@@ -129,27 +119,29 @@ export default function CustomizedTimeline(props) {
           <Alert severity="warning">
             <Box>時間は目安です</Box>
             <Box>閉店しているかも</Box>
-            <Box>
-            スポットが変わりました
-            <Button color="primary" onClick={handleClick}>更新</Button>
-            </Box>
+            {plan.changed && (
+              <Box>
+                スポットが変わりました
+                <Button color="primary" onClick={handleClick}>更新</Button>
+              </Box>
+            )}
           </Alert>
         </Box>
       </Box>
       <Timeline>
-        {itinerary.map((spot, i) => {
+        {itinerary.map((place, i) => {
           return(
             <Box>
-              <MyTimelineItem spot={spot} i={i} onChange={handleChange} time={spot.arrivalTime.text}
+              <MyTimelineItem time={place.arrivalTime.text}
                 content={
                   <Accordion>
                     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                       <Box>
-                        <Typography variant="h6" component="h1">{spot.name}</Typography>
+                        <Typography variant="h6" component="h1">{place.name}</Typography>
                         <Typography variant='caption'>
                           <Box display="flex" alignItems="center">
-                            {spot.rating}
-                            <Rating name="read-only" value={spot.rating} precision={0.5} readOnly size='small' />
+                            {place.rating}
+                            <Rating name="read-only" value={place.rating} precision={0.5} readOnly size='small' />
                           </Box>
                         </Typography>
                       </Box>
@@ -158,7 +150,7 @@ export default function CustomizedTimeline(props) {
                       <Typography variant='body2'>
                         <Box display="flex" alignItems="center">
                           <Box>滞在時間:</Box>
-                          <DurationSelect initialValue={spot.duration.value / 60} onChange={(value) => handleChange(spot, value)}/>
+                          <DurationSelect initialValue={place.duration.value / 60} onChange={(value) => handleChange(place, value)}/>
                           <Box>分</Box>
                         </Box>
                       </Typography>
@@ -166,13 +158,13 @@ export default function CustomizedTimeline(props) {
                   </Accordion>
                 }
                 separator={
-                  <Badge anchorOrigin={{ vertical: 'bottom', horizontal: 'right',}} badgeContent={ label[i-1] } color="secondary">
-                    <Avatar alt="Remy Sharp" src={spot.photos == null ? null: spot.photos[0].getUrl()} />
+                  <Badge anchorOrigin={{ vertical: 'bottom', horizontal: 'right',}} badgeContent={place.label} color="secondary">
+                    <Avatar src={place.photos == null ? null: place.photos[0].getUrl()} />
                   </Badge>
                 }
               />
-              {i < legs.length ?
-                <MyTimelineItem spot={spot} leg={legs[i]} time={spot.departureTime.text}
+              {i < legs.length && (
+                <MyTimelineItem place={place} leg={legs[i]} time={place.departureTime.text}
                   content={
                     <Box display="flex" alignItems='center' height='100%'>
                       電車で
@@ -180,16 +172,13 @@ export default function CustomizedTimeline(props) {
                       分
                     </Box>}
                   separator={<TrainIcon />}
-                />
-                :
-                null
+                />)
               }
             </Box>
           )
         })
       }
       </Timeline>
-
     </Box>
   );
 }

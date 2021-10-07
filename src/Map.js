@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Map(props){
   const classes = useStyles();
-  const {google, setMap} = useContext(AppContext);
+  const {google, map, setMap} = useContext(AppContext);
   const mapContainerRef = useRef(null);
 
   useEffect(() => {
@@ -21,13 +21,11 @@ export default function Map(props){
       disableDefaultUI: true,
     }
     const map = new google.maps.Map(mapContainerRef.current, initialConfig);
-    map.addListener("click", handleClick);
+    map.addListener("click", props.handleClickPOI);
     setMap(map);
   }, [google, mapContainerRef]);
 
-  const handleClick = (event) => {
-    console.log(event)
-  }
+
 
   return(
     <>

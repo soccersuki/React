@@ -17,6 +17,16 @@ export default function MyContext(props){
     handleClose: () => setDialogState({...dialogState, open: false}),
     handleOpen: (status) => setDialogState({...dialogState, open: true, status})
   })
+  const [drawerState, setDrawerState] = useState({
+    open: {
+      top: false,
+      left: false,
+      bottom: false,
+      right: false,
+    },
+    toggle: (anchor, open, content) => setDrawerState({ ...drawerState, content, open: { ...drawerState.open, [anchor]: open }}),
+    anchor: 'bottom',
+  })
   const contextValue = {
     google, setGoogle,
     map, setMap,
@@ -24,6 +34,7 @@ export default function MyContext(props){
     condition, setCondition,
     snackbarState,
     dialogState,
+    drawerState,
   }
   return(
     <AppContext.Provider value={contextValue}>

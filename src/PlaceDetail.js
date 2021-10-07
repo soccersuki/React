@@ -13,7 +13,10 @@ import { AppContext } from './MyContext'
 
 import { getDetail } from './funcs/googleMapAPI';
 
-import { Card, CardHeader, CardContent, Avatar, ListSubheader} from '@material-ui/core'
+import { Card, CardHeader, CardContent, Avatar, ListSubheader, Button, } from '@material-ui/core'
+
+import NavigationIcon from '@material-ui/icons/Navigation';
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -37,7 +40,7 @@ export default function PlaceDetail(props){
     console.log(place)
     if(place == null) return;
     (async() => {
-      const fields = ['opening_hours', 'formatted_phone_number', 'website', 'url', 'reviews']
+      const fields = ['name', 'formatted_address', 'photos', 'opening_hours', 'formatted_phone_number', 'website', 'url', 'reviews', 'rating', 'user_ratings_total']
       const detail = await getDetail(google, map, place.place_id, fields)
       setDetail(detail)
       console.log(detail)
@@ -48,24 +51,34 @@ export default function PlaceDetail(props){
 
   return(
     <Box className={classes.root}>
-      <img src={place.photos == null ? null: place.photos[0].getUrl()} className={classes.img}/>
+      <img src={place.photos?.[0].getUrl() ?? detail?.photos[0].getUrl()} className={classes.img}/>
       <Box>
         <Box mx={2}>
         <Typography gutterBottom variant="h5" component="h2">
-          {place.name}
+          {place.name ?? detail?.name}
         </Typography>
         <Typography gutterBottom variant="body2" color="textSecondary" component="p">
           <Box display="flex" alignItems="center">
-            {place.rating}
-            <Rating name="read-only" value={place.rating} precision={0.5} readOnly size='small' />
-            ({place.user_ratings_total})
+            {place.rating ?? detail?.rating}
+            <Rating name="read-only" value={place.rating ?? detail?.rating} precision={0.5} readOnly size='small' />
+            ({place.user_ratings_total ?? detail?.rating})
           </Box>
         </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          startIcon={<NavigationIcon />}
+          type='submit'
+          style={{marginTop: 20}}
+        >
+          Add
+        </Button>
         </Box>
         <List>
           <ListItem button divider>
             <ListItemIcon>{<RoomIcon/>}</ListItemIcon>
-            <ListItemText primary={<Typography variant='body2' style={{padding: '5px 0'}}>{place.formatted_address}</Typography>} />
+            <ListItemText primary={<Typography variant='body2' style={{padding: '5px 0'}}>{place.formatted_address ?? detail?.formatted_address}</Typography>} />
           </ListItem>
           <ListItem button divider>
             <ListItemIcon>{<AccessTimeIcon />}</ListItemIcon>

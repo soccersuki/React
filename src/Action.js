@@ -14,6 +14,8 @@ export default function Action(props){
     setOpenDrawer({ ...openDrawer, [anchor]: open });
   };
 
+  return null;
+
   return(
     <>
       <MyDrawer drawer={<CustomizedTimeline toggleDrawer={toggleDrawer}/>} toggleDrawer={toggleDrawer} state={openDrawer} anchor={'bottom'}/>

@@ -14,10 +14,10 @@ export default function MyDrawer(props) {
   const classes = useStyles();
 
   const handleOpen = () => {
-    props.toggleDrawer(props.anchor, true)
+    props.toggle(props.anchor, true)
   }
   const handleClose = () => {
-    props.toggleDrawer(props.anchor, false);
+    props.toggle(props.anchor, false);
   }
   const content = (anchor) => (
     <div
@@ -25,14 +25,15 @@ export default function MyDrawer(props) {
       role="presentation"
       onKeyDown={handleClose}
     >
-      {props.drawer}
+      {props.content}
     </div>
   );
+
   return (
     <div>
       <SwipeableDrawer
         anchor={props.anchor}
-        open={props.state[props.anchor]}
+        open={props.open[props.anchor]}
         onClose={handleClose}
         onOpen={handleOpen}
       >
