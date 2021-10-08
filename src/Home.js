@@ -3,7 +3,7 @@ import Map from './Map';
 import {AppContext} from './MyContext'
 import Top from './Top';
 import Bottom from './Bottom';
-import Action from './Action'
+import MySpeedDial from './MySpeedDial'
 
 import { useGoogle } from './funcs/customHooks';
 import { addMarkers, } from './funcs/markerFuncs';
@@ -112,31 +112,33 @@ export default function Home(){
   }, [places])
 
   const deletePlace = (id) => {
-    markers.markers[id].setMap(null);
+    markers.markers[id]?.setMap(null);
     markers.markers.splice(id, 1);
     setMarkers(markers)
     places.splice(id, 1);
     setPlaces(places);
     if(id < places.length) map.panTo({lat: places[id].geometry.location.lat(), lng: places[id].geometry.location.lng()})
   }
-  const handleClickDelete = (id) => {
-    deletePlace(id)
+  const handleClickDelete = (plan, place, id) => {
+    if(id != null) deletePlace(id);
     setPlan(plan);
     plan.changed = true;
     snackbarState.handleOpen('削除しました')
+    drawerState.toggle('bottom', false)
   }
-  const handleClickAdd = (id) => {
-    places[id].type = 'plan'
-    places[id].label = 'new';
-    plan.places.push(places[id]);
+  const handleClickAdd = (plan, place, id) => {
+    place.type = 'plan'
+    place.label = 'new';
+    plan.places.push(place);
     plan.changed = true;
-    deletePlace(id);
+    if(id != null) deletePlace(id);
     setPlan(plan);
     snackbarState.handleOpen('追加しました')
+    drawerState.toggle('bottom', false)
   }
   const handleClickPOI = (event) => {
     if(event.placeId){
-      drawerState.toggle('bottom', true, <PlaceDetail place={{place_id: event.placeId}}/>);
+      drawerState.toggle('bottom', true, <PlaceDetail place={{place_id: event.placeId}} handleClickAdd={handleClickAdd} handleClickDelete={handleClickDelete}/>);
     }
   }
 
@@ -152,7 +154,7 @@ export default function Home(){
         <Bottom carouselIndex={carouselIndex} setCarouselIndex={setCarouselIndex} places={places} display={display} handleClickAdd={handleClickAdd} handleClickDelete={handleClickDelete}/>
       </Box>
       <Box style={{position: 'absolute', bottom: 20, right: 70}}>
-        <Action handleOpenD={dialogState.handleOpen}/>
+        <MySpeedDial />
       </Box>
       <MySnackbar {...snackbarState}/>
       <MyDialog {...dialogState} content={<ConditionPage/>}/>

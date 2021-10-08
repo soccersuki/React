@@ -1,23 +1,14 @@
-import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import { Box, Chip, Collapse, } from '@material-ui/core'
+import { Box, Typography, Button } from '@material-ui/core'
 import { Rating } from '@material-ui/lab'
-import clsx from 'clsx';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import IconButton from '@material-ui/core/IconButton';
-import { Skelton, } from '@material-ui/core'
-
-import imgOsaka from './images/img_osaka.jpg';
+import PlaceDetail from './PlaceDetail'
 
 import { useContext, } from 'react'
-
 import {AppContext, } from './MyContext'
 
 const useStyles = makeStyles((theme) => ({
@@ -32,13 +23,17 @@ const useStyles = makeStyles((theme) => ({
 
 export default function MediaCard(props) {
   const classes = useStyles();
-  const {place} = props;
-  const { plan, } = useContext(AppContext)
+  const { place } = props;
+  const { plan, drawerState, } = useContext(AppContext)
   if(place == null) return null;
+
+  const handleClick = () => {
+    drawerState.toggle('bottom', true, <PlaceDetail {...props}/>)
+  }
 
   return (
     <Card className={classes.root}>
-      <CardActionArea onClick={props.onClick}>
+      <CardActionArea onClick={handleClick}>
         <CardMedia
           className={classes.media}
           image={place.photos == null ? null : place.photos[0].getUrl()}
@@ -60,17 +55,16 @@ export default function MediaCard(props) {
       {plan != null && (
         <CardActions disableSpacing>
           {place.type == null ?
-            <Button size="small" color="primary" onClick={props.onClickAdd}>
+            <Button size="small" color="primary" onClick={() => props.handleClickAdd(plan, place, props.id)}>
               ADD
             </Button>
             :
-            <Button size="small" color="primary" onClick={props.onClickDelete}>
+            <Button size="small" color="primary" onClick={() => props.handleClickDelete(plan, place, props.id)}>
               DELETE
             </Button>
           }
         </CardActions>
       )}
-
     </Card>
   );
 }

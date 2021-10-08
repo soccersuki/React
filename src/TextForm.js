@@ -1,7 +1,6 @@
 import { useState, } from 'react'
 import {
   Box,
-  TextField,
   InputAdornment,
   InputBase,
 } from '@material-ui/core';
@@ -12,7 +11,6 @@ export default function TextForm(props){
   const [text, setText] = useState(props.initialValue);
   const handleSubmit = (e) => {
     e.preventDefault();
-    // e.target.firstChild.firstChild.firstChild.blur()
     const elem = document.activeElement;
     elem.blur()
     props.onSubmit(text);
@@ -24,7 +22,7 @@ export default function TextForm(props){
     <form onSubmit={handleSubmit}>
       <Box display='flex'>
         <LoyaltyIcon color="action" style={{margin: 10}}/>
-        <InputBase required placeholder="Search Google Maps" size="small" fullWidth label={'SEARCH'} onChange={handleChange} value={text}/>
+        <InputBase required placeholder="Search" size="small" fullWidth label={'SEARCH'} onChange={handleChange} value={text}/>
         <SearchIcon color='action' style={{margin: 10}}/>
       </Box>
     </form>

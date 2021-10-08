@@ -16,7 +16,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import NavigationIcon from '@material-ui/icons/Navigation';
 import Alert from '@material-ui/lab/Alert';
 
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { AppContext } from './MyContext'
 
 import { setTime, } from './funcs/planFuncs'
@@ -72,6 +72,10 @@ function DurationSelect(props){
 export default function CustomizedTimeline(props) {
   const {plan, setPlan, condition, dialogState, } = useContext(AppContext);
   const [itinerary, setItinerary] = useState(plan?.itinerary);
+
+  useEffect(() => {
+    console.log('timeline')
+  }, [])
 
   if(plan == null){
     return(

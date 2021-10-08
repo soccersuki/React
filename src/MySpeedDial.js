@@ -8,6 +8,7 @@ import ScheduleIcon from '@material-ui/icons/Schedule';
 import UpdateIcon from '@material-ui/icons/Update';
 import NewReleasesIcon from '@material-ui/icons/NewReleases';
 
+import CustomizedTimeline from './CustomizedTimeline'
 import { useContext, } from 'react';
 import { AppContext } from './MyContext'
 
@@ -33,7 +34,7 @@ const actions = [
 export default function MySpeedDial(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
-  const { dialogState, } = useContext(AppContext)
+  const { dialogState, drawerState, } = useContext(AppContext)
   const handleClose = () => {
     setOpen(false);
   };
@@ -41,7 +42,7 @@ export default function MySpeedDial(props) {
     setOpen(true);
   };
   const handleClick = (id) => () => {
-    if(id == 0) props.toggleDrawer('bottom', true)
+    if(id == 0) drawerState.toggle('bottom', true, <CustomizedTimeline />)
     else if(id == 1) dialogState.handleOpen('new');
   }
 

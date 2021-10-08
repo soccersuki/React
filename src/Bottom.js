@@ -1,5 +1,3 @@
-import { useContext, } from 'react';
-// import { AppContext, } from './App'
 import { Box, Zoom, } from '@material-ui/core'
 import Carousel from './Carousel'
 

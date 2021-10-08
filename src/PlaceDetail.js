@@ -1,4 +1,4 @@
-import { Box, Typography, List, ListItem, ListItemIcon, ListItemText, Chip, Fab, } from '@material-ui/core'
+import { Box, Typography, List, ListItem, ListItemIcon, ListItemText, Chip, Fab, ListSubheader, Button, Avatar, } from '@material-ui/core'
 import { Rating } from '@material-ui/lab'
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -7,17 +7,12 @@ import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import PhoneIcon from '@material-ui/icons/Phone';
 import PublicIcon from '@material-ui/icons/Public';
 import SearchIcon from '@material-ui/icons/Search';
+import NavigationIcon from '@material-ui/icons/Navigation';
 
 import { useContext, useEffect, useState, } from 'react';
 import { AppContext } from './MyContext'
 
 import { getDetail } from './funcs/googleMapAPI';
-
-import { Card, CardHeader, CardContent, Avatar, ListSubheader, Button, } from '@material-ui/core'
-
-import NavigationIcon from '@material-ui/icons/Navigation';
-
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,14 +28,14 @@ const useStyles = makeStyles((theme) => ({
 export default function PlaceDetail(props){
   const {place} = props;
   const classes = useStyles();
-  const { google, map, plan, setPlan, } = useContext(AppContext);
+  const { google, map, plan, } = useContext(AppContext);
   const [detail, setDetail] = useState(null);
 
   useEffect(() => {
     console.log(place)
     if(place == null) return;
     (async() => {
-      const fields = ['name', 'formatted_address', 'photos', 'opening_hours', 'formatted_phone_number', 'website', 'url', 'reviews', 'rating', 'user_ratings_total']
+      const fields = ['geometry', 'name', 'formatted_address', 'photos', 'opening_hours', 'formatted_phone_number', 'website', 'url', 'reviews', 'rating', 'user_ratings_total']
       const detail = await getDetail(google, map, place.place_id, fields)
       setDetail(detail)
       console.log(detail)
@@ -51,7 +46,7 @@ export default function PlaceDetail(props){
 
   return(
     <Box className={classes.root}>
-      <img src={place.photos?.[0].getUrl() ?? detail?.photos[0].getUrl()} className={classes.img}/>
+      <img src={place.photos?.[0].getUrl() ?? detail?.photos?.[0].getUrl()} className={classes.img}/>
       <Box>
         <Box mx={2}>
         <Typography gutterBottom variant="h5" component="h2">
@@ -64,16 +59,31 @@ export default function PlaceDetail(props){
             ({place.user_ratings_total ?? detail?.rating})
           </Box>
         </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          fullWidth
-          startIcon={<NavigationIcon />}
-          type='submit'
-          style={{marginTop: 20}}
-        >
-          Add
-        </Button>
+        {plan != null && place.type == null &&
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              startIcon={<NavigationIcon />}
+              style={{marginTop: 20}}
+              onClick={() => props.handleClickAdd(plan, detail, props.id)}
+            >
+              Add
+            </Button>
+        }
+        {plan != null && place.type != null &&
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            startIcon={<NavigationIcon />}
+            style={{marginTop: 20}}
+            onClick={() => props.handleClickDelete(plan, detail, props.id)}
+          >
+            Delete
+          </Button>
+        }
+
         </Box>
         <List>
           <ListItem button divider>
@@ -104,26 +114,20 @@ export default function PlaceDetail(props){
         <Box my={2}>
         <List subheader={<ListSubheader disableSticky><Typography variant='h6'>クチコミ</Typography></ListSubheader>}>
           {detail?.reviews?.map?.(review => (
-            <ListItem divider ><MyCard review={review}/></ListItem>
+            <ListItem divider >
+              <Box>
+                <Box display='flex'alignItems="center">
+                  <Avatar aria-label="recipe" src={review.profile_photo_url}/>
+                  <Typography style={{marginLeft: 10}}>{review.author_name}</Typography>
+                </Box>
+                {<Rating name="read-only" value={review.rating} precision={0.5} readOnly size='small' />}
+                <Typography variant='body2'>{review.text}</Typography>
+              </Box>
+            </ListItem>
           ))}
         </List>
         </Box>
       </Box>
-    </Box>
-  )
-}
-
-
-function MyCard(props){
-  const {review} = props
-  return(
-    <Box>
-    <Box display='flex'alignItems="center">
-      <Avatar aria-label="recipe" src={review.profile_photo_url}/>
-      <Typography style={{marginLeft: 10}}>{review.author_name}</Typography>
-    </Box>
-    {<Rating name="read-only" value={review.rating} precision={0.5} readOnly size='small' />}
-    <Typography variant='body2'>{review.text}</Typography>
     </Box>
   )
 }
