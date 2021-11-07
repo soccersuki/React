@@ -1,11 +1,11 @@
 import { findPlace, findPlaces, drivingDirection, } from './googleMapAPI'
 
 export async function makePlan(google, map, plan, condition){
-  var {regionName, originName, destinationName, lunch, dinner, departureTime, arrivalTime, status} = condition;
+  var {regionName, originName, destinationName, lunch, dinner, departureTime, arrivalTime, status, place} = condition;
   if(arrivalTime == null) arrivalTime = 21 * 3600
   var [origin] = await findPlace(google, map, originName);
   var [destination] = await findPlace(google, map, destinationName);
-  var places = await getPlaces(google, map, plan, departureTime, arrivalTime, lunch, dinner, status, regionName);
+  var places = await getPlaces(google, map, plan, departureTime, arrivalTime, lunch, dinner, status, regionName, place);
   var waypts = places.map(place => {
     return{
       location: place.formatted_address,
@@ -35,7 +35,7 @@ export async function makePlan(google, map, plan, condition){
   return {places, origin, destination, itinerary, legs: direction.routes[0].legs};
 }
 
-async function getPlaces(google, map, plan, departureTime, arrivalTime, lunch, dinner, status, regionName){
+async function getPlaces(google, map, plan, departureTime, arrivalTime, lunch, dinner, status, regionName, place){
   var duration = (arrivalTime - departureTime);
   if(lunch) duration -= 3600;
   if(dinner) duration -= 3600;
@@ -43,8 +43,10 @@ async function getPlaces(google, map, plan, departureTime, arrivalTime, lunch, d
 
   var places = []
   if(status != 'new') places = plan.places;
-  const allPlaces = await findPlaces(google, map, regionName + ' 観光');
-  places = places.concat(allPlaces.slice(0, num - places.length))
+  if(status == 'new' || place){
+    const allPlaces = await findPlaces(google, map, regionName + ' 観光');
+    places = places.concat(allPlaces.slice(0, num - places.length))
+  }
   return places;
 }
 

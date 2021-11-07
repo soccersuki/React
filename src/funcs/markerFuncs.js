@@ -2,7 +2,7 @@ export function addMarkers(google, map, places, type, origin, destination){
   const infoWindow = new google.maps.InfoWindow();
   const originMarker = origin == null ? null : addMarker(google, map, infoWindow, origin, null)
   const destinationMarker = destination == null ? null : addMarker(google, map, infoWindow, destination, null)
-  const markers = places.map((place, id) => {
+  const markers = places?.map((place, id) => {
     const labelText = type.name == 'plan' ? place.label : type.iconCode;
     return addMarker(google, map, infoWindow, place, labelText, type.name == 'plan' ? null : 'Material Icons')
   })

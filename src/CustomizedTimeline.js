@@ -70,7 +70,7 @@ function DurationSelect(props){
 }
 
 export default function CustomizedTimeline(props) {
-  const {plan, setPlan, condition, dialogState, } = useContext(AppContext);
+  const {plan, setPlan, condition, dialogState, drawerState, } = useContext(AppContext);
   const [itinerary, setItinerary] = useState(plan?.itinerary);
 
   useEffect(() => {
@@ -102,7 +102,7 @@ export default function CustomizedTimeline(props) {
     setPlan(plan)
   }
   const handleClick = () => {
-    props.toggleDrawer('bottom', false)
+    drawerState.toggle('bottom', false)
     dialogState.handleOpen('update')
   }
 

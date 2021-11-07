@@ -86,7 +86,7 @@ export default function Home(){
     setDisplay(true);
 
     var markers;
-    if(chipIndex == 0) markers = addMarkers(google, map, places, types[chipIndex], plan.origin, plan.destination)
+    if(chipIndex == 0) markers = addMarkers(google, map, plan?.places, types[chipIndex], plan?.origin, plan?.destination)
     else markers = addMarkers(google, map, places, chipIndex == -1 ? types[1] : types[chipIndex])
     markers.markers.map((marker, id) => {
       marker.addListener('click', ()=>{
@@ -125,6 +125,7 @@ export default function Home(){
     plan.changed = true;
     snackbarState.handleOpen('削除しました')
     drawerState.toggle('bottom', false)
+    console.log(plan)
   }
   const handleClickAdd = (plan, place, id) => {
     place.type = 'plan'
