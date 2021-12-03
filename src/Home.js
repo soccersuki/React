@@ -51,7 +51,7 @@ export default function Home(){
   const [display, setDisplay] = useState(false);
   const [carouselIndex, setCarouselIndex] = useState(0);
 
-  useGoogle();
+  // useGoogle();
 
   const handleClick = async (id) => {
     setChipIndex(id);
@@ -69,6 +69,7 @@ export default function Home(){
   useEffect(() => {
     snackbarState.handleOpen('プランを新規作成しましょう')
     dialogState.handleOpen('new')
+    drawerState.toggle('bottom', true, <ConditionPage />);
   }, [])
 
   useEffect(() => {
@@ -158,7 +159,6 @@ export default function Home(){
         <MySpeedDial />
       </Box>
       <MySnackbar {...snackbarState}/>
-      <MyDialog {...dialogState} content={<ConditionPage/>}/>
       <MyDrawer {...drawerState}/>
     </Box>
   );

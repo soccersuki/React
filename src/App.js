@@ -1,22 +1,18 @@
-import { useState, createContext } from 'react'
-import { makeStyles, } from '@material-ui/core/styles';
+import { useState } from 'react'
 import { useGoogle } from './funcs/customHooks';
 
 import Home from './Home';
-import FirstPage from './FirstPage'
-import MyContext from './MyContext'
-
-// export const AppContext = createContext();
+import Splash from './Splash'
 
 export default function App() {
-  const [firstPage, setFirstPage] = useState(true);
-  
-  if(firstPage) return(
-    <FirstPage setFirstPage={setFirstPage}/>
+  const [splash, setSplash] = useState(true);
+
+  useGoogle()
+
+  if(splash) return(
+    <Splash setSplash={setSplash}/>
   )
   return(
-    <MyContext>
-      <Home />
-    </MyContext>
+    <Home />
   )
 }

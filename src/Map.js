@@ -2,14 +2,7 @@ import { useState, useRef, useEffect, useContext } from 'react'
 
 import { AppContext } from './MyContext'
 
-import { makeStyles } from '@material-ui/core/styles';
-const useStyles = makeStyles((theme) => ({
-  root: {
-  },
-}));
-
 export default function Map(props){
-  const classes = useStyles();
   const {google, map, setMap} = useContext(AppContext);
   const mapContainerRef = useRef(null);
 
@@ -25,11 +18,9 @@ export default function Map(props){
     setMap(map);
   }, [google, mapContainerRef]);
 
-
-
   return(
     <>
-      <div ref={mapContainerRef} className={classes.root} style={{height: '100%'}}>I can use the DOM with react ref</div>
+      <div ref={mapContainerRef} style={{height: '100%'}}>I can use the DOM with react ref</div>
     </>
   )
 }
