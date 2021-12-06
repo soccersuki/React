@@ -9,28 +9,20 @@ import { useGoogle } from './funcs/customHooks';
 import { addMarkers, } from './funcs/markerFuncs';
 import { findPlaces } from './funcs/googleMapAPI';
 
-import { makeStyles } from '@material-ui/core/styles';
-import { Box, } from '@material-ui/core'
+import { Box } from '@mui/material'
 
-import FaceIcon from '@material-ui/icons/Face';
-import LocalCafeIcon from '@material-ui/icons/LocalCafe';
-import NatureIcon from '@material-ui/icons/Nature';
-import PetsIcon from '@material-ui/icons/Pets';
-import EmojiPeopleIcon from '@material-ui/icons/EmojiPeople';
-import RestaurantIcon from '@material-ui/icons/Restaurant';
+import FaceIcon from '@mui/icons-material/Face';
+import LocalCafeIcon from '@mui/icons-material/LocalCafe';
+import NatureIcon from '@mui/icons-material/Nature';
+import PetsIcon from '@mui/icons-material/Pets';
+import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
+import RestaurantIcon from '@mui/icons-material/Restaurant';
 
 import MySnackbar from './MySnackbar';
 import MyDialog from './MyDialog'
 import MyDrawer from './MyDrawer'
 import ConditionPage from './ConditionPage'
 import PlaceDetail from './PlaceDetail'
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    position: 'relative',
-  },
-}));
 
 const types = [
   {name: 'plan', japanese: 'プラン', query: '', icon: <FaceIcon />, iconCode: '\ue87c'},
@@ -42,16 +34,12 @@ const types = [
 ]
 
 export default function Home(){
-  const classes = useStyles();
-
   const [chipIndex, setChipIndex] = useState(0);
   const { google, map, plan, setPlan, snackbarState, dialogState, drawerState} = useContext(AppContext)
   const [places, setPlaces] = useState(null);
   const [markers, setMarkers] = useState(null);
   const [display, setDisplay] = useState(false);
   const [carouselIndex, setCarouselIndex] = useState(0);
-
-  // useGoogle();
 
   const handleClick = async (id) => {
     setChipIndex(id);
@@ -145,7 +133,7 @@ export default function Home(){
   }
 
   return(
-    <Box className={classes.root}>
+    <Box sx={{width: '100%', position: 'relative',}}>
       <div style={{height: window.innerHeight}}>
         <Map handleClickPOI={handleClickPOI}/>
       </div>

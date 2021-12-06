@@ -1,11 +1,8 @@
 import { useState, useContext, useEffect } from 'react'
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemText from '@material-ui/core/ListItemText';
-import Switch from '@material-ui/core/Switch';
-import { TextField, Button, Box, Collapse, Typography, Avatar, Grid, } from '@material-ui/core';
-import NavigationIcon from '@material-ui/icons/Navigation';
+import { TextField, Button, Box, Collapse, Typography, Avatar, Grid, List, ListItem, ListItemSecondaryAction, ListItemText, Switch, Checkbox, ListItemIcon, ListItemButton} from '@mui/material';
+import NavigationIcon from '@mui/icons-material/Navigation';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+
 
 import MultipleSelect from './MultipleSelect'
 import MaterialUIPickers from './MaterialUIPickers'
@@ -86,6 +83,7 @@ export default function SwitchListSecondary(props) {
         <Box display="flex" justifyContent="center">
           <Typography variant='h5'></Typography>
         </Box>
+        <KeyboardArrowDownIcon />
       </Box>
       <Box color='text.secondary'>
         <form onSubmit={handleSubmit}>
@@ -120,11 +118,10 @@ export default function SwitchListSecondary(props) {
             <ListItem disableGutters>
               <ListItemText primary={<Typography variant='body2'>新規作成</Typography>} />
               <ListItemSecondaryAction>
-                <Switch
+                <Checkbox
                   edge="end"
                   onChange={handleToggle('new')}
                   checked={checked.indexOf('new') !== -1}
-                  color="primary"
                 />
               </ListItemSecondaryAction>
             </ListItem>
@@ -141,16 +138,26 @@ export default function SwitchListSecondary(props) {
                 </ListItemSecondaryAction>
               </ListItem>
             </Collapse>
+            <ListItem>
+              <ListItemButton onClick={handleToggle('lunch')} dense>
+                <ListItemIcon>
+                  <Checkbox
+                    edge="start"
+                    checked={checked.indexOf('lunch') !== -1}
+                  />
+                </ListItemIcon>
+                <ListItemText primary={'昼食を自動で追加'}/>
+              </ListItemButton>
+            </ListItem>
+
             <ListItem disableGutters>
               <ListItemText primary={<Typography variant='body2'>昼食を自動で追加</Typography>} />
-              <ListItemSecondaryAction>
-                <Switch
-                  edge="end"
-                  onChange={handleToggle('lunch')}
-                  checked={checked.indexOf('lunch') !== -1}
-                  color="primary"
-                />
-              </ListItemSecondaryAction>
+              <Switch
+                edge="end"
+                onChange={handleToggle('lunch')}
+                checked={checked.indexOf('lunch') !== -1}
+                color="primary"
+              />
             </ListItem>
             <ListItem disableGutters>
               <ListItemText primary={<Typography variant='body2'>夕食を自動で追加</Typography>} />
